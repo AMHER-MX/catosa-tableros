@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catosa · Tableros</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1f1f1f;
+    --border: #2a2a2a;
+    --gold: #c8a84b;
+    --gold-light: #e2c46e;
+    --gold-dim: rgba(200,168,75,0.15);
+    --text: #e8e4d8;
+    --text-muted: #888;
+    --danger: #e05555;
+    --success: #4caf7d;
+    --blue: #5b9cf6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+  /* ─── LOGIN ─── */
+  #login-screen {
+    position: fixed; inset: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--bg);
+  }
+  .login-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(200,168,75,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(200,168,75,0.04) 0%, transparent 50%);
+  }
+  .login-grid {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: linear-gradient(var(--gold) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .login-card {
+    position: relative; z-index: 1;
+    width: 420px; padding: 48px 40px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--gold);
+  }
+  .login-logo { margin-bottom: 32px; }
+  .login-logo img { height: 36px; object-fit: contain; }
+  .login-logo-text { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); letter-spacing: 3px; }
+  .login-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; margin-top: 2px; }
+  .login-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .login-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.5; }
+  .area-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
+  .area-btn {
+    padding: 14px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+    position: relative; overflow: hidden;
+  }
+  .area-btn::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--gold); opacity: 0; transition: opacity 0.2s;
+  }
+  .area-btn:hover { border-color: var(--gold); background: var(--gold-dim); }
+  .area-btn:hover::before { opacity: 1; }
+  .area-btn .area-icon { font-size: 18px; display: block; margin-bottom: 6px; }
+  .area-btn .area-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 1px; }
+  .area-btn .area-dept { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
+  .login-pass-section { display: none; }
+  .login-pass-section.show { display: block; }
+  .pass-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+  .pass-selected { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--gold); margin-bottom: 16px; }
+  .pass-input {
+    width: 100%; padding: 12px 16px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+    outline: none; transition: border-color 0.2s; margin-bottom: 12px;
+  }
+  .pass-input:focus { border-color: var(--gold); }
+  .pass-input.error { border-color: var(--danger); }
+  .btn-primary {
+    width: 100%; padding: 13px;
+    background: var(--gold); border: none;
+    color: #000; font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+    cursor: pointer; transition: background 0.2s;
+  }
+  .btn-primary:hover { background: var(--gold-light); }
+  .btn-back {
+    background: none; border: none; color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    cursor: pointer; padding: 8px 0; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .btn-back:hover { color: var(--text); }
+  .login-error { font-size: 12px; color: var(--danger); margin-top: 8px; display: none; }
+  .login-error.show { display: block; }
+
+  /* ─── MAIN APP ─── */
+  #app { display: none; height: 100vh; overflow: hidden; flex-direction: column; }
+  #app.show { display: flex; }
+
+  /* TOP BAR */
+  .topbar {
+    height: 52px; background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 20px; gap: 16px;
+    flex-shrink: 0;
+  }
+  .topbar-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--gold); letter-spacing: 2px; }
+  .topbar-sep { width: 1px; height: 20px; background: var(--border); }
+  .topbar-area { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+  .topbar-area span { color: var(--text); font-weight: 500; }
+  .topbar-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
+  .btn-sm {
+    padding: 7px 16px;
+    background: var(--gold); border: none;
+    color: #000; font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; cursor: pointer; transition: background 0.2s;
+  }
+  .btn-sm:hover { background: var(--gold-light); }
+  .btn-sm.outline {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .btn-sm.outline:hover { border-color: var(--gold); color: var(--text); background: var(--gold-dim); }
+  .logout-btn {
+    background: none; border: none; color: var(--text-muted);
+    font-size: 12px; cursor: pointer; padding: 6px 10px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .logout-btn:hover { color: var(--text); }
+
+  /* MAIN BODY */
+  .main-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 220px; background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex; flex-direction: column;
+    flex-shrink: 0;
+  }
+  .sidebar-section { padding: 16px 14px 8px; }
+  .sidebar-label { font-size: 10px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 10px; border-radius: 4px;
+    font-size: 12px; cursor: pointer; color: var(--text-muted);
+    transition: all 0.15s; margin-bottom: 2px;
+    border: 1px solid transparent;
+  }
+  .sidebar-item:hover { background: var(--surface2); color: var(--text); }
+  .sidebar-item.active { background: var(--gold-dim); color: var(--gold); border-color: rgba(200,168,75,0.2); }
+  .sidebar-item .item-icon { font-size: 14px; width: 18px; text-align: center; }
+  .sidebar-item .item-name { flex: 1; }
+  .sidebar-item .item-author { font-size: 10px; color: var(--text-muted); }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 8px 14px; }
+  .sidebar-new {
+    margin: 8px 14px 14px;
+    padding: 10px; border: 1px dashed #333;
+    background: none; color: var(--text-muted);
+    font-family: 'DM Sans', sans-serif; font-size: 12px;
+    cursor: pointer; transition: all 0.2s; width: calc(100% - 28px);
+    text-align: center;
+  }
+  .sidebar-new:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+  /* CONTENT AREA */
+  .content { flex: 1; overflow-y: auto; background: var(--bg); }
+
+  /* ─── HOME VIEW ─── */
+  #view-home { padding: 32px; }
+  .home-greeting { margin-bottom: 32px; }
+  .home-greeting h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+  .home-greeting p { color: var(--text-muted); font-size: 14px; }
+  .dashboards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .dash-card {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 20px; cursor: pointer; transition: all 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .dash-card::after {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: var(--gold); transform: scaleX(0); transition: transform 0.2s;
+  }
+  .dash-card:hover { border-color: #333; transform: translateY(-2px); }
+  .dash-card:hover::after { transform: scaleX(1); }
+  .dash-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+  .dash-card-type { font-size: 20px; }
+  .dash-card-menu { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; padding: 0 4px; }
+  .dash-card-menu:hover { color: var(--text); }
+  .dash-card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .dash-card-info { font-size: 11px; color: var(--text-muted); }
+  .dash-card-info span { color: var(--gold); }
+  .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; }
+  .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
+  .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 18px; margin-bottom: 8px; }
+  .empty-state p { color: var(--text-muted); font-size: 13px; }
+
+  /* ─── BUILDER VIEW ─── */
+  #view-builder { display: none; height: 100%; overflow: hidden; flex-direction: column; }
+  #view-builder.show { display: flex; }
+  .builder-topbar {
+    padding: 14px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 16px;
+    background: var(--surface); flex-shrink: 0;
+  }
+  .builder-name-input {
+    flex: 1; max-width: 300px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 700; padding: 8px 14px; outline: none;
+    transition: border-color 0.2s;
+  }
+  .builder-name-input:focus { border-color: var(--gold); }
+  .builder-actions { margin-left: auto; display: flex; gap: 10px; }
+  .builder-body { display: flex; flex: 1; overflow: hidden; }
+
+  /* Config panel */
+  .config-panel {
+    width: 280px; background: var(--surface);
+    border-right: 1px solid var(--border);
+    overflow-y: auto; flex-shrink: 0;
+  }
+  .config-section { padding: 16px; border-bottom: 1px solid var(--border); }
+  .config-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
+  .config-select, .config-input {
+    width: 100%; padding: 9px 12px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 13px; outline: none; transition: border-color 0.2s;
+    margin-bottom: 10px; cursor: pointer;
+  }
+  .config-select:focus, .config-input:focus { border-color: var(--gold); }
+  .config-select option { background: var(--surface2); }
+  .config-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
+  .chart-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .chart-type-btn {
+    padding: 10px 6px; background: var(--surface2);
+    border: 1px solid var(--border); cursor: pointer;
+    color: var(--text-muted); font-size: 10px; text-align: center;
+    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+  }
+  .chart-type-btn:hover { border-color: var(--gold); color: var(--text); }
+  .chart-type-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+  .chart-type-btn .ct-icon { font-size: 20px; display: block; margin-bottom: 4px; }
+  .loading-indicator { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; }
+  .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Preview area */
+  .preview-area {
+    flex: 1; overflow-y: auto; padding: 24px;
+    background: var(--bg); display: flex; align-items: flex-start; justify-content: center;
+  }
+  .preview-card {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 24px; width: 100%; max-width: 800px;
+  }
+  .preview-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 6px; }
+  .preview-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 20px; }
+  .preview-placeholder {
+    height: 300px; display: flex; align-items: center; justify-content: center;
+    border: 1px dashed #2a2a2a; color: var(--text-muted); font-size: 13px;
+    flex-direction: column; gap: 8px;
+  }
+  .preview-placeholder-icon { font-size: 32px; }
+  .chart-container { position: relative; height: 320px; }
+  .table-preview { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .table-preview th { background: var(--surface2); padding: 10px 12px; text-align: left; font-family: 'Syne', sans-serif; font-size: 10px; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+  .table-preview td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .table-preview tr:hover td { background: var(--surface2); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+  .kpi-card { background: var(--surface2); border: 1px solid var(--border); padding: 18px; text-align: center; }
+  .kpi-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .kpi-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--gold); }
+
+  /* ─── DASHBOARD VIEW ─── */
+  #view-dashboard { display: none; height: 100%; overflow-y: auto; padding: 24px; }
+  #view-dashboard.show { display: block; }
+  .dash-view-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .dash-view-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
+  .dash-view-meta { font-size: 12px; color: var(--text-muted); }
+  .dash-view-actions { margin-left: auto; display: flex; gap: 10px; }
+  .dash-view-card { background: var(--surface); border: 1px solid var(--border); padding: 24px; max-width: 900px; }
+
+  /* ─── STATUS BAR ─── */
+  .status-bar {
+    height: 26px; background: var(--surface);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; padding: 0 16px; gap: 20px;
+    flex-shrink: 0;
+  }
+  .status-item { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
+  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+  .status-dot.off { background: var(--danger); }
+
+  /* ─── TOASTS ─── */
+  #toast-container { position: fixed; bottom: 40px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    padding: 12px 20px; background: var(--surface2); border: 1px solid var(--border);
+    border-left: 3px solid var(--gold);
+    font-size: 13px; max-width: 320px;
+    animation: slideIn 0.3s ease;
+  }
+  .toast.success { border-left-color: var(--success); }
+  .toast.error { border-left-color: var(--danger); }
+  @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ─── MODAL ─── */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500;
+    display: none; align-items: center; justify-content: center;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); padding: 28px; width: 380px; }
+  .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+  .modal-text { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
+  .btn-danger { background: var(--danger); border: none; color: #fff; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 9px 18px; cursor: pointer; }
+  .btn-cancel { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 9px 18px; cursor: pointer; }
+  .btn-cancel:hover { border-color: var(--gold); color: var(--text); }
+</style>
+</head>
+<body>
+
+<!-- ═══════════ LOGIN ═══════════ -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-grid"></div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-text">CATOSA</div>
+      <div class="login-sub">Plataforma de Tableros</div>
+    </div>
+
+    <!-- Step 1: select area -->
+    <div id="step-area">
+      <div class="login-title">Selecciona tu área</div>
+      <div class="login-desc">Elige el departamento al que perteneces para continuar.</div>
+      <div class="area-grid" id="area-grid"></div>
+    </div>
+
+    <!-- Step 2: password -->
+    <div id="step-pass" class="login-pass-section">
+      <button class="btn-back" onclick="backToAreas()">← Volver</button>
+      <div class="pass-label">Accediendo como</div>
+      <div class="pass-selected" id="selected-area-name"></div>
+      <input type="text" class="pass-input" id="user-name" placeholder="Tu nombre" style="margin-bottom:10px;">
+      <input type="password" class="pass-input" id="pass-input" placeholder="Contraseña del área" onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="login-error" id="login-error">Contraseña incorrecta</div>
+      <button class="btn-primary" style="margin-top:16px;" onclick="doLogin()">ENTRAR</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ APP ═══════════ -->
+<div id="app">
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="topbar-brand">CATOSA</div>
+    <div class="topbar-sep"></div>
+    <div class="topbar-area">Área: <span id="topbar-area-name">—</span></div>
+    <div class="topbar-actions">
+      <button class="btn-sm" onclick="newDashboard()">+ Nuevo Tablero</button>
+      <button class="logout-btn" onclick="logout()">Salir</button>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="main-body">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Mis Tableros</div>
+        <div id="sidebar-list"></div>
+      </div>
+      <button class="sidebar-new" onclick="newDashboard()">＋ Nuevo tablero</button>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content" id="content-area">
+
+      <!-- HOME VIEW -->
+      <div id="view-home">
+        <div class="home-greeting">
+          <h1 id="home-greeting-title">Buenos días</h1>
+          <p id="home-greeting-sub">Selecciona un tablero o crea uno nuevo</p>
+        </div>
+        <div class="dashboards-grid" id="dashboards-grid"></div>
+      </div>
+
+      <!-- BUILDER VIEW -->
+      <div id="view-builder">
+        <div class="builder-topbar">
+          <input type="text" class="builder-name-input" id="builder-name" placeholder="Nombre del tablero..." value="Mi Tablero">
+          <div class="builder-actions">
+            <button class="btn-sm outline" onclick="cancelBuilder()">Cancelar</button>
+            <button class="btn-sm" onclick="saveCurrentDashboard()">Guardar Tablero</button>
+          </div>
+        </div>
+        <div class="builder-body">
+          <!-- Config -->
+          <div class="config-panel">
+            <div class="config-section">
+              <div class="config-title">📊 Tipo de Gráfica</div>
+              <div class="chart-type-grid" id="chart-type-grid">
+                <button class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar',this)">
+                  <span class="ct-icon">📊</span>Barras
+                </button>
+                <button class="chart-type-btn" data-type="line" onclick="selectChartType('line',this)">
+                  <span class="ct-icon">📈</span>Línea
+                </button>
+                <button class="chart-type-btn" data-type="pie" onclick="selectChartType('pie',this)">
+                  <span class="ct-icon">🥧</span>Pastel
+                </button>
+                <button class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut',this)">
+                  <span class="ct-icon">🍩</span>Dona
+                </button>
+                <button class="chart-type-btn" data-type="table" onclick="selectChartType('table',this)">
+                  <span class="ct-icon">🗃️</span>Tabla
+                </button>
+                <button class="chart-type-btn" data-type="kpi" onclick="selectChartType('kpi',this)">
+                  <span class="ct-icon">🎯</span>KPI
+                </button>
+              </div>
+            </div>
+
+            <div class="config-section">
+              <div class="config-title">🗄️ Fuente de Datos</div>
+              <div class="config-label">Tabla del servidor</div>
+              <div id="tables-loading" class="loading-indicator"><span class="spinner"></span>Cargando tablas...</div>
+              <select class="config-select" id="table-select" style="display:none" onchange="loadTableColumns()">
+                <option value="">— Selecciona tabla —</option>
+              </select>
+              <div id="columns-loading" class="loading-indicator" style="display:none"><span class="spinner"></span>Cargando columnas...</div>
+            </div>
+
+            <div class="config-section" id="axes-section" style="display:none">
+              <div class="config-title">⚙️ Configuración</div>
+              <div id="axes-config"></div>
+            </div>
+
+            <div class="config-section" id="filter-section" style="display:none">
+              <div class="config-title">🔍 Filtro (opcional)</div>
+              <div class="config-label">Columna</div>
+              <select class="config-select" id="filter-col"></select>
+              <div class="config-label">Valor contiene</div>
+              <input type="text" class="config-input" id="filter-val" placeholder="Ej: MONTERREY" oninput="renderPreview()">
+            </div>
+
+            <div class="config-section">
+              <div class="config-title">📝 Descripción (opcional)</div>
+              <input type="text" class="config-input" id="builder-desc" placeholder="Describe este tablero...">
+            </div>
+          </div>
+
+          <!-- Preview -->
+          <div class="preview-area">
+            <div class="preview-card">
+              <div class="preview-title" id="preview-title">Mi Tablero</div>
+              <div class="preview-meta" id="preview-meta">Configura los datos para ver la vista previa</div>
+              <div id="preview-content">
+                <div class="preview-placeholder">
+                  <div class="preview-placeholder-icon">📊</div>
+                  <div>Selecciona una tabla y columnas para comenzar</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DASHBOARD VIEW (read mode) -->
+      <div id="view-dashboard">
+        <div class="dash-view-header">
+          <div>
+            <div class="dash-view-title" id="dv-title">—</div>
+            <div class="dash-view-meta" id="dv-meta">—</div>
+          </div>
+          <div class="dash-view-actions">
+            <button class="btn-sm outline" onclick="editCurrentDashboard()">✏️ Editar</button>
+            <button class="btn-sm outline" style="border-color:#e05555;color:#e05555;" onclick="confirmDelete()">🗑️ Eliminar</button>
+          </div>
+        </div>
+        <div class="dash-view-card">
+          <div id="dv-content"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar">
+    <div class="status-item"><div class="status-dot" id="status-dot"></div><span id="status-text">Conectando...</span></div>
+    <div class="status-item">Catosa API</div>
+    <div class="status-item" id="status-tables"></div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
+<!-- DELETE MODAL -->
+<div class="modal-overlay" id="delete-modal">
+  <div class="modal">
+    <div class="modal-title">Eliminar tablero</div>
+    <div class="modal-text">¿Estás seguro de que quieres eliminar este tablero? Esta acción no se puede deshacer.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-danger" onclick="deleteDashboard()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════
+const API = 'https://catosa-api-production.up.railway.app';
+
+const AREAS = [
+  { id: 'refacciones', name: 'Refacciones',  icon: '🔧', dept: 'Departamento', pass: 'ref2024' },
+  { id: 'servicio',    name: 'Servicio',      icon: '🛠️', dept: 'Departamento', pass: 'srv2024' },
+  { id: 'unidades',    name: 'Unidades',      icon: '🚛', dept: 'Departamento', pass: 'uni2024' },
+  { id: 'seminuevos',  name: 'Seminuevos',    icon: '🚗', dept: 'Departamento', pass: 'sem2024' },
+  { id: 'finanzas',    name: 'Finanzas',      icon: '💰', dept: 'Área',         pass: 'fin2024' },
+  { id: 'marketing',   name: 'Marketing',     icon: '📣', dept: 'Área',         pass: 'mkt2024' },
+];
+
+// ═══════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════
+let state = {
+  area: null,
+  userName: '',
+  dashboards: [],
+  currentDashId: null,
+  tables: [],
+  columns: [],
+  chartType: 'bar',
+  chartInstance: null,
+  rawData: null,
+  editingId: null,
+};
+
+// ═══════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', () => {
+  buildAreaGrid();
+  checkSession();
+});
+
+function buildAreaGrid() {
+  const grid = document.getElementById('area-grid');
+  grid.innerHTML = AREAS.map(a => `
+    <button class="area-btn" onclick="selectArea('${a.id}')">
+      <span class="area-icon">${a.icon}</span>
+      <span class="area-name">${a.name.toUpperCase()}</span>
+      <div class="area-dept">${a.dept}</div>
+    </button>
+  `).join('');
+}
+
+function checkSession() {
+  const saved = sessionStorage.getItem('catosa_session');
+  if (saved) {
+    const s = JSON.parse(saved);
+    state.area = AREAS.find(a => a.id === s.areaId);
+    state.userName = s.userName;
+    if (state.area) enterApp();
+  }
+}
+
+// ═══════════════════════════════════════
+//  LOGIN
+// ═══════════════════════════════════════
+let selectedArea = null;
+
+function selectArea(id) {
+  selectedArea = AREAS.find(a => a.id === id);
+  document.getElementById('selected-area-name').textContent = `${selectedArea.icon} ${selectedArea.name}`;
+  document.getElementById('step-area').style.display = 'none';
+  document.getElementById('step-pass').classList.add('show');
+  document.getElementById('pass-input').value = '';
+  document.getElementById('user-name').value = '';
+  document.getElementById('login-error').classList.remove('show');
+  setTimeout(() => document.getElementById('user-name').focus(), 100);
+}
+
+function backToAreas() {
+  document.getElementById('step-area').style.display = 'block';
+  document.getElementById('step-pass').classList.remove('show');
+}
+
+function doLogin() {
+  const pass = document.getElementById('pass-input').value;
+  const name = document.getElementById('user-name').value.trim();
+  const err = document.getElementById('login-error');
+
+  if (!name) {
+    document.getElementById('user-name').classList.add('error');
+    err.textContent = 'Escribe tu nombre';
+    err.classList.add('show');
+    return;
+  }
+  if (pass !== selectedArea.pass) {
+    document.getElementById('pass-input').classList.add('error');
+    err.textContent = 'Contraseña incorrecta';
+    err.classList.add('show');
+    return;
+  }
+
+  state.area = selectedArea;
+  state.userName = name;
+  sessionStorage.setItem('catosa_session', JSON.stringify({ areaId: selectedArea.id, userName: name }));
+  enterApp();
+}
+
+function logout() {
+  sessionStorage.removeItem('catosa_session');
+  state = { area: null, userName: '', dashboards: [], currentDashId: null, tables: [], columns: [], chartType: 'bar', chartInstance: null, rawData: null, editingId: null };
+  document.getElementById('app').classList.remove('show');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('step-area').style.display = 'block';
+  document.getElementById('step-pass').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+//  ENTER APP
+// ═══════════════════════════════════════
+function enterApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').classList.add('show');
+  document.getElementById('topbar-area-name').textContent = state.area.name;
+
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
+  document.getElementById('home-greeting-title').textContent = `${greeting}, ${state.userName} ${state.area.icon}`;
+  document.getElementById('home-greeting-sub').textContent = `Área ${state.area.name} · ${state.dashboards.length} tableros`;
+
+  checkServerStatus();
+  loadDashboards();
+  loadTablesFromServer();
+}
+
+// ═══════════════════════════════════════
+//  SERVER STATUS
+// ═══════════════════════════════════════
+async function checkServerStatus() {
+  const dot = document.getElementById('status-dot');
+  const txt = document.getElementById('status-text');
+  try {
+    const r = await fetch(`${API}/api/tables`, { signal: AbortSignal.timeout(5000) });
+    if (r.ok) {
+      dot.classList.remove('off');
+      txt.textContent = 'Conectado';
+    } else throw new Error();
+  } catch {
+    dot.classList.add('off');
+    txt.textContent = 'Sin conexión';
+  }
+}
+
+// ═══════════════════════════════════════
+//  DASHBOARDS (localStorage)
+// ═══════════════════════════════════════
+function loadDashboards() {
+  const key = `catosa_dash_${state.area.id}`;
+  state.dashboards = JSON.parse(localStorage.getItem(key) || '[]');
+  renderSidebar();
+  renderHomeGrid();
+}
+
+function saveDashboardsToStorage() {
+  const key = `catosa_dash_${state.area.id}`;
+  localStorage.setItem(key, JSON.stringify(state.dashboards));
+}
+
+function renderSidebar() {
+  const list = document.getElementById('sidebar-list');
+  if (!state.dashboards.length) {
+    list.innerHTML = '<div class="sidebar-item" style="cursor:default;opacity:0.4;font-size:11px;">Sin tableros aún</div>';
+    return;
+  }
+  list.innerHTML = state.dashboards.map(d => `
+    <div class="sidebar-item ${d.id === state.currentDashId ? 'active' : ''}" onclick="openDashboard('${d.id}')">
+      <span class="item-icon">${CHART_ICONS[d.chartType] || '📊'}</span>
+      <div>
+        <div class="item-name">${d.name}</div>
+        <div class="item-author">por ${d.author}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderHomeGrid() {
+  const grid = document.getElementById('dashboards-grid');
+  if (!state.dashboards.length) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📊</div>
+        <h3>Sin tableros todavía</h3>
+        <p>Crea tu primer tablero conectado a los datos de Catosa.</p>
+      </div>`;
+    return;
+  }
+  grid.innerHTML = state.dashboards.map(d => `
+    <div class="dash-card" onclick="openDashboard('${d.id}')">
+      <div class="dash-card-header">
+        <div class="dash-card-type">${CHART_ICONS[d.chartType] || '📊'}</div>
+        <button class="dash-card-menu" onclick="event.stopPropagation(); openDashboard('${d.id}')">›</button>
+      </div>
+      <div class="dash-card-name">${d.name}</div>
+      <div class="dash-card-info">
+        Tabla: <span>${d.tableName || '—'}</span> · por ${d.author}<br>
+        ${new Date(d.createdAt).toLocaleDateString('es-MX')}
+      </div>
+    </div>
+  `).join('');
+  document.getElementById('home-greeting-sub').textContent = `Área ${state.area.name} · ${state.dashboards.length} tablero${state.dashboards.length !== 1 ? 's' : ''}`;
+}
+
+const CHART_ICONS = { bar:'📊', line:'📈', pie:'🥧', doughnut:'🍩', table:'🗃️', kpi:'🎯' };
+
+// ═══════════════════════════════════════
+//  VIEWS
+// ═══════════════════════════════════════
+function showView(name) {
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-builder').classList.remove('show');
+  document.getElementById('view-dashboard').classList.remove('show');
+  if (name === 'home') document.getElementById('view-home').style.display = 'block';
+  if (name === 'builder') document.getElementById('view-builder').classList.add('show');
+  if (name === 'dashboard') document.getElementById('view-dashboard').classList.add('show');
+}
+
+// ═══════════════════════════════════════
+//  TABLES FROM SERVER
+// ═══════════════════════════════════════
+async function loadTablesFromServer() {
+  try {
+    const r = await fetch(`${API}/api/tables`);
+    const data = await r.json();
+    state.tables = data.tables || [];
+    document.getElementById('status-tables').textContent = `${state.tables.length} tablas disponibles`;
+
+    // populate builder select
+    const sel = document.getElementById('table-select');
+    sel.innerHTML = '<option value="">— Selecciona tabla —</option>' +
+      state.tables.map(t => `<option value="${t}">${t}</option>`).join('');
+    document.getElementById('tables-loading').style.display = 'none';
+    sel.style.display = 'block';
+  } catch {
+    document.getElementById('tables-loading').innerHTML = '<span style="color:var(--danger);font-size:12px;">⚠️ No se pudo conectar al servidor</span>';
+  }
+}
+
+async function loadTableColumns() {
+  const tbl = document.getElementById('table-select').value;
+  if (!tbl) {
+    document.getElementById('axes-section').style.display = 'none';
+    document.getElementById('filter-section').style.display = 'none';
+    state.columns = [];
+    state.rawData = null;
+    return;
+  }
+
+  document.getElementById('columns-loading').style.display = 'block';
+  document.getElementById('axes-section').style.display = 'none';
+  document.getElementById('filter-section').style.display = 'none';
+
+  try {
+    const r = await fetch(`${API}/api/table/${encodeURIComponent(tbl)}?limit=200`);
+    const data = await r.json();
+    state.rawData = data.rows || [];
+    state.columns = data.columns || (state.rawData.length ? Object.keys(state.rawData[0]) : []);
+
+    document.getElementById('columns-loading').style.display = 'none';
+    renderAxesConfig();
+    renderFilterConfig();
+    renderPreview();
+  } catch {
+    document.getElementById('columns-loading').innerHTML = '<span style="color:var(--danger);font-size:12px;">Error al cargar datos</span>';
+  }
+}
+
+function renderAxesConfig() {
+  const cols = state.columns;
+  const section = document.getElementById('axes-section');
+  const cfg = document.getElementById('axes-config');
+  section.style.display = 'block';
+
+  if (state.chartType === 'kpi') {
+    cfg.innerHTML = `
+      <div class="config-label">Columna numérica (agregar suma)</div>
+      <select class="config-select" id="ax-y" onchange="renderPreview()">
+        ${cols.map(c => `<option value="${c}">${c}</option>`).join('')}
+      </select>
+      <div class="config-label">Agrupar por</div>
+      <select class="config-select" id="ax-x" onchange="renderPreview()">
+        <option value="">— Sin agrupar —</option>
+        ${cols.map(c => `<option value="${c}">${c}</option>`).join('')}
+      </select>`;
+  } else if (state.chartType === 'table') {
+    cfg.innerHTML = `
+      <div class="config-label">Columnas a mostrar</div>
+      <div style="max-height:160px;overflow-y:auto;border:1px solid var(--border);padding:8px;background:var(--surface2);">
+        ${cols.map((c,i) => `
+          <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;font-size:12px;">
+            <input type="checkbox" value="${c}" ${i<6?'checked':''} onchange="renderPreview()" style="accent-color:var(--gold);">
+            ${c}
+          </label>`).join('')}
+      </div>`;
+  } else {
+    cfg.innerHTML = `
+      <div class="config-label">Eje X (categoría)</div>
+      <select class="config-select" id="ax-x" onchange="renderPreview()">
+        ${cols.map(c => `<option value="${c}">${c}</option>`).join('')}
+      </select>
+      <div class="config-label">Eje Y (valor numérico)</div>
+      <select class="config-select" id="ax-y" onchange="renderPreview()">
+        ${cols.map(c => `<option value="${c}">${c}</option>`).join('')}
+      </select>
+      <div class="config-label">Máx. registros</div>
+      <select class="config-select" id="ax-limit" onchange="renderPreview()">
+        <option value="10">10</option>
+        <option value="20" selected>20</option>
+        <option value="50">50</option>
+        <option value="100">Todos</option>
+      </select>`;
+  }
+}
+
+function renderFilterConfig() {
+  const cols = state.columns;
+  const section = document.getElementById('filter-section');
+  section.style.display = 'block';
+  const sel = document.getElementById('filter-col');
+  sel.innerHTML = `<option value="">— Sin filtro —</option>` + cols.map(c => `<option value="${c}">${c}</option>`).join('');
+  sel.onchange = () => renderPreview();
+}
+
+// ═══════════════════════════════════════
+//  BUILDER ACTIONS
+// ═══════════════════════════════════════
+function selectChartType(type, btn) {
+  state.chartType = type;
+  document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (state.columns.length) renderAxesConfig();
+  renderPreview();
+}
+
+function newDashboard() {
+  state.editingId = null;
+  document.getElementById('builder-name').value = 'Mi Tablero';
+  document.getElementById('builder-desc').value = '';
+  document.getElementById('table-select').value = '';
+  document.getElementById('axes-section').style.display = 'none';
+  document.getElementById('filter-section').style.display = 'none';
+  document.getElementById('filter-col').innerHTML = '';
+  document.getElementById('filter-val').value = '';
+  state.columns = [];
+  state.rawData = null;
+  state.chartType = 'bar';
+  document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('[data-type="bar"]').classList.add('active');
+  document.getElementById('preview-content').innerHTML = `
+    <div class="preview-placeholder">
+      <div class="preview-placeholder-icon">📊</div>
+      <div>Selecciona una tabla y columnas para comenzar</div>
+    </div>`;
+  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
+  showView('builder');
+  state.currentDashId = null;
+  renderSidebar();
+}
+
+function cancelBuilder() {
+  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
+  showView('home');
+  renderHomeGrid();
+}
+
+// ═══════════════════════════════════════
+//  PREVIEW RENDERER
+// ═══════════════════════════════════════
+function renderPreview() {
+  if (!state.rawData || !state.rawData.length) return;
+
+  const name = document.getElementById('builder-name').value || 'Sin título';
+  const tbl = document.getElementById('table-select').value;
+  document.getElementById('preview-title').textContent = name;
+  document.getElementById('preview-meta').textContent = `Tabla: ${tbl} · ${state.rawData.length} registros cargados`;
+
+  // Apply filter
+  const filterCol = document.getElementById('filter-col')?.value;
+  const filterVal = document.getElementById('filter-val')?.value?.trim()?.toLowerCase();
+  let rows = state.rawData;
+  if (filterCol && filterVal) {
+    rows = rows.filter(r => String(r[filterCol] || '').toLowerCase().includes(filterVal));
+  }
+
+  if (state.chartType === 'table') renderTablePreview(rows);
+  else if (state.chartType === 'kpi') renderKPIPreview(rows);
+  else renderChartPreview(rows);
+}
+
+function renderTablePreview(rows) {
+  const checkboxes = document.querySelectorAll('#axes-config input[type=checkbox]:checked');
+  const cols = Array.from(checkboxes).map(c => c.value);
+  if (!cols.length) return;
+
+  const limit = 30;
+  const shown = rows.slice(0, limit);
+  document.getElementById('preview-content').innerHTML = `
+    <div style="overflow-x:auto;">
+      <table class="table-preview">
+        <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+        <tbody>
+          ${shown.map(r => `<tr>${cols.map(c=>`<td>${r[c] ?? '—'}</td>`).join('')}</tr>`).join('')}
+        </tbody>
+      </table>
+      ${rows.length > limit ? `<div style="padding:8px 12px;font-size:11px;color:var(--text-muted);">Mostrando ${limit} de ${rows.length} registros</div>` : ''}
+    </div>`;
+}
+
+function renderKPIPreview(rows) {
+  const yCol = document.getElementById('ax-y')?.value;
+  const xCol = document.getElementById('ax-x')?.value;
+  if (!yCol) return;
+
+  let kpis = [];
+  if (xCol) {
+    // group by xCol, sum yCol
+    const groups = {};
+    rows.forEach(r => {
+      const k = r[xCol] ?? 'N/A';
+      const v = parseFloat(r[yCol]) || 0;
+      groups[k] = (groups[k] || 0) + v;
+    });
+    kpis = Object.entries(groups).slice(0, 8).map(([k, v]) => ({ label: k, value: v }));
+  } else {
+    const total = rows.reduce((s, r) => s + (parseFloat(r[yCol]) || 0), 0);
+    kpis = [{ label: yCol, value: total }];
+  }
+
+  document.getElementById('preview-content').innerHTML = `
+    <div class="kpi-grid">
+      ${kpis.map(k => `
+        <div class="kpi-card">
+          <div class="kpi-label">${k.label}</div>
+          <div class="kpi-value">${formatNum(k.value)}</div>
+        </div>`).join('')}
+    </div>`;
+}
+
+function renderChartPreview(rows) {
+  const xCol = document.getElementById('ax-x')?.value;
+  const yCol = document.getElementById('ax-y')?.value;
+  const limit = parseInt(document.getElementById('ax-limit')?.value || 20);
+  if (!xCol || !yCol) return;
+
+  // Aggregate: group by xCol, sum yCol
+  const groups = {};
+  rows.forEach(r => {
+    const k = String(r[xCol] ?? 'N/A').substring(0, 20);
+    const v = parseFloat(r[yCol]) || 0;
+    groups[k] = (groups[k] || 0) + v;
+  });
+  let entries = Object.entries(groups).sort((a, b) => b[1] - a[1]).slice(0, limit);
+  const labels = entries.map(e => e[0]);
+  const values = entries.map(e => e[1]);
+
+  document.getElementById('preview-content').innerHTML = '<div class="chart-container"><canvas id="main-chart"></canvas></div>';
+
+  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
+
+  const ctx = document.getElementById('main-chart').getContext('2d');
+  const goldPalette = [
+    '#c8a84b','#e2c46e','#a08030','#f0d88a','#7a6020',
+    '#dab85e','#b89038','#6a5018','#eed070','#907028'
+  ];
+
+  const isPie = state.chartType === 'pie' || state.chartType === 'doughnut';
+
+  state.chartInstance = new Chart(ctx, {
+    type: state.chartType,
+    data: {
+      labels,
+      datasets: [{
+        label: yCol,
+        data: values,
+        backgroundColor: isPie ? goldPalette.slice(0, labels.length) : 'rgba(200,168,75,0.7)',
+        borderColor: isPie ? goldPalette.slice(0, labels.length) : '#c8a84b',
+        borderWidth: 1,
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: '#e8e4d8', font: { family: 'DM Sans' } } },
+        tooltip: { backgroundColor: '#1f1f1f', titleColor: '#c8a84b', bodyColor: '#e8e4d8' }
+      },
+      scales: isPie ? {} : {
+        x: { ticks: { color: '#888', maxRotation: 40 }, grid: { color: '#2a2a2a' } },
+        y: { ticks: { color: '#888' }, grid: { color: '#2a2a2a' } }
+      }
+    }
+  });
+}
+
+function formatNum(n) {
+  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+  return n.toLocaleString('es-MX', { maximumFractionDigits: 1 });
+}
+
+// ═══════════════════════════════════════
+//  SAVE DASHBOARD
+// ═══════════════════════════════════════
+function saveCurrentDashboard() {
+  const name = document.getElementById('builder-name').value.trim();
+  const tbl = document.getElementById('table-select').value;
+  const desc = document.getElementById('builder-desc').value.trim();
+
+  if (!name) { toast('Ponle un nombre al tablero', 'error'); return; }
+  if (!tbl) { toast('Selecciona una tabla de datos', 'error'); return; }
+
+  const xEl = document.getElementById('ax-x');
+  const yEl = document.getElementById('ax-y');
+  const limitEl = document.getElementById('ax-limit');
+  const filterColEl = document.getElementById('filter-col');
+  const filterValEl = document.getElementById('filter-val');
+
+  const checkboxes = document.querySelectorAll('#axes-config input[type=checkbox]:checked');
+  const tableCols = Array.from(checkboxes).map(c => c.value);
+
+  const config = {
+    chartType: state.chartType,
+    tableName: tbl,
+    axisX: xEl?.value || '',
+    axisY: yEl?.value || '',
+    limit: limitEl?.value || '20',
+    filterCol: filterColEl?.value || '',
+    filterVal: filterValEl?.value || '',
+    tableCols,
+  };
+
+  const now = new Date().toISOString();
+
+  if (state.editingId) {
+    const idx = state.dashboards.findIndex(d => d.id === state.editingId);
+    if (idx >= 0) {
+      state.dashboards[idx] = { ...state.dashboards[idx], name, desc, config, updatedAt: now };
+    }
+    state.currentDashId = state.editingId;
+    toast('Tablero actualizado ✓', 'success');
+  } else {
+    const dash = {
+      id: `d_${Date.now()}`,
+      name, desc,
+      author: state.userName,
+      createdAt: now,
+      updatedAt: now,
+      config,
+      chartType: state.chartType,
+      tableName: tbl,
+    };
+    state.dashboards.unshift(dash);
+    state.currentDashId = dash.id;
+    toast('Tablero guardado ✓', 'success');
+  }
+
+  saveDashboardsToStorage();
+  renderSidebar();
+  renderHomeGrid();
+
+  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
+  openDashboard(state.currentDashId);
+}
+
+// ═══════════════════════════════════════
+//  OPEN / EDIT / DELETE DASHBOARD
+// ═══════════════════════════════════════
+async function openDashboard(id) {
+  state.currentDashId = id;
+  const dash = state.dashboards.find(d => d.id === id);
+  if (!dash) return;
+
+  renderSidebar();
+  showView('dashboard');
+
+  document.getElementById('dv-title').textContent = dash.name;
+  document.getElementById('dv-meta').textContent = `Creado por ${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · Tabla: ${dash.tableName}`;
+  document.getElementById('dv-content').innerHTML = '<div class="loading-indicator"><span class="spinner"></span>Cargando datos...</div>';
+
+  const cfg = dash.config;
+
+  try {
+    const r = await fetch(`${API}/api/table/${encodeURIComponent(cfg.tableName)}?limit=500`);
+    const data = await r.json();
+    let rows = data.rows || [];
+
+    if (cfg.filterCol && cfg.filterVal) {
+      rows = rows.filter(r2 => String(r2[cfg.filterCol] || '').toLowerCase().includes(cfg.filterVal.toLowerCase()));
+    }
+
+    if (cfg.chartType === 'table') {
+      const cols = cfg.tableCols.length ? cfg.tableCols : Object.keys(rows[0] || {});
+      const shown = rows.slice(0, 50);
+      document.getElementById('dv-content').innerHTML = `
+        <div style="overflow-x:auto;">
+          <table class="table-preview">
+            <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+            <tbody>${shown.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??'—'}</td>`).join('')}</tr>`).join('')}</tbody>
+          </table>
+          ${rows.length>50?`<div style="padding:8px 12px;font-size:11px;color:var(--text-muted);">Mostrando 50 de ${rows.length}</div>`:''}
+        </div>`;
+    } else if (cfg.chartType === 'kpi') {
+      let kpis = [];
+      if (cfg.axisX) {
+        const groups = {};
+        rows.forEach(row => {
+          const k = row[cfg.axisX] ?? 'N/A';
+          groups[k] = (groups[k] || 0) + (parseFloat(row[cfg.axisY]) || 0);
+        });
+        kpis = Object.entries(groups).slice(0, 8).map(([k, v]) => ({ label: k, value: v }));
+      } else {
+        const total = rows.reduce((s, row) => s + (parseFloat(row[cfg.axisY]) || 0), 0);
+        kpis = [{ label: cfg.axisY, value: total }];
+      }
+      document.getElementById('dv-content').innerHTML = `
+        <div class="kpi-grid">
+          ${kpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value">${formatNum(k.value)}</div></div>`).join('')}
+        </div>`;
+    } else {
+      // Chart
+      const lim = parseInt(cfg.limit) || 20;
+      const groups = {};
+      rows.forEach(row => {
+        const k = String(row[cfg.axisX] ?? 'N/A').substring(0, 20);
+        groups[k] = (groups[k] || 0) + (parseFloat(row[cfg.axisY]) || 0);
+      });
+      const entries = Object.entries(groups).sort((a,b)=>b[1]-a[1]).slice(0,lim);
+      const labels = entries.map(e=>e[0]);
+      const values = entries.map(e=>e[1]);
+
+      document.getElementById('dv-content').innerHTML = '<div class="chart-container" style="height:350px;"><canvas id="dv-chart"></canvas></div>';
+
+      const ctx = document.getElementById('dv-chart').getContext('2d');
+      const gp = ['#c8a84b','#e2c46e','#a08030','#f0d88a','#7a6020','#dab85e','#b89038','#6a5018'];
+      const isPie = cfg.chartType==='pie'||cfg.chartType==='doughnut';
+
+      new Chart(ctx, {
+        type: cfg.chartType,
+        data: {
+          labels,
+          datasets: [{
+            label: cfg.axisY,
+            data: values,
+            backgroundColor: isPie ? gp.slice(0,labels.length) : 'rgba(200,168,75,0.7)',
+            borderColor: isPie ? gp.slice(0,labels.length) : '#c8a84b',
+            borderWidth: 1, tension: 0.3,
+          }]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          plugins:{
+            legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans'}}},
+            tooltip:{backgroundColor:'#1f1f1f',titleColor:'#c8a84b',bodyColor:'#e8e4d8'}
+          },
+          scales: isPie ? {} : {
+            x:{ticks:{color:'#888',maxRotation:40},grid:{color:'#2a2a2a'}},
+            y:{ticks:{color:'#888'},grid:{color:'#2a2a2a'}}
+          }
+        }
+      });
+    }
+  } catch {
+    document.getElementById('dv-content').innerHTML = '<div style="color:var(--danger);padding:20px;font-size:13px;">⚠️ No se pudo cargar los datos del servidor.</div>';
+  }
+}
+
+function editCurrentDashboard() {
+  const dash = state.dashboards.find(d => d.id === state.currentDashId);
+  if (!dash) return;
+  state.editingId = dash.id;
+  const cfg = dash.config;
+
+  document.getElementById('builder-name').value = dash.name;
+  document.getElementById('builder-desc').value = dash.desc || '';
+  state.chartType = cfg.chartType;
+  document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-type="${cfg.chartType}"]`)?.classList.add('active');
+
+  showView('builder');
+
+  // Load table data then restore config
+  document.getElementById('table-select').value = cfg.tableName;
+  loadTableColumns().then(() => {
+    setTimeout(() => {
+      const xEl = document.getElementById('ax-x');
+      const yEl = document.getElementById('ax-y');
+      const limitEl = document.getElementById('ax-limit');
+      if (xEl) xEl.value = cfg.axisX;
+      if (yEl) yEl.value = cfg.axisY;
+      if (limitEl) limitEl.value = cfg.limit;
+      const filterColEl = document.getElementById('filter-col');
+      const filterValEl = document.getElementById('filter-val');
+      if (filterColEl) filterColEl.value = cfg.filterCol || '';
+      if (filterValEl) filterValEl.value = cfg.filterVal || '';
+
+      if (cfg.chartType === 'table' && cfg.tableCols?.length) {
+        document.querySelectorAll('#axes-config input[type=checkbox]').forEach(cb => {
+          cb.checked = cfg.tableCols.includes(cb.value);
+        });
+      }
+      renderPreview();
+    }, 200);
+  });
+}
+
+function confirmDelete() {
+  document.getElementById('delete-modal').classList.add('show');
+}
+function closeModal() {
+  document.getElementById('delete-modal').classList.remove('show');
+}
+function deleteDashboard() {
+  state.dashboards = state.dashboards.filter(d => d.id !== state.currentDashId);
+  saveDashboardsToStorage();
+  closeModal();
+  state.currentDashId = null;
+  renderSidebar();
+  renderHomeGrid();
+  showView('home');
+  toast('Tablero eliminado', 'error');
+}
+
+// ═══════════════════════════════════════
+//  TOAST
+// ═══════════════════════════════════════
+function toast(msg, type = '') {
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.textContent = msg;
+  document.getElementById('toast-container').appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+// Sync builder name to preview title
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('builder-name')?.addEventListener('input', () => {
+    document.getElementById('preview-title').textContent = document.getElementById('builder-name').value || 'Sin título';
+  });
+});
+</script>
+</body>
+</html>

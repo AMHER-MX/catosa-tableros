@@ -12,105 +12,55 @@
     --bg: #0d0d0d;
     --surface: #161616;
     --surface2: #1f1f1f;
+    --surface3: #252525;
     --border: #2a2a2a;
     --gold: #c8a84b;
     --gold-light: #e2c46e;
-    --gold-dim: rgba(200,168,75,0.15);
+    --gold-dim: rgba(200,168,75,0.12);
     --text: #e8e4d8;
     --text-muted: #888;
     --danger: #e05555;
     --success: #4caf7d;
     --blue: #5b9cf6;
+    --info: #6ab4f5;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-
-  /* ─── SCROLLBAR ─── */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
 
   /* ─── LOGIN ─── */
-  #login-screen {
-    position: fixed; inset: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--bg);
-  }
-  .login-bg {
-    position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 30% 20%, rgba(200,168,75,0.06) 0%, transparent 60%),
-                radial-gradient(ellipse at 80% 80%, rgba(200,168,75,0.04) 0%, transparent 50%);
-  }
-  .login-grid {
-    position: absolute; inset: 0; opacity: 0.04;
-    background-image: linear-gradient(var(--gold) 1px, transparent 1px),
-                      linear-gradient(90deg, var(--gold) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-  .login-card {
-    position: relative; z-index: 1;
-    width: 420px; padding: 48px 40px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-top: 2px solid var(--gold);
-  }
+  #login-screen { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: var(--bg); }
+  .login-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, rgba(200,168,75,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(200,168,75,0.04) 0%, transparent 50%); }
+  .login-grid { position: absolute; inset: 0; opacity: 0.035; background-image: linear-gradient(var(--gold) 1px, transparent 1px), linear-gradient(90deg, var(--gold) 1px, transparent 1px); background-size: 60px 60px; }
+  .login-card { position: relative; z-index: 1; width: 420px; padding: 48px 40px; background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); }
   .login-logo { margin-bottom: 32px; }
   .login-logo img { height: 36px; object-fit: contain; }
-  .login-logo-text { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); letter-spacing: 3px; }
-  .login-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; margin-top: 2px; }
-  .login-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-  .login-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; line-height: 1.5; }
-  .area-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 28px; }
-  .area-btn {
-    padding: 14px 16px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    color: var(--text);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px; font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: left;
-    position: relative; overflow: hidden;
-  }
-  .area-btn::before {
-    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-    background: var(--gold); opacity: 0; transition: opacity 0.2s;
-  }
+  .login-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; margin-top: 6px; }
+  .login-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+  .login-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.5; }
+  .area-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+  .area-btn { padding: 14px 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: left; position: relative; overflow: hidden; }
+  .area-btn::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold); opacity: 0; transition: opacity 0.2s; }
   .area-btn:hover { border-color: var(--gold); background: var(--gold-dim); }
   .area-btn:hover::before { opacity: 1; }
-  .area-btn .area-icon { font-size: 18px; display: block; margin-bottom: 6px; }
-  .area-btn .area-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 1px; }
+  .area-btn .area-icon { font-size: 18px; display: block; margin-bottom: 5px; }
+  .area-btn .area-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; }
   .area-btn .area-dept { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
   .login-pass-section { display: none; }
   .login-pass-section.show { display: block; }
-  .pass-label { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-  .pass-selected { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--gold); margin-bottom: 16px; }
-  .pass-input {
-    width: 100%; padding: 12px 16px;
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
-    outline: none; transition: border-color 0.2s; margin-bottom: 12px;
-  }
+  .pass-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+  .pass-selected { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--gold); margin-bottom: 14px; }
+  .pass-input { width: 100%; padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; margin-bottom: 10px; }
   .pass-input:focus { border-color: var(--gold); }
   .pass-input.error { border-color: var(--danger); }
-  .btn-primary {
-    width: 100%; padding: 13px;
-    background: var(--gold); border: none;
-    color: #000; font-family: 'Syne', sans-serif; font-weight: 700;
-    font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
-    cursor: pointer; transition: background 0.2s;
-  }
+  .btn-primary { width: 100%; padding: 13px; background: var(--gold); border: none; color: #000; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
   .btn-primary:hover { background: var(--gold-light); }
-  .btn-back {
-    background: none; border: none; color: var(--text-muted);
-    font-family: 'DM Sans', sans-serif; font-size: 12px;
-    cursor: pointer; padding: 8px 0; margin-bottom: 16px;
-    display: flex; align-items: center; gap: 6px;
-  }
+  .btn-back { background: none; border: none; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; padding: 6px 0; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
   .btn-back:hover { color: var(--text); }
-  .login-error { font-size: 12px; color: var(--danger); margin-top: 8px; display: none; }
+  .login-error { font-size: 12px; color: var(--danger); margin-top: 6px; display: none; }
   .login-error.show { display: block; }
 
   /* ─── MAIN APP ─── */
@@ -118,272 +68,214 @@
   #app.show { display: flex; }
 
   /* TOP BAR */
-  .topbar {
-    height: 52px; background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; padding: 0 20px; gap: 16px;
-    flex-shrink: 0;
-  }
-  .topbar-brand { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; color: var(--gold); letter-spacing: 2px; }
+  .topbar { height: 50px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 18px; gap: 14px; flex-shrink: 0; }
+  .topbar-brand { display: flex; align-items: center; gap: 10px; }
   .topbar-sep { width: 1px; height: 20px; background: var(--border); }
   .topbar-area { font-size: 12px; color: var(--text-muted); font-weight: 500; }
   .topbar-area span { color: var(--text); font-weight: 500; }
-  .topbar-actions { margin-left: auto; display: flex; gap: 10px; align-items: center; }
-  .btn-sm {
-    padding: 7px 16px;
-    background: var(--gold); border: none;
-    color: #000; font-family: 'Syne', sans-serif;
-    font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-    text-transform: uppercase; cursor: pointer; transition: background 0.2s;
-  }
+  .topbar-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .btn-sm { padding: 7px 14px; background: var(--gold); border: none; color: #000; font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
   .btn-sm:hover { background: var(--gold-light); }
-  .btn-sm.outline {
-    background: transparent; border: 1px solid var(--border);
-    color: var(--text-muted);
-  }
+  .btn-sm.outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
   .btn-sm.outline:hover { border-color: var(--gold); color: var(--text); background: var(--gold-dim); }
-  .logout-btn {
-    background: none; border: none; color: var(--text-muted);
-    font-size: 12px; cursor: pointer; padding: 6px 10px;
-    font-family: 'DM Sans', sans-serif;
-  }
+  .btn-sm.danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
+  .btn-sm.danger:hover { background: rgba(224,85,85,0.1); }
+  .logout-btn { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; padding: 6px 8px; font-family: 'DM Sans', sans-serif; }
   .logout-btn:hover { color: var(--text); }
 
   /* MAIN BODY */
   .main-body { display: flex; flex: 1; overflow: hidden; }
 
   /* SIDEBAR */
-  .sidebar {
-    width: 220px; background: var(--surface);
-    border-right: 1px solid var(--border);
-    display: flex; flex-direction: column;
-    flex-shrink: 0;
-  }
-  .sidebar-section { padding: 16px 14px 8px; }
+  .sidebar { width: 210px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+  .sidebar-section { padding: 14px 12px 6px; }
   .sidebar-label { font-size: 10px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-  .sidebar-item {
-    display: flex; align-items: center; gap: 10px;
-    padding: 9px 10px; border-radius: 4px;
-    font-size: 12px; cursor: pointer; color: var(--text-muted);
-    transition: all 0.15s; margin-bottom: 2px;
-    border: 1px solid transparent;
-  }
+  .sidebar-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 3px; font-size: 12px; cursor: pointer; color: var(--text-muted); transition: all 0.15s; margin-bottom: 2px; border: 1px solid transparent; }
   .sidebar-item:hover { background: var(--surface2); color: var(--text); }
   .sidebar-item.active { background: var(--gold-dim); color: var(--gold); border-color: rgba(200,168,75,0.2); }
-  .sidebar-item .item-icon { font-size: 14px; width: 18px; text-align: center; }
-  .sidebar-item .item-name { flex: 1; }
+  .sidebar-item .item-icon { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+  .sidebar-item .item-info { flex: 1; min-width: 0; }
+  .sidebar-item .item-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .sidebar-item .item-author { font-size: 10px; color: var(--text-muted); }
-  .sidebar-divider { height: 1px; background: var(--border); margin: 8px 14px; }
-  .sidebar-new {
-    margin: 8px 14px 14px;
-    padding: 10px; border: 1px dashed #333;
-    background: none; color: var(--text-muted);
-    font-family: 'DM Sans', sans-serif; font-size: 12px;
-    cursor: pointer; transition: all 0.2s; width: calc(100% - 28px);
-    text-align: center;
-  }
+  .sidebar-divider { height: 1px; background: var(--border); margin: 6px 12px; }
+  .sidebar-new { margin: 6px 12px 12px; padding: 9px; border: 1px dashed #333; background: none; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; width: calc(100% - 24px); text-align: center; }
   .sidebar-new:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
 
-  /* CONTENT AREA */
+  /* CONTENT */
   .content { flex: 1; overflow-y: auto; background: var(--bg); }
 
-  /* ─── HOME VIEW ─── */
-  #view-home { padding: 32px; }
-  .home-greeting { margin-bottom: 32px; }
-  .home-greeting h1 { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 4px; }
-  .home-greeting p { color: var(--text-muted); font-size: 14px; }
-  .dashboards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
-  .dash-card {
-    background: var(--surface); border: 1px solid var(--border);
-    padding: 20px; cursor: pointer; transition: all 0.2s;
-    position: relative; overflow: hidden;
-  }
-  .dash-card::after {
-    content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: var(--gold); transform: scaleX(0); transition: transform 0.2s;
-  }
+  /* HOME */
+  #view-home { padding: 28px; }
+  .home-greeting { margin-bottom: 28px; }
+  .home-greeting h1 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 4px; }
+  .home-greeting p { color: var(--text-muted); font-size: 13px; }
+  .dashboards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+  .dash-card { background: var(--surface); border: 1px solid var(--border); padding: 18px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
+  .dash-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transition: transform 0.2s; }
   .dash-card:hover { border-color: #333; transform: translateY(-2px); }
   .dash-card:hover::after { transform: scaleX(1); }
-  .dash-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-  .dash-card-type { font-size: 20px; }
-  .dash-card-menu { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; padding: 0 4px; }
-  .dash-card-menu:hover { color: var(--text); }
-  .dash-card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-  .dash-card-info { font-size: 11px; color: var(--text-muted); }
+  .dash-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .dash-card-icon { font-size: 22px; }
+  .dash-card-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+  .badge { font-size: 9px; padding: 2px 6px; border: 1px solid var(--border); color: var(--text-muted); background: var(--surface2); letter-spacing: 0.5px; }
+  .dash-card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .dash-card-info { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
   .dash-card-info span { color: var(--gold); }
   .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; }
-  .empty-state-icon { font-size: 48px; margin-bottom: 16px; }
-  .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 18px; margin-bottom: 8px; }
+  .empty-state-icon { font-size: 48px; margin-bottom: 14px; }
+  .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 18px; margin-bottom: 6px; }
   .empty-state p { color: var(--text-muted); font-size: 13px; }
 
-  /* ─── BUILDER VIEW ─── */
+  /* ─── BUILDER ─── */
   #view-builder { display: none; height: 100%; overflow: hidden; flex-direction: column; }
   #view-builder.show { display: flex; }
-  .builder-topbar {
-    padding: 14px 24px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 16px;
-    background: var(--surface); flex-shrink: 0;
-  }
-  .builder-name-input {
-    flex: 1; max-width: 300px;
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text); font-family: 'Syne', sans-serif;
-    font-size: 16px; font-weight: 700; padding: 8px 14px; outline: none;
-    transition: border-color 0.2s;
-  }
+  .builder-topbar { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; background: var(--surface); flex-shrink: 0; }
+  .builder-name-input { flex: 1; max-width: 280px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; padding: 7px 12px; outline: none; transition: border-color 0.2s; }
   .builder-name-input:focus { border-color: var(--gold); }
-  .builder-actions { margin-left: auto; display: flex; gap: 10px; }
+  .builder-actions { margin-left: auto; display: flex; gap: 8px; }
   .builder-body { display: flex; flex: 1; overflow: hidden; }
 
+  /* Widgets panel */
+  .widgets-panel { width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+  .widget-item { padding: 10px 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
+  .widget-item:hover { background: var(--surface2); }
+  .widget-item.active { background: var(--gold-dim); border-left: 2px solid var(--gold); }
+  .widget-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .widget-item-icon { font-size: 14px; }
+  .widget-item-name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; flex: 1; }
+  .widget-item-del { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 2px 4px; }
+  .widget-item-del:hover { color: var(--danger); }
+  .widget-item-sub { font-size: 10px; color: var(--text-muted); }
+  .widget-add-btn { margin: 10px; padding: 10px; border: 1px dashed #333; background: none; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .widget-add-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
   /* Config panel */
-  .config-panel {
-    width: 280px; background: var(--surface);
-    border-right: 1px solid var(--border);
-    overflow-y: auto; flex-shrink: 0;
-  }
-  .config-section { padding: 16px; border-bottom: 1px solid var(--border); }
-  .config-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; font-weight: 600; }
-  .config-select, .config-input {
-    width: 100%; padding: 9px 12px;
-    background: var(--surface2); border: 1px solid var(--border);
-    color: var(--text); font-family: 'DM Sans', sans-serif;
-    font-size: 13px; outline: none; transition: border-color 0.2s;
-    margin-bottom: 10px; cursor: pointer;
-  }
+  .config-panel { width: 260px; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; flex-shrink: 0; }
+  .config-section { padding: 14px 14px; border-bottom: 1px solid var(--border); }
+  .config-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+  .config-select, .config-input { width: 100%; padding: 8px 10px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; transition: border-color 0.2s; margin-bottom: 8px; cursor: pointer; }
   .config-select:focus, .config-input:focus { border-color: var(--gold); }
   .config-select option { background: var(--surface2); }
-  .config-label { font-size: 11px; color: var(--text-muted); margin-bottom: 5px; font-weight: 500; }
-  .chart-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .chart-type-btn {
-    padding: 10px 6px; background: var(--surface2);
-    border: 1px solid var(--border); cursor: pointer;
-    color: var(--text-muted); font-size: 10px; text-align: center;
-    transition: all 0.15s; font-family: 'DM Sans', sans-serif;
-  }
+  .config-label { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .chart-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .chart-type-btn { padding: 9px 5px; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; color: var(--text-muted); font-size: 9px; text-align: center; transition: all 0.15s; font-family: 'DM Sans', sans-serif; letter-spacing: 0.3px; }
   .chart-type-btn:hover { border-color: var(--gold); color: var(--text); }
   .chart-type-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
-  .chart-type-btn .ct-icon { font-size: 20px; display: block; margin-bottom: 4px; }
-  .loading-indicator { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; }
-  .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 8px; vertical-align: middle; }
+  .chart-type-btn .ct-icon { font-size: 18px; display: block; margin-bottom: 3px; }
+  .loading-indicator { text-align: center; padding: 16px; color: var(--text-muted); font-size: 12px; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
-  /* Preview area */
-  .preview-area {
-    flex: 1; overflow-y: auto; padding: 24px;
-    background: var(--bg); display: flex; align-items: flex-start; justify-content: center;
-  }
-  .preview-card {
-    background: var(--surface); border: 1px solid var(--border);
-    padding: 24px; width: 100%; max-width: 800px;
-  }
-  .preview-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; margin-bottom: 6px; }
-  .preview-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 20px; }
-  .preview-placeholder {
-    height: 300px; display: flex; align-items: center; justify-content: center;
-    border: 1px dashed #2a2a2a; color: var(--text-muted); font-size: 13px;
-    flex-direction: column; gap: 8px;
-  }
+  /* Preview */
+  .preview-area { flex: 1; overflow-y: auto; padding: 20px; background: var(--bg); }
+  .preview-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; }
+  .preview-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+  .preview-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
+  .preview-placeholder { height: 260px; display: flex; align-items: center; justify-content: center; border: 1px dashed #2a2a2a; color: var(--text-muted); font-size: 13px; flex-direction: column; gap: 8px; }
   .preview-placeholder-icon { font-size: 32px; }
-  .chart-container { position: relative; height: 320px; }
+  .chart-container { position: relative; height: 280px; }
   .table-preview { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .table-preview th { background: var(--surface2); padding: 10px 12px; text-align: left; font-family: 'Syne', sans-serif; font-size: 10px; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
-  .table-preview td { padding: 9px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
+  .table-preview th { background: var(--surface2); padding: 9px 10px; text-align: left; font-family: 'Syne', sans-serif; font-size: 9px; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+  .table-preview td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
   .table-preview tr:hover td { background: var(--surface2); }
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
-  .kpi-card { background: var(--surface2); border: 1px solid var(--border); padding: 18px; text-align: center; }
-  .kpi-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
-  .kpi-value { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; color: var(--gold); }
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .kpi-card { background: var(--surface2); border: 1px solid var(--border); padding: 16px; text-align: center; }
+  .kpi-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .kpi-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--gold); }
+  .kpi-sub { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
 
   /* ─── DASHBOARD VIEW ─── */
-  #view-dashboard { display: none; height: 100%; overflow-y: auto; padding: 24px; }
+  #view-dashboard { display: none; padding: 20px; overflow-y: auto; }
   #view-dashboard.show { display: block; }
-  .dash-view-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-  .dash-view-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; }
+  .dash-view-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+  .dash-view-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 3px; }
   .dash-view-meta { font-size: 12px; color: var(--text-muted); }
-  .dash-view-actions { margin-left: auto; display: flex; gap: 10px; }
-  .dash-view-card { background: var(--surface); border: 1px solid var(--border); padding: 24px; max-width: 900px; }
+  .dash-view-actions { margin-left: auto; display: flex; gap: 8px; flex-shrink: 0; }
+  .widgets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 16px; }
+  .widget-card { background: var(--surface); border: 1px solid var(--border); padding: 18px; }
+  .widget-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .widget-card-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; flex: 1; }
+  .widget-card-meta { font-size: 10px; color: var(--text-muted); }
+  .widget-actions { display: flex; gap: 6px; }
+  .icon-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; padding: 5px 8px; font-size: 12px; transition: all 0.15s; }
+  .icon-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .widget-chart-wrap { position: relative; height: 280px; }
 
-  /* ─── STATUS BAR ─── */
-  .status-bar {
-    height: 26px; background: var(--surface);
-    border-top: 1px solid var(--border);
-    display: flex; align-items: center; padding: 0 16px; gap: 20px;
-    flex-shrink: 0;
-  }
+  /* STATUS BAR */
+  .status-bar { height: 24px; background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 14px; gap: 18px; flex-shrink: 0; }
   .status-item { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
   .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
   .status-dot.off { background: var(--danger); }
 
-  /* ─── TOASTS ─── */
-  #toast-container { position: fixed; bottom: 40px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-  .toast {
-    padding: 12px 20px; background: var(--surface2); border: 1px solid var(--border);
-    border-left: 3px solid var(--gold);
-    font-size: 13px; max-width: 320px;
-    animation: slideIn 0.3s ease;
-  }
+  /* TOAST */
+  #toast-container { position: fixed; bottom: 36px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 6px; }
+  .toast { padding: 10px 16px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); font-size: 12px; max-width: 300px; animation: slideIn 0.3s ease; }
   .toast.success { border-left-color: var(--success); }
   .toast.error { border-left-color: var(--danger); }
   @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-  /* ─── MODAL ─── */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 500;
-    display: none; align-items: center; justify-content: center;
-  }
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; display: none; align-items: center; justify-content: center; }
   .modal-overlay.show { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); padding: 28px; width: 380px; }
-  .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; margin-bottom: 8px; }
-  .modal-text { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
-  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; }
-  .btn-danger { background: var(--danger); border: none; color: #fff; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 9px 18px; cursor: pointer; }
-  .btn-cancel { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 9px 18px; cursor: pointer; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); padding: 26px; width: 360px; }
+  .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; margin-bottom: 8px; }
+  .modal-text { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn-danger { background: var(--danger); border: none; color: #fff; font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 9px 16px; cursor: pointer; }
+  .btn-cancel { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 9px 16px; cursor: pointer; }
   .btn-cancel:hover { border-color: var(--gold); color: var(--text); }
+
+  /* CHECKBOX GROUP */
+  .check-group { max-height: 150px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; background: var(--surface2); }
+  .check-item { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; cursor: pointer; font-size: 12px; }
+  .check-item input { accent-color: var(--gold); }
+
+  /* FILTER ROW */
+  .filter-row { display: grid; grid-template-columns: 1fr 90px; gap: 6px; }
+
+  /* NO WIDGET SELECTED */
+  .no-widget-msg { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); font-size: 13px; gap: 8px; }
+  .no-widget-msg-icon { font-size: 36px; }
 </style>
 </head>
 <body>
 
-<!-- ═══════════ LOGIN ═══════════ -->
+<!-- ═══ LOGIN ═══ -->
 <div id="login-screen">
   <div class="login-bg"></div>
   <div class="login-grid"></div>
   <div class="login-card">
     <div class="login-logo">
-      <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">
-        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:38px;object-fit:contain;">
-        <div style="width:1px;height:32px;background:var(--border);"></div>
-        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:32px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.85;">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;">
+        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:36px;object-fit:contain;">
+        <div style="width:1px;height:28px;background:var(--border);"></div>
+        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:30px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.85;">
       </div>
       <div class="login-sub">Plataforma de Tableros</div>
     </div>
-
-    <!-- Step 1: select area -->
     <div id="step-area">
       <div class="login-title">Selecciona tu área</div>
       <div class="login-desc">Elige el departamento al que perteneces para continuar.</div>
       <div class="area-grid" id="area-grid"></div>
     </div>
-
-    <!-- Step 2: password -->
     <div id="step-pass" class="login-pass-section">
       <button class="btn-back" onclick="backToAreas()">← Volver</button>
       <div class="pass-label">Accediendo como</div>
       <div class="pass-selected" id="selected-area-name"></div>
-      <input type="text" class="pass-input" id="user-name" placeholder="Tu nombre" style="margin-bottom:10px;">
+      <input type="text" class="pass-input" id="user-name" placeholder="Tu nombre">
       <input type="password" class="pass-input" id="pass-input" placeholder="Contraseña del área" onkeydown="if(event.key==='Enter')doLogin()">
       <div class="login-error" id="login-error">Contraseña incorrecta</div>
-      <button class="btn-primary" style="margin-top:16px;" onclick="doLogin()">ENTRAR</button>
+      <button class="btn-primary" style="margin-top:14px;" onclick="doLogin()">ENTRAR</button>
     </div>
   </div>
 </div>
 
-<!-- ═══════════ APP ═══════════ -->
+<!-- ═══ APP ═══ -->
 <div id="app">
-  <!-- TOP BAR -->
   <div class="topbar">
-    <div class="topbar-brand" style="display:flex;align-items:center;gap:10px;">
-      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:26px;object-fit:contain;">
-      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:22px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.8;">
+    <div class="topbar-brand">
+      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:24px;object-fit:contain;">
+      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:20px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.8;">
     </div>
     <div class="topbar-sep"></div>
     <div class="topbar-area">Área: <span id="topbar-area-name">—</span></div>
@@ -393,9 +285,7 @@
     </div>
   </div>
 
-  <!-- BODY -->
   <div class="main-body">
-    <!-- SIDEBAR -->
     <div class="sidebar">
       <div class="sidebar-section">
         <div class="sidebar-label">Mis Tableros</div>
@@ -404,10 +294,9 @@
       <button class="sidebar-new" onclick="newDashboard()">＋ Nuevo tablero</button>
     </div>
 
-    <!-- CONTENT -->
     <div class="content" id="content-area">
 
-      <!-- HOME VIEW -->
+      <!-- HOME -->
       <div id="view-home">
         <div class="home-greeting">
           <h1 id="home-greeting-title">Buenos días</h1>
@@ -416,7 +305,7 @@
         <div class="dashboards-grid" id="dashboards-grid"></div>
       </div>
 
-      <!-- BUILDER VIEW -->
+      <!-- BUILDER -->
       <div id="view-builder">
         <div class="builder-topbar">
           <input type="text" class="builder-name-input" id="builder-name" placeholder="Nombre del tablero..." value="Mi Tablero">
@@ -426,78 +315,74 @@
           </div>
         </div>
         <div class="builder-body">
-          <!-- Config -->
-          <div class="config-panel">
-            <div class="config-section">
-              <div class="config-title">📊 Tipo de Gráfica</div>
-              <div class="chart-type-grid" id="chart-type-grid">
-                <button class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar',this)">
-                  <span class="ct-icon">📊</span>Barras
-                </button>
-                <button class="chart-type-btn" data-type="line" onclick="selectChartType('line',this)">
-                  <span class="ct-icon">📈</span>Línea
-                </button>
-                <button class="chart-type-btn" data-type="pie" onclick="selectChartType('pie',this)">
-                  <span class="ct-icon">🥧</span>Pastel
-                </button>
-                <button class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut',this)">
-                  <span class="ct-icon">🍩</span>Dona
-                </button>
-                <button class="chart-type-btn" data-type="table" onclick="selectChartType('table',this)">
-                  <span class="ct-icon">🗃️</span>Tabla
-                </button>
-                <button class="chart-type-btn" data-type="kpi" onclick="selectChartType('kpi',this)">
-                  <span class="ct-icon">🎯</span>KPI
-                </button>
+          <!-- Widgets list -->
+          <div class="widgets-panel">
+            <div class="sidebar-section" style="padding-bottom:2px;">
+              <div class="sidebar-label">Gráficas</div>
+            </div>
+            <div id="widget-list"></div>
+            <button class="widget-add-btn" onclick="addWidget()">＋ Agregar gráfica</button>
+          </div>
+
+          <!-- Config panel -->
+          <div class="config-panel" id="config-panel">
+            <div class="no-widget-msg" id="no-widget-msg">
+              <div class="no-widget-msg-icon">📊</div>
+              <div>Agrega una gráfica para comenzar</div>
+            </div>
+            <div id="widget-config-content" style="display:none;">
+              <div class="config-section">
+                <div class="config-title">📊 Tipo de Gráfica</div>
+                <div class="chart-type-grid" id="chart-type-grid">
+                  <button class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar',this)"><span class="ct-icon">📊</span>Barras</button>
+                  <button class="chart-type-btn" data-type="horizontalBar" onclick="selectChartType('horizontalBar',this)"><span class="ct-icon">📉</span>H. Bar</button>
+                  <button class="chart-type-btn" data-type="line" onclick="selectChartType('line',this)"><span class="ct-icon">📈</span>Línea</button>
+                  <button class="chart-type-btn" data-type="pie" onclick="selectChartType('pie',this)"><span class="ct-icon">🥧</span>Pastel</button>
+                  <button class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut',this)"><span class="ct-icon">🍩</span>Dona</button>
+                  <button class="chart-type-btn" data-type="table" onclick="selectChartType('table',this)"><span class="ct-icon">🗃️</span>Tabla</button>
+                  <button class="chart-type-btn" data-type="kpi" onclick="selectChartType('kpi',this)"><span class="ct-icon">🎯</span>KPI</button>
+                </div>
               </div>
-            </div>
 
-            <div class="config-section">
-              <div class="config-title">🗄️ Fuente de Datos</div>
-              <div class="config-label">Tabla del servidor</div>
-              <div id="tables-loading" class="loading-indicator"><span class="spinner"></span>Cargando tablas...</div>
-              <select class="config-select" id="table-select" style="display:none" onchange="loadTableColumns()">
-                <option value="">— Selecciona tabla —</option>
-              </select>
-              <div id="columns-loading" class="loading-indicator" style="display:none"><span class="spinner"></span>Cargando columnas...</div>
-            </div>
+              <div class="config-section">
+                <div class="config-title">📝 Nombre de la gráfica</div>
+                <input type="text" class="config-input" id="widget-name-input" placeholder="Ej: Ventas por Vendedor" oninput="syncWidgetName()">
+              </div>
 
-            <div class="config-section" id="axes-section" style="display:none">
-              <div class="config-title">⚙️ Configuración</div>
-              <div id="axes-config"></div>
-            </div>
+              <div class="config-section">
+                <div class="config-title">🗄️ Fuente de Datos</div>
+                <div class="config-label">Tabla</div>
+                <div id="tables-loading" class="loading-indicator"><span class="spinner"></span>Cargando...</div>
+                <select class="config-select" id="table-select" style="display:none" onchange="loadTableColumns()">
+                  <option value="">— Selecciona tabla —</option>
+                </select>
+                <div id="columns-loading" class="loading-indicator" style="display:none;"><span class="spinner"></span>Cargando columnas...</div>
+              </div>
 
-            <div class="config-section" id="filter-section" style="display:none">
-              <div class="config-title">🔍 Filtro (opcional)</div>
-              <div class="config-label">Columna</div>
-              <select class="config-select" id="filter-col"></select>
-              <div class="config-label">Valor contiene</div>
-              <input type="text" class="config-input" id="filter-val" placeholder="Ej: MONTERREY" oninput="renderPreview()">
-            </div>
+              <div class="config-section" id="axes-section" style="display:none">
+                <div class="config-title">⚙️ Configuración</div>
+                <div id="axes-config"></div>
+              </div>
 
-            <div class="config-section">
-              <div class="config-title">📝 Descripción (opcional)</div>
-              <input type="text" class="config-input" id="builder-desc" placeholder="Describe este tablero...">
+              <div class="config-section" id="filter-section" style="display:none">
+                <div class="config-title">🔍 Filtros</div>
+                <div id="filters-container"></div>
+                <button onclick="addFilter()" style="background:none;border:1px dashed #333;color:var(--text-muted);padding:6px 10px;cursor:pointer;font-size:11px;width:100%;margin-top:4px;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='#333';this.style.color='var(--text-muted)'">＋ Agregar filtro</button>
+              </div>
             </div>
           </div>
 
           <!-- Preview -->
-          <div class="preview-area">
-            <div class="preview-card">
-              <div class="preview-title" id="preview-title">Mi Tablero</div>
-              <div class="preview-meta" id="preview-meta">Configura los datos para ver la vista previa</div>
-              <div id="preview-content">
-                <div class="preview-placeholder">
-                  <div class="preview-placeholder-icon">📊</div>
-                  <div>Selecciona una tabla y columnas para comenzar</div>
-                </div>
-              </div>
+          <div class="preview-area" id="preview-area">
+            <div class="preview-placeholder" style="height:100%;border:none;">
+              <div class="preview-placeholder-icon">📊</div>
+              <div>Selecciona una gráfica para ver la vista previa</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- DASHBOARD VIEW (read mode) -->
+      <!-- DASHBOARD VIEW -->
       <div id="view-dashboard">
         <div class="dash-view-header">
           <div>
@@ -505,19 +390,17 @@
             <div class="dash-view-meta" id="dv-meta">—</div>
           </div>
           <div class="dash-view-actions">
+            <button class="btn-sm outline" onclick="refreshDashboard()" title="Actualizar datos">↺ Actualizar</button>
             <button class="btn-sm outline" onclick="editCurrentDashboard()">✏️ Editar</button>
-            <button class="btn-sm outline" style="border-color:#e05555;color:#e05555;" onclick="confirmDelete()">🗑️ Eliminar</button>
+            <button class="btn-sm danger" onclick="confirmDelete()">🗑️ Eliminar</button>
           </div>
         </div>
-        <div class="dash-view-card">
-          <div id="dv-content"></div>
-        </div>
+        <div class="widgets-grid" id="dv-widgets-grid"></div>
       </div>
 
     </div>
   </div>
 
-  <!-- STATUS BAR -->
   <div class="status-bar">
     <div class="status-item"><div class="status-dot" id="status-dot"></div><span id="status-text">Conectando...</span></div>
     <div class="status-item">Catosa API</div>
@@ -525,14 +408,11 @@
   </div>
 </div>
 
-<!-- TOAST CONTAINER -->
 <div id="toast-container"></div>
-
-<!-- DELETE MODAL -->
 <div class="modal-overlay" id="delete-modal">
   <div class="modal">
     <div class="modal-title">Eliminar tablero</div>
-    <div class="modal-text">¿Estás seguro de que quieres eliminar este tablero? Esta acción no se puede deshacer.</div>
+    <div class="modal-text">¿Estás seguro? Esta acción no se puede deshacer.</div>
     <div class="modal-actions">
       <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
       <button class="btn-danger" onclick="deleteDashboard()">Eliminar</button>
@@ -541,9 +421,9 @@
 </div>
 
 <script>
-// ═══════════════════════════════════════
+// ════════════════════════════════
 //  CONFIG
-// ═══════════════════════════════════════
+// ════════════════════════════════
 const API = 'https://api.catosaapps.lat';
 
 const AREAS = [
@@ -555,39 +435,46 @@ const AREAS = [
   { id: 'marketing',   name: 'Marketing',     icon: '📣', dept: 'Área',         pass: 'mkt2024' },
 ];
 
-// ═══════════════════════════════════════
+const CHART_ICONS = { bar:'📊', horizontalBar:'📉', line:'📈', pie:'🥧', doughnut:'🍩', table:'🗃️', kpi:'🎯' };
+const GOLD_PALETTE = ['#c8a84b','#e2c46e','#a08030','#f0d88a','#7a6020','#dab85e','#b89038','#eed070','#907028','#6a5018'];
+
+// ════════════════════════════════
 //  STATE
-// ═══════════════════════════════════════
+// ════════════════════════════════
 let state = {
   area: null,
   userName: '',
   dashboards: [],
   currentDashId: null,
   tables: [],
-  columns: [],
-  chartType: 'bar',
-  chartInstance: null,
-  rawData: null,
+  // Builder state
   editingId: null,
+  widgets: [],          // array of widget configs
+  activeWidgetIdx: null,
+  columns: [],
+  rawData: null,
+  chartInstances: {},   // preview chart instances
+  dvChartInstances: {}, // dashboard view chart instances
 };
 
-// ═══════════════════════════════════════
+// ════════════════════════════════
 //  INIT
-// ═══════════════════════════════════════
+// ════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   buildAreaGrid();
   checkSession();
+  document.getElementById('builder-name').addEventListener('input', () => {
+    document.getElementById('preview-area') && renderBuilderPreview();
+  });
 });
 
 function buildAreaGrid() {
-  const grid = document.getElementById('area-grid');
-  grid.innerHTML = AREAS.map(a => `
+  document.getElementById('area-grid').innerHTML = AREAS.map(a => `
     <button class="area-btn" onclick="selectArea('${a.id}')">
       <span class="area-icon">${a.icon}</span>
       <span class="area-name">${a.name.toUpperCase()}</span>
       <div class="area-dept">${a.dept}</div>
-    </button>
-  `).join('');
+    </button>`).join('');
 }
 
 function checkSession() {
@@ -600,9 +487,9 @@ function checkSession() {
   }
 }
 
-// ═══════════════════════════════════════
+// ════════════════════════════════
 //  LOGIN
-// ═══════════════════════════════════════
+// ════════════════════════════════
 let selectedArea = null;
 
 function selectArea(id) {
@@ -625,20 +512,8 @@ function doLogin() {
   const pass = document.getElementById('pass-input').value;
   const name = document.getElementById('user-name').value.trim();
   const err = document.getElementById('login-error');
-
-  if (!name) {
-    document.getElementById('user-name').classList.add('error');
-    err.textContent = 'Escribe tu nombre';
-    err.classList.add('show');
-    return;
-  }
-  if (pass !== selectedArea.pass) {
-    document.getElementById('pass-input').classList.add('error');
-    err.textContent = 'Contraseña incorrecta';
-    err.classList.add('show');
-    return;
-  }
-
+  if (!name) { err.textContent = 'Escribe tu nombre'; err.classList.add('show'); return; }
+  if (pass !== selectedArea.pass) { err.textContent = 'Contraseña incorrecta'; err.classList.add('show'); return; }
   state.area = selectedArea;
   state.userName = name;
   sessionStorage.setItem('catosa_session', JSON.stringify({ areaId: selectedArea.id, userName: name }));
@@ -647,52 +522,43 @@ function doLogin() {
 
 function logout() {
   sessionStorage.removeItem('catosa_session');
-  state = { area: null, userName: '', dashboards: [], currentDashId: null, tables: [], columns: [], chartType: 'bar', chartInstance: null, rawData: null, editingId: null };
-  document.getElementById('app').classList.remove('show');
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('step-area').style.display = 'block';
-  document.getElementById('step-pass').classList.remove('show');
+  location.reload();
 }
 
-// ═══════════════════════════════════════
+// ════════════════════════════════
 //  ENTER APP
-// ═══════════════════════════════════════
+// ════════════════════════════════
 function enterApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.add('show');
   document.getElementById('topbar-area-name').textContent = state.area.name;
-
-  const hour = new Date().getHours();
-  const greeting = hour < 12 ? 'Buenos días' : hour < 19 ? 'Buenas tardes' : 'Buenas noches';
-  document.getElementById('home-greeting-title').textContent = `${greeting}, ${state.userName} ${state.area.icon}`;
-  document.getElementById('home-greeting-sub').textContent = `Área ${state.area.name} · ${state.dashboards.length} tableros`;
-
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches';
+  document.getElementById('home-greeting-title').textContent = `${g}, ${state.userName} ${state.area.icon}`;
   checkServerStatus();
   loadDashboards();
   loadTablesFromServer();
 }
 
-// ═══════════════════════════════════════
+// ════════════════════════════════
 //  SERVER STATUS
-// ═══════════════════════════════════════
+// ════════════════════════════════
 async function checkServerStatus() {
   const dot = document.getElementById('status-dot');
   const txt = document.getElementById('status-text');
   try {
-    const r = await fetch(`${API}/api/tables`, { signal: AbortSignal.timeout(5000) });
-    if (r.ok) {
-      dot.classList.remove('off');
-      txt.textContent = 'Conectado';
-    } else throw new Error();
+    const r = await fetch(`${API}/api/tables`, { signal: AbortSignal.timeout(6000) });
+    if (r.ok) { dot.classList.remove('off'); txt.textContent = 'Conectado'; }
+    else throw new Error();
   } catch {
     dot.classList.add('off');
     txt.textContent = 'Sin conexión';
   }
 }
 
-// ═══════════════════════════════════════
-//  DASHBOARDS (localStorage)
-// ═══════════════════════════════════════
+// ════════════════════════════════
+//  DASHBOARDS
+// ════════════════════════════════
 function loadDashboards() {
   const key = `catosa_dash_${state.area.id}`;
   state.dashboards = JSON.parse(localStorage.getItem(key) || '[]');
@@ -701,8 +567,7 @@ function loadDashboards() {
 }
 
 function saveDashboardsToStorage() {
-  const key = `catosa_dash_${state.area.id}`;
-  localStorage.setItem(key, JSON.stringify(state.dashboards));
+  localStorage.setItem(`catosa_dash_${state.area.id}`, JSON.stringify(state.dashboards));
 }
 
 function renderSidebar() {
@@ -711,49 +576,41 @@ function renderSidebar() {
     list.innerHTML = '<div class="sidebar-item" style="cursor:default;opacity:0.4;font-size:11px;">Sin tableros aún</div>';
     return;
   }
-  list.innerHTML = state.dashboards.map(d => `
-    <div class="sidebar-item ${d.id === state.currentDashId ? 'active' : ''}" onclick="openDashboard('${d.id}')">
-      <span class="item-icon">${CHART_ICONS[d.chartType] || '📊'}</span>
-      <div>
+  list.innerHTML = state.dashboards.map(d => {
+    const mainIcon = d.widgets?.length ? CHART_ICONS[d.widgets[0].chartType] || '📊' : '📊';
+    return `<div class="sidebar-item ${d.id === state.currentDashId ? 'active' : ''}" onclick="openDashboard('${d.id}')">
+      <span class="item-icon">${mainIcon}</span>
+      <div class="item-info">
         <div class="item-name">${d.name}</div>
-        <div class="item-author">por ${d.author}</div>
+        <div class="item-author">por ${d.author} · ${d.widgets?.length || 0} gráfica${d.widgets?.length !== 1 ? 's' : ''}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function renderHomeGrid() {
   const grid = document.getElementById('dashboards-grid');
   if (!state.dashboards.length) {
-    grid.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">📊</div>
-        <h3>Sin tableros todavía</h3>
-        <p>Crea tu primer tablero conectado a los datos de Catosa.</p>
-      </div>`;
+    grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📊</div><h3>Sin tableros todavía</h3><p>Crea tu primer tablero conectado a los datos de Catosa.</p></div>`;
     return;
   }
-  grid.innerHTML = state.dashboards.map(d => `
-    <div class="dash-card" onclick="openDashboard('${d.id}')">
+  grid.innerHTML = state.dashboards.map(d => {
+    const icons = (d.widgets || []).map(w => CHART_ICONS[w.chartType] || '📊').slice(0, 4).join(' ');
+    return `<div class="dash-card" onclick="openDashboard('${d.id}')">
       <div class="dash-card-header">
-        <div class="dash-card-type">${CHART_ICONS[d.chartType] || '📊'}</div>
-        <button class="dash-card-menu" onclick="event.stopPropagation(); openDashboard('${d.id}')">›</button>
+        <div class="dash-card-icon">${icons || '📊'}</div>
+        <div class="dash-card-badges"><span class="badge">${d.widgets?.length || 0} gráfica${d.widgets?.length !== 1 ? 's' : ''}</span></div>
       </div>
       <div class="dash-card-name">${d.name}</div>
-      <div class="dash-card-info">
-        Tabla: <span>${d.tableName || '—'}</span> · por ${d.author}<br>
-        ${new Date(d.createdAt).toLocaleDateString('es-MX')}
-      </div>
-    </div>
-  `).join('');
+      <div class="dash-card-info">por ${d.author}<br>${new Date(d.createdAt).toLocaleDateString('es-MX')}</div>
+    </div>`;
+  }).join('');
   document.getElementById('home-greeting-sub').textContent = `Área ${state.area.name} · ${state.dashboards.length} tablero${state.dashboards.length !== 1 ? 's' : ''}`;
 }
 
-const CHART_ICONS = { bar:'📊', line:'📈', pie:'🥧', doughnut:'🍩', table:'🗃️', kpi:'🎯' };
-
-// ═══════════════════════════════════════
+// ════════════════════════════════
 //  VIEWS
-// ═══════════════════════════════════════
+// ════════════════════════════════
 function showView(name) {
   document.getElementById('view-home').style.display = 'none';
   document.getElementById('view-builder').classList.remove('show');
@@ -763,29 +620,189 @@ function showView(name) {
   if (name === 'dashboard') document.getElementById('view-dashboard').classList.add('show');
 }
 
-// ═══════════════════════════════════════
-//  TABLES FROM SERVER
-// ═══════════════════════════════════════
+// ════════════════════════════════
+//  LOAD TABLES
+// ════════════════════════════════
 async function loadTablesFromServer() {
   try {
     const r = await fetch(`${API}/api/tables`);
     const data = await r.json();
     state.tables = data.tables || [];
-    document.getElementById('status-tables').textContent = `${state.tables.length} tablas disponibles`;
-
-    // populate builder select
-    const sel = document.getElementById('table-select');
-    sel.innerHTML = '<option value="">— Selecciona tabla —</option>' +
-      state.tables.map(t => `<option value="${t}">${t}</option>`).join('');
+    document.getElementById('status-tables').textContent = `${state.tables.length} tablas`;
+    populateTableSelect();
     document.getElementById('tables-loading').style.display = 'none';
-    sel.style.display = 'block';
+    document.getElementById('table-select').style.display = 'block';
   } catch {
-    document.getElementById('tables-loading').innerHTML = '<span style="color:var(--danger);font-size:12px;">⚠️ No se pudo conectar al servidor</span>';
+    document.getElementById('tables-loading').innerHTML = '<span style="color:var(--danger);font-size:11px;">⚠️ No se pudo conectar al servidor</span>';
   }
 }
 
+function populateTableSelect() {
+  const sel = document.getElementById('table-select');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">— Selecciona tabla —</option>' +
+    state.tables.map(t => `<option value="${t}">${t}</option>`).join('');
+  if (current) sel.value = current;
+}
+
+// ════════════════════════════════
+//  BUILDER — WIDGET MANAGEMENT
+// ════════════════════════════════
+function newDashboard() {
+  state.editingId = null;
+  state.widgets = [];
+  state.activeWidgetIdx = null;
+  state.rawData = null;
+  state.columns = [];
+  document.getElementById('builder-name').value = 'Mi Tablero';
+  destroyAllPreviewCharts();
+  renderWidgetList();
+  resetConfigPanel();
+  showView('builder');
+  state.currentDashId = null;
+  renderSidebar();
+}
+
+function cancelBuilder() {
+  destroyAllPreviewCharts();
+  showView('home');
+  renderHomeGrid();
+}
+
+function addWidget() {
+  const w = {
+    id: `w_${Date.now()}`,
+    name: `Gráfica ${state.widgets.length + 1}`,
+    chartType: 'bar',
+    tableName: '',
+    axisX: '',
+    axisY: '',
+    aggFunc: 'SUM',
+    limit: 20,
+    filters: [],
+    tableCols: [],
+    width: 'half',
+  };
+  state.widgets.push(w);
+  selectWidget(state.widgets.length - 1);
+  renderWidgetList();
+}
+
+function selectWidget(idx) {
+  state.activeWidgetIdx = idx;
+  state.rawData = null;
+  state.columns = [];
+  renderWidgetList();
+  loadWidgetConfig(idx);
+}
+
+function removeWidget(idx, e) {
+  e.stopPropagation();
+  state.widgets.splice(idx, 1);
+  if (state.activeWidgetIdx >= state.widgets.length) state.activeWidgetIdx = state.widgets.length - 1;
+  if (state.widgets.length === 0) { state.activeWidgetIdx = null; resetConfigPanel(); }
+  else selectWidget(state.activeWidgetIdx);
+  renderWidgetList();
+}
+
+function renderWidgetList() {
+  const list = document.getElementById('widget-list');
+  if (!state.widgets.length) {
+    list.innerHTML = '';
+    return;
+  }
+  list.innerHTML = state.widgets.map((w, i) => `
+    <div class="widget-item ${i === state.activeWidgetIdx ? 'active' : ''}" onclick="selectWidget(${i})">
+      <div class="widget-item-header">
+        <span class="widget-item-icon">${CHART_ICONS[w.chartType] || '📊'}</span>
+        <span class="widget-item-name">${w.name}</span>
+        <button class="widget-item-del" onclick="removeWidget(${i}, event)">✕</button>
+      </div>
+      <div class="widget-item-sub">${w.tableName || 'Sin tabla'}</div>
+    </div>`).join('');
+}
+
+function resetConfigPanel() {
+  document.getElementById('no-widget-msg').style.display = 'flex';
+  document.getElementById('widget-config-content').style.display = 'none';
+  document.getElementById('preview-area').innerHTML = `
+    <div class="preview-placeholder" style="height:100%;border:none;">
+      <div class="preview-placeholder-icon">📊</div>
+      <div>Selecciona una gráfica para ver la vista previa</div>
+    </div>`;
+}
+
+async function loadWidgetConfig(idx) {
+  const w = state.widgets[idx];
+  if (!w) return;
+
+  document.getElementById('no-widget-msg').style.display = 'none';
+  document.getElementById('widget-config-content').style.display = 'block';
+
+  // Set chart type buttons
+  document.querySelectorAll('.chart-type-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.type === w.chartType);
+  });
+
+  // Set widget name
+  document.getElementById('widget-name-input').value = w.name;
+
+  // Set table select
+  if (state.tables.length) {
+    const sel = document.getElementById('table-select');
+    sel.style.display = 'block';
+    document.getElementById('tables-loading').style.display = 'none';
+    sel.value = w.tableName || '';
+  }
+
+  if (w.tableName) {
+    await fetchTableData(w.tableName);
+    renderAxesConfig(w);
+    renderFilterConfig(w);
+    renderBuilderPreview();
+  } else {
+    document.getElementById('axes-section').style.display = 'none';
+    document.getElementById('filter-section').style.display = 'none';
+    document.getElementById('preview-area').innerHTML = `
+      <div class="preview-placeholder" style="height:100%;border:none;">
+        <div class="preview-placeholder-icon">📊</div>
+        <div>Selecciona una tabla para comenzar</div>
+      </div>`;
+  }
+}
+
+function syncWidgetName() {
+  if (state.activeWidgetIdx === null) return;
+  state.widgets[state.activeWidgetIdx].name = document.getElementById('widget-name-input').value;
+  renderWidgetList();
+}
+
+// ════════════════════════════════
+//  CHART TYPE SELECT
+// ════════════════════════════════
+function selectChartType(type, btn) {
+  if (state.activeWidgetIdx === null) return;
+  state.widgets[state.activeWidgetIdx].chartType = type;
+  document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderWidgetList();
+  if (state.columns.length) renderAxesConfig(state.widgets[state.activeWidgetIdx]);
+  renderBuilderPreview();
+}
+
+// ════════════════════════════════
+//  TABLE & COLUMNS
+// ════════════════════════════════
 async function loadTableColumns() {
   const tbl = document.getElementById('table-select').value;
+  if (state.activeWidgetIdx === null) return;
+  state.widgets[state.activeWidgetIdx].tableName = tbl;
+  state.widgets[state.activeWidgetIdx].axisX = '';
+  state.widgets[state.activeWidgetIdx].axisY = '';
+  state.widgets[state.activeWidgetIdx].filters = [];
+  state.widgets[state.activeWidgetIdx].tableCols = [];
+  renderWidgetList();
+
   if (!tbl) {
     document.getElementById('axes-section').style.display = 'none';
     document.getElementById('filter-section').style.display = 'none';
@@ -798,465 +815,491 @@ async function loadTableColumns() {
   document.getElementById('axes-section').style.display = 'none';
   document.getElementById('filter-section').style.display = 'none';
 
+  await fetchTableData(tbl);
+  renderAxesConfig(state.widgets[state.activeWidgetIdx]);
+  renderFilterConfig(state.widgets[state.activeWidgetIdx]);
+  renderBuilderPreview();
+}
+
+async function fetchTableData(tbl) {
   try {
-    const r = await fetch(`${API}/api/table/${encodeURIComponent(tbl)}?limit=200`);
+    const r = await fetch(`${API}/api/table/${encodeURIComponent(tbl)}?limit=500`);
     const data = await r.json();
     state.rawData = data.rows || [];
     state.columns = data.columns || (state.rawData.length ? Object.keys(state.rawData[0]) : []);
-
     document.getElementById('columns-loading').style.display = 'none';
-    renderAxesConfig();
-    renderFilterConfig();
-    renderPreview();
   } catch {
-    document.getElementById('columns-loading').innerHTML = '<span style="color:var(--danger);font-size:12px;">Error al cargar datos</span>';
+    document.getElementById('columns-loading').innerHTML = '<span style="color:var(--danger);font-size:11px;">Error al cargar datos</span>';
+    state.rawData = null;
+    state.columns = [];
   }
 }
 
-function renderAxesConfig() {
+// ════════════════════════════════
+//  AXES CONFIG
+// ════════════════════════════════
+function renderAxesConfig(w) {
   const cols = state.columns;
   const section = document.getElementById('axes-section');
   const cfg = document.getElementById('axes-config');
   section.style.display = 'block';
 
-  if (state.chartType === 'kpi') {
+  const colOpts = cols.map(c => `<option value="${c}">${c}</option>`).join('');
+  const colOptsEmpty = `<option value="">— Sin agrupar —</option>` + colOpts;
+  const aggOpts = ['SUM','COUNT','AVG','MAX','MIN'].map(a => `<option value="${a}" ${w.aggFunc===a?'selected':''}>${a}</option>`).join('');
+  const limitOpts = [10,20,50,100].map(n => `<option value="${n}" ${w.limit==n?'selected':''}>${n}</option>`).join('') + `<option value="999" ${w.limit==999?'selected':''}">Todos</option>`;
+
+  if (w.chartType === 'kpi') {
     cfg.innerHTML = `
-      <div class="config-label">Columna numérica (agregar suma)</div>
-      <select class="config-select" id="ax-y" onchange="renderPreview()">
-        ${cols.map(c => `<option value="${c}">${c}</option>`).join('')}
-      </select>
-      <div class="config-label">Agrupar por</div>
-      <select class="config-select" id="ax-x" onchange="renderPreview()">
-        <option value="">— Sin agrupar —</option>
-        ${cols.map(c => `<option value="${c}">${c}</option>`).join('')}
-      </select>`;
-  } else if (state.chartType === 'table') {
+      <div class="config-label">Columna numérica</div>
+      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Función</div>
+      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
+      <div class="config-label">Agrupar por (opcional)</div>
+      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOptsEmpty}</select>`;
+  } else if (w.chartType === 'table') {
     cfg.innerHTML = `
       <div class="config-label">Columnas a mostrar</div>
-      <div style="max-height:160px;overflow-y:auto;border:1px solid var(--border);padding:8px;background:var(--surface2);">
-        ${cols.map((c,i) => `
-          <label style="display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;font-size:12px;">
-            <input type="checkbox" value="${c}" ${i<6?'checked':''} onchange="renderPreview()" style="accent-color:var(--gold);">
-            ${c}
-          </label>`).join('')}
-      </div>`;
+      <div class="check-group">${cols.map((c,i) => `
+        <label class="check-item">
+          <input type="checkbox" value="${c}" ${(w.tableCols.includes(c)||(w.tableCols.length===0&&i<6))?'checked':''} onchange="onAxesChange()">
+          ${c}
+        </label>`).join('')}</div>
+      <div class="config-label" style="margin-top:8px;">Máx. filas</div>
+      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limitOpts}</select>`;
   } else {
     cfg.innerHTML = `
       <div class="config-label">Eje X (categoría)</div>
-      <select class="config-select" id="ax-x" onchange="renderPreview()">
-        ${cols.map(c => `<option value="${c}">${c}</option>`).join('')}
-      </select>
-      <div class="config-label">Eje Y (valor numérico)</div>
-      <select class="config-select" id="ax-y" onchange="renderPreview()">
-        ${cols.map(c => `<option value="${c}">${c}</option>`).join('')}
-      </select>
-      <div class="config-label">Máx. registros</div>
-      <select class="config-select" id="ax-limit" onchange="renderPreview()">
-        <option value="10">10</option>
-        <option value="20" selected>20</option>
-        <option value="50">50</option>
-        <option value="100">Todos</option>
-      </select>`;
+      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Eje Y (valor)</div>
+      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Función de agregación</div>
+      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
+      <div class="config-label">Máx. categorías</div>
+      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limitOpts}</select>`;
   }
+
+  // Restore saved values
+  setTimeout(() => {
+    const xEl = document.getElementById('ax-x');
+    const yEl = document.getElementById('ax-y');
+    const aggEl = document.getElementById('ax-agg');
+    const limEl = document.getElementById('ax-limit');
+    if (xEl && w.axisX) xEl.value = w.axisX;
+    if (yEl && w.axisY) yEl.value = w.axisY;
+    if (aggEl && w.aggFunc) aggEl.value = w.aggFunc;
+    if (limEl && w.limit) limEl.value = w.limit;
+  }, 0);
 }
 
-function renderFilterConfig() {
-  const cols = state.columns;
+function onAxesChange() {
+  if (state.activeWidgetIdx === null) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  const xEl = document.getElementById('ax-x');
+  const yEl = document.getElementById('ax-y');
+  const aggEl = document.getElementById('ax-agg');
+  const limEl = document.getElementById('ax-limit');
+  if (xEl) w.axisX = xEl.value;
+  if (yEl) w.axisY = yEl.value;
+  if (aggEl) w.aggFunc = aggEl.value;
+  if (limEl) w.limit = parseInt(limEl.value);
+  if (w.chartType === 'table') {
+    w.tableCols = Array.from(document.querySelectorAll('#axes-config input[type=checkbox]:checked')).map(c => c.value);
+  }
+  renderBuilderPreview();
+}
+
+// ════════════════════════════════
+//  FILTERS
+// ════════════════════════════════
+function renderFilterConfig(w) {
   const section = document.getElementById('filter-section');
   section.style.display = 'block';
-  const sel = document.getElementById('filter-col');
-  sel.innerHTML = `<option value="">— Sin filtro —</option>` + cols.map(c => `<option value="${c}">${c}</option>`).join('');
-  sel.onchange = () => renderPreview();
+  renderFilterRows(w);
 }
 
-// ═══════════════════════════════════════
-//  BUILDER ACTIONS
-// ═══════════════════════════════════════
-function selectChartType(type, btn) {
-  state.chartType = type;
-  document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  if (state.columns.length) renderAxesConfig();
-  renderPreview();
+function renderFilterRows(w) {
+  const cols = state.columns;
+  const container = document.getElementById('filters-container');
+  if (!w.filters) w.filters = [];
+  container.innerHTML = w.filters.map((f, i) => `
+    <div style="display:grid;grid-template-columns:1fr 80px 1fr 24px;gap:4px;margin-bottom:6px;align-items:center;">
+      <select class="config-select" style="margin:0;" onchange="updateFilter(${i},'col',this.value)">
+        <option value="">Col</option>${cols.map(c=>`<option value="${c}" ${f.col===c?'selected':''}>${c}</option>`).join('')}
+      </select>
+      <select class="config-select" style="margin:0;font-size:10px;" onchange="updateFilter(${i},'op',this.value)">
+        <option value="contains" ${f.op==='contains'?'selected':''}>contiene</option>
+        <option value="equals" ${f.op==='equals'?'selected':''}>igual</option>
+        <option value="gt" ${f.op==='gt'?'selected':''}>mayor</option>
+        <option value="lt" ${f.op==='lt'?'selected':''}>menor</option>
+        <option value="gte" ${f.op==='gte'?'selected':''}>≥</option>
+        <option value="lte" ${f.op==='lte'?'selected':''}>≤</option>
+      </select>
+      <input type="text" class="config-input" style="margin:0;" value="${f.val||''}" placeholder="Valor" oninput="updateFilter(${i},'val',this.value)">
+      <button onclick="removeFilter(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;padding:0;line-height:1;">✕</button>
+    </div>`).join('');
 }
 
-function newDashboard() {
-  state.editingId = null;
-  document.getElementById('builder-name').value = 'Mi Tablero';
-  document.getElementById('builder-desc').value = '';
-  document.getElementById('table-select').value = '';
-  document.getElementById('axes-section').style.display = 'none';
-  document.getElementById('filter-section').style.display = 'none';
-  document.getElementById('filter-col').innerHTML = '';
-  document.getElementById('filter-val').value = '';
-  state.columns = [];
-  state.rawData = null;
-  state.chartType = 'bar';
-  document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector('[data-type="bar"]').classList.add('active');
-  document.getElementById('preview-content').innerHTML = `
-    <div class="preview-placeholder">
-      <div class="preview-placeholder-icon">📊</div>
-      <div>Selecciona una tabla y columnas para comenzar</div>
-    </div>`;
-  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
-  showView('builder');
-  state.currentDashId = null;
-  renderSidebar();
+function addFilter() {
+  if (state.activeWidgetIdx === null) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  if (!w.filters) w.filters = [];
+  w.filters.push({ col: '', op: 'contains', val: '' });
+  renderFilterRows(w);
 }
 
-function cancelBuilder() {
-  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
-  showView('home');
-  renderHomeGrid();
+function updateFilter(i, key, val) {
+  if (state.activeWidgetIdx === null) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  w.filters[i][key] = val;
+  renderBuilderPreview();
 }
 
-// ═══════════════════════════════════════
-//  PREVIEW RENDERER
-// ═══════════════════════════════════════
-function renderPreview() {
-  if (!state.rawData || !state.rawData.length) return;
+function removeFilter(i) {
+  if (state.activeWidgetIdx === null) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  w.filters.splice(i, 1);
+  renderFilterRows(w);
+  renderBuilderPreview();
+}
 
-  const name = document.getElementById('builder-name').value || 'Sin título';
-  const tbl = document.getElementById('table-select').value;
-  document.getElementById('preview-title').textContent = name;
-  document.getElementById('preview-meta').textContent = `Tabla: ${tbl} · ${state.rawData.length} registros cargados`;
+// ════════════════════════════════
+//  APPLY FILTERS
+// ════════════════════════════════
+function applyFilters(rows, filters) {
+  if (!filters || !filters.length) return rows;
+  return rows.filter(row => {
+    return filters.every(f => {
+      if (!f.col || !f.val) return true;
+      const cell = String(row[f.col] ?? '');
+      const val = f.val;
+      const num = parseFloat(cell);
+      const fnum = parseFloat(val);
+      switch (f.op) {
+        case 'contains': return cell.toLowerCase().includes(val.toLowerCase());
+        case 'equals':   return cell.toLowerCase() === val.toLowerCase();
+        case 'gt':  return !isNaN(num) && num > fnum;
+        case 'lt':  return !isNaN(num) && num < fnum;
+        case 'gte': return !isNaN(num) && num >= fnum;
+        case 'lte': return !isNaN(num) && num <= fnum;
+        default: return true;
+      }
+    });
+  });
+}
 
-  // Apply filter
-  const filterCol = document.getElementById('filter-col')?.value;
-  const filterVal = document.getElementById('filter-val')?.value?.trim()?.toLowerCase();
-  let rows = state.rawData;
-  if (filterCol && filterVal) {
-    rows = rows.filter(r => String(r[filterCol] || '').toLowerCase().includes(filterVal));
+// ════════════════════════════════
+//  AGGREGATE DATA
+// ════════════════════════════════
+function aggregateData(rows, axisX, axisY, aggFunc, limit) {
+  if (aggFunc === 'COUNT') {
+    const groups = {};
+    rows.forEach(r => {
+      const k = String(r[axisX] ?? 'N/A').substring(0, 30);
+      groups[k] = (groups[k] || 0) + 1;
+    });
+    return Object.entries(groups).sort((a,b) => b[1]-a[1]).slice(0, limit);
   }
-
-  if (state.chartType === 'table') renderTablePreview(rows);
-  else if (state.chartType === 'kpi') renderKPIPreview(rows);
-  else renderChartPreview(rows);
+  const groups = {};
+  const groupVals = {};
+  rows.forEach(r => {
+    const k = String(r[axisX] ?? 'N/A').substring(0, 30);
+    const v = parseFloat(r[axisY]) || 0;
+    if (!groups[k]) { groups[k] = 0; groupVals[k] = []; }
+    groups[k] += v;
+    groupVals[k].push(v);
+  });
+  let entries = Object.entries(groups);
+  if (aggFunc === 'AVG') entries = entries.map(([k]) => [k, groupVals[k].reduce((a,b)=>a+b,0)/groupVals[k].length]);
+  if (aggFunc === 'MAX') entries = entries.map(([k]) => [k, Math.max(...groupVals[k])]);
+  if (aggFunc === 'MIN') entries = entries.map(([k]) => [k, Math.min(...groupVals[k])]);
+  return entries.sort((a,b) => b[1]-a[1]).slice(0, limit);
 }
 
-function renderTablePreview(rows) {
-  const checkboxes = document.querySelectorAll('#axes-config input[type=checkbox]:checked');
-  const cols = Array.from(checkboxes).map(c => c.value);
-  if (!cols.length) return;
+// ════════════════════════════════
+//  BUILDER PREVIEW
+// ════════════════════════════════
+function renderBuilderPreview() {
+  if (state.activeWidgetIdx === null || !state.rawData) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  const rows = applyFilters(state.rawData, w.filters);
 
-  const limit = 30;
+  const previewArea = document.getElementById('preview-area');
+  previewArea.innerHTML = `
+    <div class="preview-card">
+      <div class="preview-title">${w.name || 'Sin título'}</div>
+      <div class="preview-meta">Tabla: ${w.tableName} · ${rows.length} registros</div>
+      <div id="preview-content-inner"></div>
+    </div>`;
+
+  destroyAllPreviewCharts();
+
+  const inner = document.getElementById('preview-content-inner');
+  if (w.chartType === 'table') renderTableWidget(inner, rows, w, true);
+  else if (w.chartType === 'kpi') renderKPIWidget(inner, rows, w);
+  else renderChartWidget(inner, rows, w, 'preview-chart', true);
+}
+
+function destroyAllPreviewCharts() {
+  Object.values(state.chartInstances).forEach(c => { try { c.destroy(); } catch(e){} });
+  state.chartInstances = {};
+}
+
+// ════════════════════════════════
+//  WIDGET RENDERERS
+// ════════════════════════════════
+function renderTableWidget(container, rows, w, isPreview) {
+  const cols = w.tableCols && w.tableCols.length ? w.tableCols : (state.columns.length ? state.columns.slice(0,6) : Object.keys(rows[0]||{}).slice(0,6));
+  const limit = w.limit || 20;
   const shown = rows.slice(0, limit);
-  document.getElementById('preview-content').innerHTML = `
+  container.innerHTML = `
     <div style="overflow-x:auto;">
       <table class="table-preview">
         <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
-        <tbody>
-          ${shown.map(r => `<tr>${cols.map(c=>`<td>${r[c] ?? '—'}</td>`).join('')}</tr>`).join('')}
-        </tbody>
+        <tbody>${shown.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??'—'}</td>`).join('')}</tr>`).join('')}</tbody>
       </table>
-      ${rows.length > limit ? `<div style="padding:8px 12px;font-size:11px;color:var(--text-muted);">Mostrando ${limit} de ${rows.length} registros</div>` : ''}
+      ${rows.length > limit ? `<div style="padding:8px 10px;font-size:10px;color:var(--text-muted);">Mostrando ${limit} de ${rows.length} registros</div>` : ''}
     </div>`;
 }
 
-function renderKPIPreview(rows) {
-  const yCol = document.getElementById('ax-y')?.value;
-  const xCol = document.getElementById('ax-x')?.value;
-  if (!yCol) return;
+function renderKPIWidget(container, rows, w) {
+  const yCol = w.axisY;
+  const xCol = w.axisX;
+  const aggFunc = w.aggFunc || 'SUM';
+  if (!yCol) { container.innerHTML = '<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columna numérica</div>'; return; }
 
   let kpis = [];
   if (xCol) {
-    // group by xCol, sum yCol
-    const groups = {};
-    rows.forEach(r => {
-      const k = r[xCol] ?? 'N/A';
-      const v = parseFloat(r[yCol]) || 0;
-      groups[k] = (groups[k] || 0) + v;
-    });
-    kpis = Object.entries(groups).slice(0, 8).map(([k, v]) => ({ label: k, value: v }));
+    const entries = aggregateData(rows, xCol, yCol, aggFunc, 8);
+    kpis = entries.map(([k, v]) => ({ label: k, value: v, count: rows.filter(r => String(r[xCol]??'') === k).length }));
   } else {
-    const total = rows.reduce((s, r) => s + (parseFloat(r[yCol]) || 0), 0);
-    kpis = [{ label: yCol, value: total }];
+    let val = 0;
+    if (aggFunc === 'SUM') val = rows.reduce((s,r) => s + (parseFloat(r[yCol])||0), 0);
+    else if (aggFunc === 'COUNT') val = rows.length;
+    else if (aggFunc === 'AVG') val = rows.reduce((s,r) => s + (parseFloat(r[yCol])||0), 0) / (rows.length||1);
+    else if (aggFunc === 'MAX') val = Math.max(...rows.map(r => parseFloat(r[yCol])||0));
+    else if (aggFunc === 'MIN') val = Math.min(...rows.map(r => parseFloat(r[yCol])||0));
+    kpis = [{ label: `${aggFunc} de ${yCol}`, value: val, count: rows.length }];
   }
 
-  document.getElementById('preview-content').innerHTML = `
-    <div class="kpi-grid">
-      ${kpis.map(k => `
-        <div class="kpi-card">
-          <div class="kpi-label">${k.label}</div>
-          <div class="kpi-value">${formatNum(k.value)}</div>
-        </div>`).join('')}
-    </div>`;
+  container.innerHTML = `<div class="kpi-grid">${kpis.map(k=>`
+    <div class="kpi-card">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${formatNum(k.value)}</div>
+      <div class="kpi-sub">${k.count} registros</div>
+    </div>`).join('')}</div>`;
 }
 
-function renderChartPreview(rows) {
-  const xCol = document.getElementById('ax-x')?.value;
-  const yCol = document.getElementById('ax-y')?.value;
-  const limit = parseInt(document.getElementById('ax-limit')?.value || 20);
-  if (!xCol || !yCol) return;
+function renderChartWidget(container, rows, w, canvasId, isPreview) {
+  const xCol = w.axisX;
+  const yCol = w.axisY;
+  const aggFunc = w.aggFunc || 'SUM';
+  const limit = w.limit || 20;
 
-  // Aggregate: group by xCol, sum yCol
-  const groups = {};
-  rows.forEach(r => {
-    const k = String(r[xCol] ?? 'N/A').substring(0, 20);
-    const v = parseFloat(r[yCol]) || 0;
-    groups[k] = (groups[k] || 0) + v;
-  });
-  let entries = Object.entries(groups).sort((a, b) => b[1] - a[1]).slice(0, limit);
+  if (!xCol) { container.innerHTML = '<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columnas para el eje X e Y</div>'; return; }
+
+  const entries = aggregateData(rows, xCol, aggFunc === 'COUNT' ? xCol : yCol, aggFunc, limit);
   const labels = entries.map(e => e[0]);
   const values = entries.map(e => e[1]);
 
-  document.getElementById('preview-content').innerHTML = '<div class="chart-container"><canvas id="main-chart"></canvas></div>';
+  const isHBar = w.chartType === 'horizontalBar';
+  const chartType = isHBar ? 'bar' : w.chartType;
+  const isPie = chartType === 'pie' || chartType === 'doughnut';
 
-  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
+  container.innerHTML = `<div class="widget-chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
 
-  const ctx = document.getElementById('main-chart').getContext('2d');
-  const goldPalette = [
-    '#c8a84b','#e2c46e','#a08030','#f0d88a','#7a6020',
-    '#dab85e','#b89038','#6a5018','#eed070','#907028'
-  ];
-
-  const isPie = state.chartType === 'pie' || state.chartType === 'doughnut';
-
-  state.chartInstance = new Chart(ctx, {
-    type: state.chartType,
+  const ctx = document.getElementById(canvasId).getContext('2d');
+  const inst = new Chart(ctx, {
+    type: chartType,
     data: {
       labels,
       datasets: [{
-        label: yCol,
+        label: aggFunc === 'COUNT' ? `COUNT de ${xCol}` : `${aggFunc} de ${yCol}`,
         data: values,
-        backgroundColor: isPie ? goldPalette.slice(0, labels.length) : 'rgba(200,168,75,0.7)',
-        borderColor: isPie ? goldPalette.slice(0, labels.length) : '#c8a84b',
+        backgroundColor: isPie ? GOLD_PALETTE.slice(0, labels.length) : 'rgba(200,168,75,0.75)',
+        borderColor: isPie ? GOLD_PALETTE.slice(0, labels.length) : '#c8a84b',
         borderWidth: 1,
         tension: 0.3,
       }]
     },
     options: {
+      indexAxis: isHBar ? 'y' : 'x',
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#e8e4d8', font: { family: 'DM Sans' } } },
-        tooltip: { backgroundColor: '#1f1f1f', titleColor: '#c8a84b', bodyColor: '#e8e4d8' }
+        legend: { labels: { color: '#e8e4d8', font: { family: 'DM Sans', size: 11 } } },
+        tooltip: { backgroundColor: '#1f1f1f', titleColor: '#c8a84b', bodyColor: '#e8e4d8',
+          callbacks: { label: ctx => ` ${formatNum(ctx.parsed[isHBar?'x':'y'] ?? ctx.parsed)}` }
+        }
       },
       scales: isPie ? {} : {
-        x: { ticks: { color: '#888', maxRotation: 40 }, grid: { color: '#2a2a2a' } },
-        y: { ticks: { color: '#888' }, grid: { color: '#2a2a2a' } }
+        x: { ticks: { color: '#888', maxRotation: isHBar ? 0 : 35, font: { size: 10 } }, grid: { color: '#2a2a2a' } },
+        y: { ticks: { color: '#888', font: { size: 10 }, callback: v => formatNum(v) }, grid: { color: '#2a2a2a' } }
       }
     }
   });
+
+  if (isPreview) state.chartInstances[canvasId] = inst;
+  else state.dvChartInstances[canvasId] = inst;
 }
 
-function formatNum(n) {
-  if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n/1000).toFixed(1) + 'K';
-  return n.toLocaleString('es-MX', { maximumFractionDigits: 1 });
+// ════════════════════════════════
+//  EXPORT
+// ════════════════════════════════
+function exportChart(canvasId, name) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const a = document.createElement('a');
+  a.download = `${name || 'grafica'}.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+  toast('Gráfica exportada como PNG ✓', 'success');
 }
 
-// ═══════════════════════════════════════
+function exportTable(rows, w, name) {
+  const cols = w.tableCols && w.tableCols.length ? w.tableCols : Object.keys(rows[0]||{});
+  const csvRows = [cols.join(','), ...rows.map(r => cols.map(c => `"${String(r[c]??'').replace(/"/g,'""')}"`).join(','))];
+  const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `${name || 'tabla'}.csv`;
+  a.click(); URL.revokeObjectURL(url);
+  toast('Tabla exportada como CSV ✓', 'success');
+}
+
+// ════════════════════════════════
 //  SAVE DASHBOARD
-// ═══════════════════════════════════════
+// ════════════════════════════════
 function saveCurrentDashboard() {
   const name = document.getElementById('builder-name').value.trim();
-  const tbl = document.getElementById('table-select').value;
-  const desc = document.getElementById('builder-desc').value.trim();
-
   if (!name) { toast('Ponle un nombre al tablero', 'error'); return; }
-  if (!tbl) { toast('Selecciona una tabla de datos', 'error'); return; }
-
-  const xEl = document.getElementById('ax-x');
-  const yEl = document.getElementById('ax-y');
-  const limitEl = document.getElementById('ax-limit');
-  const filterColEl = document.getElementById('filter-col');
-  const filterValEl = document.getElementById('filter-val');
-
-  const checkboxes = document.querySelectorAll('#axes-config input[type=checkbox]:checked');
-  const tableCols = Array.from(checkboxes).map(c => c.value);
-
-  const config = {
-    chartType: state.chartType,
-    tableName: tbl,
-    axisX: xEl?.value || '',
-    axisY: yEl?.value || '',
-    limit: limitEl?.value || '20',
-    filterCol: filterColEl?.value || '',
-    filterVal: filterValEl?.value || '',
-    tableCols,
-  };
+  if (!state.widgets.length) { toast('Agrega al menos una gráfica', 'error'); return; }
+  const emptyWidget = state.widgets.find(w => !w.tableName);
+  if (emptyWidget) { toast(`La gráfica "${emptyWidget.name}" no tiene tabla seleccionada`, 'error'); return; }
 
   const now = new Date().toISOString();
-
   if (state.editingId) {
     const idx = state.dashboards.findIndex(d => d.id === state.editingId);
     if (idx >= 0) {
-      state.dashboards[idx] = { ...state.dashboards[idx], name, desc, config, updatedAt: now };
+      state.dashboards[idx] = { ...state.dashboards[idx], name, widgets: [...state.widgets], updatedAt: now };
     }
     state.currentDashId = state.editingId;
     toast('Tablero actualizado ✓', 'success');
   } else {
-    const dash = {
-      id: `d_${Date.now()}`,
-      name, desc,
-      author: state.userName,
-      createdAt: now,
-      updatedAt: now,
-      config,
-      chartType: state.chartType,
-      tableName: tbl,
-    };
+    const dash = { id: `d_${Date.now()}`, name, author: state.userName, createdAt: now, updatedAt: now, widgets: [...state.widgets] };
     state.dashboards.unshift(dash);
     state.currentDashId = dash.id;
     toast('Tablero guardado ✓', 'success');
   }
-
   saveDashboardsToStorage();
   renderSidebar();
   renderHomeGrid();
-
-  if (state.chartInstance) { state.chartInstance.destroy(); state.chartInstance = null; }
+  destroyAllPreviewCharts();
   openDashboard(state.currentDashId);
 }
 
-// ═══════════════════════════════════════
-//  OPEN / EDIT / DELETE DASHBOARD
-// ═══════════════════════════════════════
+// ════════════════════════════════
+//  OPEN DASHBOARD
+// ════════════════════════════════
 async function openDashboard(id) {
   state.currentDashId = id;
   const dash = state.dashboards.find(d => d.id === id);
   if (!dash) return;
-
   renderSidebar();
   showView('dashboard');
-
   document.getElementById('dv-title').textContent = dash.name;
-  document.getElementById('dv-meta').textContent = `Creado por ${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · Tabla: ${dash.tableName}`;
-  document.getElementById('dv-content').innerHTML = '<div class="loading-indicator"><span class="spinner"></span>Cargando datos...</div>';
+  document.getElementById('dv-meta').textContent = `Creado por ${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+  Object.values(state.dvChartInstances).forEach(c => { try { c.destroy(); } catch(e){} });
+  state.dvChartInstances = {};
+  await renderDashboardWidgets(dash);
+}
 
-  const cfg = dash.config;
+async function renderDashboardWidgets(dash) {
+  const grid = document.getElementById('dv-widgets-grid');
+  grid.innerHTML = (dash.widgets||[]).map((w,i) =>
+    `<div class="widget-card" id="wcard-${i}">
+      <div class="widget-card-header">
+        <div>
+          <div class="widget-card-title">${CHART_ICONS[w.chartType]||'📊'} ${w.name}</div>
+          <div class="widget-card-meta">Tabla: ${w.tableName}</div>
+        </div>
+        <div class="widget-actions" id="wactions-${i}">
+          <span style="color:var(--text-muted);font-size:11px;">Cargando...</span>
+        </div>
+      </div>
+      <div id="wcontent-${i}"><div class="loading-indicator"><span class="spinner"></span>Cargando datos...</div></div>
+    </div>`).join('');
 
-  try {
-    const r = await fetch(`${API}/api/table/${encodeURIComponent(cfg.tableName)}?limit=500`);
-    const data = await r.json();
-    let rows = data.rows || [];
-
-    if (cfg.filterCol && cfg.filterVal) {
-      rows = rows.filter(r2 => String(r2[cfg.filterCol] || '').toLowerCase().includes(cfg.filterVal.toLowerCase()));
-    }
-
-    if (cfg.chartType === 'table') {
-      const cols = cfg.tableCols.length ? cfg.tableCols : Object.keys(rows[0] || {});
-      const shown = rows.slice(0, 50);
-      document.getElementById('dv-content').innerHTML = `
-        <div style="overflow-x:auto;">
-          <table class="table-preview">
-            <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
-            <tbody>${shown.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??'—'}</td>`).join('')}</tr>`).join('')}</tbody>
-          </table>
-          ${rows.length>50?`<div style="padding:8px 12px;font-size:11px;color:var(--text-muted);">Mostrando 50 de ${rows.length}</div>`:''}
-        </div>`;
-    } else if (cfg.chartType === 'kpi') {
-      let kpis = [];
-      if (cfg.axisX) {
-        const groups = {};
-        rows.forEach(row => {
-          const k = row[cfg.axisX] ?? 'N/A';
-          groups[k] = (groups[k] || 0) + (parseFloat(row[cfg.axisY]) || 0);
-        });
-        kpis = Object.entries(groups).slice(0, 8).map(([k, v]) => ({ label: k, value: v }));
-      } else {
-        const total = rows.reduce((s, row) => s + (parseFloat(row[cfg.axisY]) || 0), 0);
-        kpis = [{ label: cfg.axisY, value: total }];
-      }
-      document.getElementById('dv-content').innerHTML = `
-        <div class="kpi-grid">
-          ${kpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value">${formatNum(k.value)}</div></div>`).join('')}
-        </div>`;
-    } else {
-      // Chart
-      const lim = parseInt(cfg.limit) || 20;
-      const groups = {};
-      rows.forEach(row => {
-        const k = String(row[cfg.axisX] ?? 'N/A').substring(0, 20);
-        groups[k] = (groups[k] || 0) + (parseFloat(row[cfg.axisY]) || 0);
-      });
-      const entries = Object.entries(groups).sort((a,b)=>b[1]-a[1]).slice(0,lim);
-      const labels = entries.map(e=>e[0]);
-      const values = entries.map(e=>e[1]);
-
-      document.getElementById('dv-content').innerHTML = '<div class="chart-container" style="height:350px;"><canvas id="dv-chart"></canvas></div>';
-
-      const ctx = document.getElementById('dv-chart').getContext('2d');
-      const gp = ['#c8a84b','#e2c46e','#a08030','#f0d88a','#7a6020','#dab85e','#b89038','#6a5018'];
-      const isPie = cfg.chartType==='pie'||cfg.chartType==='doughnut';
-
-      new Chart(ctx, {
-        type: cfg.chartType,
-        data: {
-          labels,
-          datasets: [{
-            label: cfg.axisY,
-            data: values,
-            backgroundColor: isPie ? gp.slice(0,labels.length) : 'rgba(200,168,75,0.7)',
-            borderColor: isPie ? gp.slice(0,labels.length) : '#c8a84b',
-            borderWidth: 1, tension: 0.3,
-          }]
-        },
-        options: {
-          responsive:true, maintainAspectRatio:false,
-          plugins:{
-            legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans'}}},
-            tooltip:{backgroundColor:'#1f1f1f',titleColor:'#c8a84b',bodyColor:'#e8e4d8'}
-          },
-          scales: isPie ? {} : {
-            x:{ticks:{color:'#888',maxRotation:40},grid:{color:'#2a2a2a'}},
-            y:{ticks:{color:'#888'},grid:{color:'#2a2a2a'}}
-          }
-        }
-      });
-    }
-  } catch {
-    document.getElementById('dv-content').innerHTML = '<div style="color:var(--danger);padding:20px;font-size:13px;">⚠️ No se pudo cargar los datos del servidor.</div>';
+  // Load each widget independently
+  for (let i = 0; i < (dash.widgets||[]).length; i++) {
+    const w = dash.widgets[i];
+    loadDashboardWidget(i, w);
   }
 }
 
+async function loadDashboardWidget(i, w) {
+  try {
+    const r = await fetch(`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=1000`);
+    const data = await r.json();
+    const allRows = data.rows || [];
+    const rows = applyFilters(allRows, w.filters);
+    const canvasId = `dvchart-${i}`;
+    const container = document.getElementById(`wcontent-${i}`);
+    container.innerHTML = '';
+
+    if (w.chartType === 'table') {
+      const cols = w.tableCols && w.tableCols.length ? w.tableCols : Object.keys(rows[0]||{}).slice(0,8);
+      renderTableWidget(container, rows, { ...w, tableCols: cols }, false);
+      // Export CSV button
+      document.getElementById(`wactions-${i}`).innerHTML = `
+        <button class="icon-btn" onclick="exportTable(${JSON.stringify(rows).replace(/</g,'\\u003c')}, ${JSON.stringify(w)}, '${w.name}')" title="Exportar CSV">⬇ CSV</button>`;
+    } else if (w.chartType === 'kpi') {
+      state.columns = data.columns || Object.keys(rows[0]||{});
+      renderKPIWidget(container, rows, w);
+      document.getElementById(`wactions-${i}`).innerHTML = `<span style="color:var(--success);font-size:10px;">✓ ${rows.length} registros</span>`;
+    } else {
+      state.columns = data.columns || Object.keys(rows[0]||{});
+      renderChartWidget(container, rows, w, canvasId, false);
+      document.getElementById(`wactions-${i}`).innerHTML = `
+        <button class="icon-btn" onclick="exportChart('${canvasId}','${w.name}')" title="Exportar PNG">⬇ PNG</button>
+        <span style="color:var(--success);font-size:10px;margin-left:4px;">✓ ${rows.length}</span>`;
+    }
+  } catch {
+    document.getElementById(`wcontent-${i}`).innerHTML = '<div style="color:var(--danger);padding:16px;font-size:12px;">⚠️ Error al cargar datos del servidor.</div>';
+    document.getElementById(`wactions-${i}`).innerHTML = '';
+  }
+}
+
+async function refreshDashboard() {
+  const dash = state.dashboards.find(d => d.id === state.currentDashId);
+  if (!dash) return;
+  Object.values(state.dvChartInstances).forEach(c => { try { c.destroy(); } catch(e){} });
+  state.dvChartInstances = {};
+  await renderDashboardWidgets(dash);
+  toast('Datos actualizados ✓', 'success');
+}
+
+// ════════════════════════════════
+//  EDIT DASHBOARD
+// ════════════════════════════════
 function editCurrentDashboard() {
   const dash = state.dashboards.find(d => d.id === state.currentDashId);
   if (!dash) return;
   state.editingId = dash.id;
-  const cfg = dash.config;
-
+  state.widgets = dash.widgets ? JSON.parse(JSON.stringify(dash.widgets)) : [];
+  state.activeWidgetIdx = null;
   document.getElementById('builder-name').value = dash.name;
-  document.getElementById('builder-desc').value = dash.desc || '';
-  state.chartType = cfg.chartType;
-  document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`[data-type="${cfg.chartType}"]`)?.classList.add('active');
-
+  destroyAllPreviewCharts();
+  renderWidgetList();
+  resetConfigPanel();
   showView('builder');
-
-  // Load table data then restore config
-  document.getElementById('table-select').value = cfg.tableName;
-  loadTableColumns().then(() => {
-    setTimeout(() => {
-      const xEl = document.getElementById('ax-x');
-      const yEl = document.getElementById('ax-y');
-      const limitEl = document.getElementById('ax-limit');
-      if (xEl) xEl.value = cfg.axisX;
-      if (yEl) yEl.value = cfg.axisY;
-      if (limitEl) limitEl.value = cfg.limit;
-      const filterColEl = document.getElementById('filter-col');
-      const filterValEl = document.getElementById('filter-val');
-      if (filterColEl) filterColEl.value = cfg.filterCol || '';
-      if (filterValEl) filterValEl.value = cfg.filterVal || '';
-
-      if (cfg.chartType === 'table' && cfg.tableCols?.length) {
-        document.querySelectorAll('#axes-config input[type=checkbox]').forEach(cb => {
-          cb.checked = cfg.tableCols.includes(cb.value);
-        });
-      }
-      renderPreview();
-    }, 200);
-  });
+  renderSidebar();
 }
 
-function confirmDelete() {
-  document.getElementById('delete-modal').classList.add('show');
-}
-function closeModal() {
-  document.getElementById('delete-modal').classList.remove('show');
-}
+// ════════════════════════════════
+//  DELETE
+// ════════════════════════════════
+function confirmDelete() { document.getElementById('delete-modal').classList.add('show'); }
+function closeModal() { document.getElementById('delete-modal').classList.remove('show'); }
 function deleteDashboard() {
   state.dashboards = state.dashboards.filter(d => d.id !== state.currentDashId);
   saveDashboardsToStorage();
@@ -1268,9 +1311,16 @@ function deleteDashboard() {
   toast('Tablero eliminado', 'error');
 }
 
-// ═══════════════════════════════════════
-//  TOAST
-// ═══════════════════════════════════════
+// ════════════════════════════════
+//  HELPERS
+// ════════════════════════════════
+function formatNum(n) {
+  if (n === null || n === undefined || isNaN(n)) return '—';
+  if (Math.abs(n) >= 1000000) return (n/1000000).toFixed(1) + 'M';
+  if (Math.abs(n) >= 1000) return (n/1000).toFixed(1) + 'K';
+  return Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 });
+}
+
 function toast(msg, type = '') {
   const el = document.createElement('div');
   el.className = `toast ${type}`;
@@ -1278,13 +1328,6 @@ function toast(msg, type = '') {
   document.getElementById('toast-container').appendChild(el);
   setTimeout(() => el.remove(), 3500);
 }
-
-// Sync builder name to preview title
-document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('builder-name')?.addEventListener('input', () => {
-    document.getElementById('preview-title').textContent = document.getElementById('builder-name').value || 'Sin título';
-  });
-});
 </script>
 </body>
 </html>

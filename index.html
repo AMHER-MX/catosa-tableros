@@ -5,251 +5,215 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catosa · Tableros</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+:root{--bg:#0d0d0d;--surface:#161616;--surface2:#1f1f1f;--surface3:#252525;--border:#2a2a2a;--gold:#c8a84b;--gold-light:#e2c46e;--gold-dim:rgba(200,168,75,0.12);--text:#e8e4d8;--text-muted:#888;--danger:#e05555;--success:#4caf7d;--blue:#5b9cf6;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:#333;border-radius:3px;}
 
-  :root {
-    --bg: #0d0d0d;
-    --surface: #161616;
-    --surface2: #1f1f1f;
-    --surface3: #252525;
-    --border: #2a2a2a;
-    --gold: #c8a84b;
-    --gold-light: #e2c46e;
-    --gold-dim: rgba(200,168,75,0.12);
-    --text: #e8e4d8;
-    --text-muted: #888;
-    --danger: #e05555;
-    --success: #4caf7d;
-    --blue: #5b9cf6;
-    --info: #6ab4f5;
-  }
+/* LOGIN */
+#login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:var(--bg);}
+.login-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(200,168,75,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(200,168,75,.04) 0%,transparent 50%);}
+.login-grid{position:absolute;inset:0;opacity:.035;background-image:linear-gradient(var(--gold) 1px,transparent 1px),linear-gradient(90deg,var(--gold) 1px,transparent 1px);background-size:60px 60px;}
+.login-card{position:relative;z-index:1;width:420px;padding:48px 40px;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);}
+.login-logo{margin-bottom:32px;}.login-sub{font-size:11px;color:var(--text-muted);letter-spacing:4px;text-transform:uppercase;margin-top:6px;}
+.login-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:6px;}
+.login-desc{font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.5;}
+.area-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px;}
+.area-btn{padding:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden;}
+.area-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);opacity:0;transition:opacity .2s;}
+.area-btn:hover{border-color:var(--gold);background:var(--gold-dim);}
+.area-btn:hover::before{opacity:1;}
+.area-btn .area-icon{font-size:18px;display:block;margin-bottom:5px;}
+.area-btn .area-name{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;}
+.area-btn .area-dept{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.login-pass-section{display:none;}.login-pass-section.show{display:block;}
+.pass-label{font-size:12px;color:var(--text-muted);margin-bottom:6px;}
+.pass-selected{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--gold);margin-bottom:14px;}
+.pass-input{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;margin-bottom:10px;}
+.pass-input:focus{border-color:var(--gold);}.pass-input.error{border-color:var(--danger);}
+.btn-primary{width:100%;padding:13px;background:var(--gold);border:none;color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;}
+.btn-primary:hover{background:var(--gold-light);}
+.btn-back{background:none;border:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;padding:6px 0;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.btn-back:hover{color:var(--text);}
+.login-error{font-size:12px;color:var(--danger);margin-top:6px;display:none;}.login-error.show{display:block;}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
-  ::-webkit-scrollbar { width: 5px; height: 5px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+/* APP */
+#app{display:none;height:100vh;overflow:hidden;flex-direction:column;}
+#app.show{display:flex;}
+.topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:14px;flex-shrink:0;}
+.topbar-sep{width:1px;height:20px;background:var(--border);}
+.topbar-area{font-size:12px;color:var(--text-muted);}
+.topbar-area span{color:var(--text);}
+.topbar-actions{margin-left:auto;display:flex;gap:8px;align-items:center;}
+.btn-sm{padding:7px 14px;background:var(--gold);border:none;color:#000;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.btn-sm:hover{background:var(--gold-light);}
+.btn-sm.outline{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
+.btn-sm.outline:hover{border-color:var(--gold);color:var(--text);background:var(--gold-dim);}
+.btn-sm.danger{background:transparent;border:1px solid var(--danger);color:var(--danger);}
+.btn-sm.danger:hover{background:rgba(224,85,85,.1);}
+.logout-btn{background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;padding:6px 8px;font-family:'DM Sans',sans-serif;}
+.logout-btn:hover{color:var(--text);}
+.main-body{display:flex;flex:1;overflow:hidden;}
 
-  /* ─── LOGIN ─── */
-  #login-screen { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; background: var(--bg); }
-  .login-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 20%, rgba(200,168,75,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 80%, rgba(200,168,75,0.04) 0%, transparent 50%); }
-  .login-grid { position: absolute; inset: 0; opacity: 0.035; background-image: linear-gradient(var(--gold) 1px, transparent 1px), linear-gradient(90deg, var(--gold) 1px, transparent 1px); background-size: 60px 60px; }
-  .login-card { position: relative; z-index: 1; width: 420px; padding: 48px 40px; background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); }
-  .login-logo { margin-bottom: 32px; }
-  .login-logo img { height: 36px; object-fit: contain; }
-  .login-sub { font-size: 11px; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; margin-top: 6px; }
-  .login-title { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 6px; }
-  .login-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.5; }
-  .area-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
-  .area-btn { padding: 14px 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; text-align: left; position: relative; overflow: hidden; }
-  .area-btn::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--gold); opacity: 0; transition: opacity 0.2s; }
-  .area-btn:hover { border-color: var(--gold); background: var(--gold-dim); }
-  .area-btn:hover::before { opacity: 1; }
-  .area-btn .area-icon { font-size: 18px; display: block; margin-bottom: 5px; }
-  .area-btn .area-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 1px; }
-  .area-btn .area-dept { font-size: 10px; color: var(--text-muted); margin-top: 2px; }
-  .login-pass-section { display: none; }
-  .login-pass-section.show { display: block; }
-  .pass-label { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
-  .pass-selected { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: var(--gold); margin-bottom: 14px; }
-  .pass-input { width: 100%; padding: 11px 14px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; margin-bottom: 10px; }
-  .pass-input:focus { border-color: var(--gold); }
-  .pass-input.error { border-color: var(--danger); }
-  .btn-primary { width: 100%; padding: 13px; background: var(--gold); border: none; color: #000; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
-  .btn-primary:hover { background: var(--gold-light); }
-  .btn-back { background: none; border: none; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; padding: 6px 0; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; }
-  .btn-back:hover { color: var(--text); }
-  .login-error { font-size: 12px; color: var(--danger); margin-top: 6px; display: none; }
-  .login-error.show { display: block; }
+/* SIDEBAR */
+.sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.sidebar-section{padding:14px 12px 6px;}
+.sidebar-label{font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:3px;font-size:12px;cursor:pointer;color:var(--text-muted);transition:all .15s;margin-bottom:2px;border:1px solid transparent;}
+.sidebar-item:hover{background:var(--surface2);color:var(--text);}
+.sidebar-item.active{background:var(--gold-dim);color:var(--gold);border-color:rgba(200,168,75,.2);}
+.sidebar-item .item-icon{font-size:13px;width:16px;text-align:center;flex-shrink:0;}
+.sidebar-item .item-info{flex:1;min-width:0;}
+.sidebar-item .item-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sidebar-item .item-author{font-size:10px;color:var(--text-muted);}
+.sidebar-new{margin:6px 12px 12px;padding:9px;border:1px dashed #333;background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;width:calc(100% - 24px);text-align:center;}
+.sidebar-new:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.content{flex:1;overflow-y:auto;background:var(--bg);}
 
-  /* ─── MAIN APP ─── */
-  #app { display: none; height: 100vh; overflow: hidden; flex-direction: column; }
-  #app.show { display: flex; }
+/* HOME */
+#view-home{padding:28px;}
+.home-greeting{margin-bottom:28px;}
+.home-greeting h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
+.home-greeting p{color:var(--text-muted);font-size:13px;}
+.dashboards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
+.dash-card{background:var(--surface);border:1px solid var(--border);padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.dash-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .2s;}
+.dash-card:hover{border-color:#333;transform:translateY(-2px);}
+.dash-card:hover::after{transform:scaleX(1);}
+.dash-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.badge{font-size:9px;padding:2px 6px;border:1px solid var(--border);color:var(--text-muted);background:var(--surface2);}
+.dash-card-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:4px;}
+.dash-card-info{font-size:11px;color:var(--text-muted);line-height:1.5;}
+.empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;}
+.empty-state-icon{font-size:48px;margin-bottom:14px;}
+.empty-state h3{font-family:'Syne',sans-serif;font-size:18px;margin-bottom:6px;}
+.empty-state p{color:var(--text-muted);font-size:13px;}
 
-  /* TOP BAR */
-  .topbar { height: 50px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 18px; gap: 14px; flex-shrink: 0; }
-  .topbar-brand { display: flex; align-items: center; gap: 10px; }
-  .topbar-sep { width: 1px; height: 20px; background: var(--border); }
-  .topbar-area { font-size: 12px; color: var(--text-muted); font-weight: 500; }
-  .topbar-area span { color: var(--text); font-weight: 500; }
-  .topbar-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
-  .btn-sm { padding: 7px 14px; background: var(--gold); border: none; color: #000; font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
-  .btn-sm:hover { background: var(--gold-light); }
-  .btn-sm.outline { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
-  .btn-sm.outline:hover { border-color: var(--gold); color: var(--text); background: var(--gold-dim); }
-  .btn-sm.danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); }
-  .btn-sm.danger:hover { background: rgba(224,85,85,0.1); }
-  .logout-btn { background: none; border: none; color: var(--text-muted); font-size: 12px; cursor: pointer; padding: 6px 8px; font-family: 'DM Sans', sans-serif; }
-  .logout-btn:hover { color: var(--text); }
+/* BUILDER */
+#view-builder{display:none;height:100%;overflow:hidden;flex-direction:column;}
+#view-builder.show{display:flex;}
+.builder-topbar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:var(--surface);flex-shrink:0;}
+.builder-name-input{flex:1;max-width:280px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;padding:7px 12px;outline:none;transition:border-color .2s;}
+.builder-name-input:focus{border-color:var(--gold);}
+.builder-body{display:flex;flex:1;overflow:hidden;}
+.widgets-panel{width:200px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.widget-item{padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.widget-item:hover{background:var(--surface2);}
+.widget-item.active{background:var(--gold-dim);border-left:2px solid var(--gold);}
+.widget-item-header{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
+.widget-item-name{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.widget-item-del{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;padding:1px 3px;}
+.widget-item-del:hover{color:var(--danger);}
+.widget-item-sub{font-size:10px;color:var(--text-muted);}
+.widget-add-btn{margin:8px;padding:8px;border:1px dashed #333;background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;text-align:center;}
+.widget-add-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.config-panel{width:270px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;}
+.config-section{padding:12px 13px;border-bottom:1px solid var(--border);}
+.config-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:9px;font-weight:600;}
+.config-select,.config-input{width:100%;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;transition:border-color .2s;margin-bottom:7px;cursor:pointer;}
+.config-select:focus,.config-input:focus{border-color:var(--gold);}
+.config-select option{background:var(--surface2);}
+.config-label{font-size:10px;color:var(--text-muted);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+.chart-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.chart-type-btn{padding:8px 3px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;color:var(--text-muted);font-size:9px;text-align:center;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.chart-type-btn:hover{border-color:var(--gold);color:var(--text);}
+.chart-type-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.chart-type-btn .ct-icon{font-size:15px;display:block;margin-bottom:2px;}
+.loading-indicator{text-align:center;padding:14px;color:var(--text-muted);font-size:11px;}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-right:5px;vertical-align:middle;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.preview-area{flex:1;overflow-y:auto;padding:16px;background:var(--bg);}
+.preview-card{background:var(--surface);border:1px solid var(--border);padding:18px;}
+.preview-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:3px;}
+.preview-meta{font-size:10px;color:var(--text-muted);margin-bottom:14px;}
+.preview-placeholder{height:220px;display:flex;align-items:center;justify-content:center;border:1px dashed #2a2a2a;color:var(--text-muted);font-size:12px;flex-direction:column;gap:8px;}
+.chart-container{position:relative;height:260px;}
+.table-preview{width:100%;border-collapse:collapse;font-size:11px;}
+.table-preview th{background:var(--surface2);padding:8px 9px;text-align:left;font-family:'Syne',sans-serif;font-size:9px;letter-spacing:1px;color:var(--text-muted);border-bottom:1px solid var(--border);}
+.table-preview td{padding:7px 9px;border-bottom:1px solid var(--border);}
+.table-preview tr:hover td{background:var(--surface2);}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
+.kpi-card{background:var(--surface2);border:1px solid var(--border);padding:14px;text-align:center;}
+.kpi-label{font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
+.kpi-value{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--gold);}
+.kpi-sub{font-size:9px;color:var(--text-muted);margin-top:3px;}
 
-  /* MAIN BODY */
-  .main-body { display: flex; flex: 1; overflow: hidden; }
+/* DATE PRESETS */
+.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;}
+.preset-btn{padding:5px 2px;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:9px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;text-align:center;}
+.preset-btn:hover,.preset-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.date-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
 
-  /* SIDEBAR */
-  .sidebar { width: 210px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
-  .sidebar-section { padding: 14px 12px 6px; }
-  .sidebar-label { font-size: 10px; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
-  .sidebar-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 3px; font-size: 12px; cursor: pointer; color: var(--text-muted); transition: all 0.15s; margin-bottom: 2px; border: 1px solid transparent; }
-  .sidebar-item:hover { background: var(--surface2); color: var(--text); }
-  .sidebar-item.active { background: var(--gold-dim); color: var(--gold); border-color: rgba(200,168,75,0.2); }
-  .sidebar-item .item-icon { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
-  .sidebar-item .item-info { flex: 1; min-width: 0; }
-  .sidebar-item .item-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .sidebar-item .item-author { font-size: 10px; color: var(--text-muted); }
-  .sidebar-divider { height: 1px; background: var(--border); margin: 6px 12px; }
-  .sidebar-new { margin: 6px 12px 12px; padding: 9px; border: 1px dashed #333; background: none; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; width: calc(100% - 24px); text-align: center; }
-  .sidebar-new:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+/* CHECK GROUP */
+.check-group{max-height:140px;overflow-y:auto;border:1px solid var(--border);padding:7px;background:var(--surface2);}
+.check-item{display:flex;align-items:center;gap:6px;margin-bottom:4px;cursor:pointer;font-size:11px;}
+.check-item input{accent-color:var(--gold);}
 
-  /* CONTENT */
-  .content { flex: 1; overflow-y: auto; background: var(--bg); }
+/* DASHBOARD VIEW */
+#view-dashboard{display:none;padding:18px;overflow-y:auto;}
+#view-dashboard.show{display:block;}
+.dash-view-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
+.dash-view-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:3px;}
+.dash-view-meta{font-size:11px;color:var(--text-muted);}
+.dash-view-actions{margin-left:auto;display:flex;gap:7px;flex-shrink:0;}
+.widgets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px;}
+.widget-card{background:var(--surface);border:1px solid var(--border);padding:16px;}
+.widget-card.full-width{grid-column:1/-1;}
+.widget-card-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.widget-card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;flex:1;}
+.widget-card-meta{font-size:10px;color:var(--text-muted);}
+.widget-actions{display:flex;gap:5px;align-items:center;}
+.icon-btn{background:none;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;padding:4px 7px;font-size:11px;transition:all .15s;}
+.icon-btn:hover{border-color:var(--gold);color:var(--gold);}
+.widget-chart-wrap{position:relative;height:260px;}
+.map-container{height:280px;}
+.gauge-container{display:flex;flex-direction:column;align-items:center;padding:10px 0;}
 
-  /* HOME */
-  #view-home { padding: 28px; }
-  .home-greeting { margin-bottom: 28px; }
-  .home-greeting h1 { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; margin-bottom: 4px; }
-  .home-greeting p { color: var(--text-muted); font-size: 13px; }
-  .dashboards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
-  .dash-card { background: var(--surface); border: 1px solid var(--border); padding: 18px; cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden; }
-  .dash-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: var(--gold); transform: scaleX(0); transition: transform 0.2s; }
-  .dash-card:hover { border-color: #333; transform: translateY(-2px); }
-  .dash-card:hover::after { transform: scaleX(1); }
-  .dash-card-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-  .dash-card-icon { font-size: 22px; }
-  .dash-card-badges { display: flex; gap: 4px; flex-wrap: wrap; }
-  .badge { font-size: 9px; padding: 2px 6px; border: 1px solid var(--border); color: var(--text-muted); background: var(--surface2); letter-spacing: 0.5px; }
-  .dash-card-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; margin-bottom: 4px; }
-  .dash-card-info { font-size: 11px; color: var(--text-muted); line-height: 1.5; }
-  .dash-card-info span { color: var(--gold); }
-  .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; }
-  .empty-state-icon { font-size: 48px; margin-bottom: 14px; }
-  .empty-state h3 { font-family: 'Syne', sans-serif; font-size: 18px; margin-bottom: 6px; }
-  .empty-state p { color: var(--text-muted); font-size: 13px; }
+/* STATUS BAR */
+.status-bar{height:24px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:18px;flex-shrink:0;}
+.status-item{font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:5px;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--success);}
+.status-dot.off{background:var(--danger);}
 
-  /* ─── BUILDER ─── */
-  #view-builder { display: none; height: 100%; overflow: hidden; flex-direction: column; }
-  #view-builder.show { display: flex; }
-  .builder-topbar { padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; background: var(--surface); flex-shrink: 0; }
-  .builder-name-input { flex: 1; max-width: 280px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; padding: 7px 12px; outline: none; transition: border-color 0.2s; }
-  .builder-name-input:focus { border-color: var(--gold); }
-  .builder-actions { margin-left: auto; display: flex; gap: 8px; }
-  .builder-body { display: flex; flex: 1; overflow: hidden; }
+/* TOAST */
+#toast-container{position:fixed;bottom:36px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;}
+.toast{padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);font-size:12px;max-width:300px;animation:slideIn .3s ease;}
+.toast.success{border-left-color:var(--success);}.toast.error{border-left-color:var(--danger);}
+@keyframes slideIn{from{transform:translateX(20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
 
-  /* Widgets panel */
-  .widgets-panel { width: 260px; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
-  .widget-item { padding: 10px 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; }
-  .widget-item:hover { background: var(--surface2); }
-  .widget-item.active { background: var(--gold-dim); border-left: 2px solid var(--gold); }
-  .widget-item-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-  .widget-item-icon { font-size: 14px; }
-  .widget-item-name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; flex: 1; }
-  .widget-item-del { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px; padding: 2px 4px; }
-  .widget-item-del:hover { color: var(--danger); }
-  .widget-item-sub { font-size: 10px; color: var(--text-muted); }
-  .widget-add-btn { margin: 10px; padding: 10px; border: 1px dashed #333; background: none; color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.2s; text-align: center; }
-  .widget-add-btn:hover { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:26px;width:360px;}
+.modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:8px;}
+.modal-text{font-size:13px;color:var(--text-muted);margin-bottom:22px;line-height:1.5;}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
+.btn-danger{background:var(--danger);border:none;color:#fff;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:9px 16px;cursor:pointer;}
+.btn-cancel{background:none;border:1px solid var(--border);color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12px;padding:9px 16px;cursor:pointer;}
+.btn-cancel:hover{border-color:var(--gold);color:var(--text);}
+.no-widget-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--text-muted);font-size:12px;gap:8px;}
 
-  /* Config panel */
-  .config-panel { width: 260px; background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; flex-shrink: 0; }
-  .config-section { padding: 14px 14px; border-bottom: 1px solid var(--border); }
-  .config-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .config-select, .config-input { width: 100%; padding: 8px 10px; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; transition: border-color 0.2s; margin-bottom: 8px; cursor: pointer; }
-  .config-select:focus, .config-input:focus { border-color: var(--gold); }
-  .config-select option { background: var(--surface2); }
-  .config-label { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
-  .chart-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
-  .chart-type-btn { padding: 9px 5px; background: var(--surface2); border: 1px solid var(--border); cursor: pointer; color: var(--text-muted); font-size: 9px; text-align: center; transition: all 0.15s; font-family: 'DM Sans', sans-serif; letter-spacing: 0.3px; }
-  .chart-type-btn:hover { border-color: var(--gold); color: var(--text); }
-  .chart-type-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
-  .chart-type-btn .ct-icon { font-size: 18px; display: block; margin-bottom: 3px; }
-  .loading-indicator { text-align: center; padding: 16px; color: var(--text-muted); font-size: 12px; }
-  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px; vertical-align: middle; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Preview */
-  .preview-area { flex: 1; overflow-y: auto; padding: 20px; background: var(--bg); }
-  .preview-card { background: var(--surface); border: 1px solid var(--border); padding: 20px; }
-  .preview-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; margin-bottom: 4px; }
-  .preview-meta { font-size: 11px; color: var(--text-muted); margin-bottom: 16px; }
-  .preview-placeholder { height: 260px; display: flex; align-items: center; justify-content: center; border: 1px dashed #2a2a2a; color: var(--text-muted); font-size: 13px; flex-direction: column; gap: 8px; }
-  .preview-placeholder-icon { font-size: 32px; }
-  .chart-container { position: relative; height: 280px; }
-  .table-preview { width: 100%; border-collapse: collapse; font-size: 12px; }
-  .table-preview th { background: var(--surface2); padding: 9px 10px; text-align: left; font-family: 'Syne', sans-serif; font-size: 9px; letter-spacing: 1px; color: var(--text-muted); border-bottom: 1px solid var(--border); }
-  .table-preview td { padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--text); }
-  .table-preview tr:hover td { background: var(--surface2); }
-  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
-  .kpi-card { background: var(--surface2); border: 1px solid var(--border); padding: 16px; text-align: center; }
-  .kpi-label { font-size: 10px; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-  .kpi-value { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--gold); }
-  .kpi-sub { font-size: 10px; color: var(--text-muted); margin-top: 4px; }
-
-  /* ─── DASHBOARD VIEW ─── */
-  #view-dashboard { display: none; padding: 20px; overflow-y: auto; }
-  #view-dashboard.show { display: block; }
-  .dash-view-header { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
-  .dash-view-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 3px; }
-  .dash-view-meta { font-size: 12px; color: var(--text-muted); }
-  .dash-view-actions { margin-left: auto; display: flex; gap: 8px; flex-shrink: 0; }
-  .widgets-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 16px; }
-  .widget-card { background: var(--surface); border: 1px solid var(--border); padding: 18px; }
-  .widget-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-  .widget-card-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; flex: 1; }
-  .widget-card-meta { font-size: 10px; color: var(--text-muted); }
-  .widget-actions { display: flex; gap: 6px; }
-  .icon-btn { background: none; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; padding: 5px 8px; font-size: 12px; transition: all 0.15s; }
-  .icon-btn:hover { border-color: var(--gold); color: var(--gold); }
-  .widget-chart-wrap { position: relative; height: 280px; }
-
-  /* STATUS BAR */
-  .status-bar { height: 24px; background: var(--surface); border-top: 1px solid var(--border); display: flex; align-items: center; padding: 0 14px; gap: 18px; flex-shrink: 0; }
-  .status-item { font-size: 10px; color: var(--text-muted); display: flex; align-items: center; gap: 5px; }
-  .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
-  .status-dot.off { background: var(--danger); }
-
-  /* TOAST */
-  #toast-container { position: fixed; bottom: 36px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 6px; }
-  .toast { padding: 10px 16px; background: var(--surface2); border: 1px solid var(--border); border-left: 3px solid var(--gold); font-size: 12px; max-width: 300px; animation: slideIn 0.3s ease; }
-  .toast.success { border-left-color: var(--success); }
-  .toast.error { border-left-color: var(--danger); }
-  @keyframes slideIn { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-
-  /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; display: none; align-items: center; justify-content: center; }
-  .modal-overlay.show { display: flex; }
-  .modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--gold); padding: 26px; width: 360px; }
-  .modal-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; margin-bottom: 8px; }
-  .modal-text { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; line-height: 1.5; }
-  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
-  .btn-danger { background: var(--danger); border: none; color: #fff; font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 9px 16px; cursor: pointer; }
-  .btn-cancel { background: none; border: 1px solid var(--border); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 9px 16px; cursor: pointer; }
-  .btn-cancel:hover { border-color: var(--gold); color: var(--text); }
-
-  /* CHECKBOX GROUP */
-  .check-group { max-height: 150px; overflow-y: auto; border: 1px solid var(--border); padding: 8px; background: var(--surface2); }
-  .check-item { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; cursor: pointer; font-size: 12px; }
-  .check-item input { accent-color: var(--gold); }
-
-  /* FILTER ROW */
-  .filter-row { display: grid; grid-template-columns: 1fr 90px; gap: 6px; }
-
-  /* NO WIDGET SELECTED */
-  .no-widget-msg { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); font-size: 13px; gap: 8px; }
-  .no-widget-msg-icon { font-size: 36px; }
+/* Leaflet dark fix */
+.leaflet-container{background:#1a1a1a;}
+.leaflet-popup-content-wrapper{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.leaflet-popup-tip{background:var(--surface2);}
 </style>
 </head>
 <body>
 
-<!-- ═══ LOGIN ═══ -->
+<!-- LOGIN -->
 <div id="login-screen">
-  <div class="login-bg"></div>
-  <div class="login-grid"></div>
+  <div class="login-bg"></div><div class="login-grid"></div>
   <div class="login-card">
     <div class="login-logo">
       <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;">
         <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:36px;object-fit:contain;">
         <div style="width:1px;height:28px;background:var(--border);"></div>
-        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:30px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.85;">
+        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:30px;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;">
       </div>
       <div class="login-sub">Plataforma de Tableros</div>
     </div>
@@ -264,18 +228,18 @@
       <div class="pass-selected" id="selected-area-name"></div>
       <input type="text" class="pass-input" id="user-name" placeholder="Tu nombre">
       <input type="password" class="pass-input" id="pass-input" placeholder="Contraseña del área" onkeydown="if(event.key==='Enter')doLogin()">
-      <div class="login-error" id="login-error">Contraseña incorrecta</div>
+      <div class="login-error" id="login-error"></div>
       <button class="btn-primary" style="margin-top:14px;" onclick="doLogin()">ENTRAR</button>
     </div>
   </div>
 </div>
 
-<!-- ═══ APP ═══ -->
+<!-- APP -->
 <div id="app">
   <div class="topbar">
-    <div class="topbar-brand">
+    <div style="display:flex;align-items:center;gap:10px;">
       <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:24px;object-fit:contain;">
-      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:20px;object-fit:contain;filter:brightness(0) invert(1);opacity:0.8;">
+      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:20px;object-fit:contain;filter:brightness(0) invert(1);opacity:.8;">
     </div>
     <div class="topbar-sep"></div>
     <div class="topbar-area">Área: <span id="topbar-area-name">—</span></div>
@@ -284,7 +248,6 @@
       <button class="logout-btn" onclick="logout()">Salir</button>
     </div>
   </div>
-
   <div class="main-body">
     <div class="sidebar">
       <div class="sidebar-section">
@@ -293,11 +256,10 @@
       </div>
       <button class="sidebar-new" onclick="newDashboard()">＋ Nuevo tablero</button>
     </div>
-
-    <div class="content" id="content-area">
+    <div class="content">
 
       <!-- HOME -->
-      <div id="view-home">
+      <div id="view-home" style="padding:28px;">
         <div class="home-greeting">
           <h1 id="home-greeting-title">Buenos días</h1>
           <p id="home-greeting-sub">Selecciona un tablero o crea uno nuevo</p>
@@ -308,45 +270,44 @@
       <!-- BUILDER -->
       <div id="view-builder">
         <div class="builder-topbar">
-          <input type="text" class="builder-name-input" id="builder-name" placeholder="Nombre del tablero..." value="Mi Tablero">
-          <div class="builder-actions">
+          <input type="text" class="builder-name-input" id="builder-name" value="Mi Tablero" placeholder="Nombre del tablero...">
+          <div style="margin-left:auto;display:flex;gap:8px;">
             <button class="btn-sm outline" onclick="cancelBuilder()">Cancelar</button>
             <button class="btn-sm" onclick="saveCurrentDashboard()">Guardar Tablero</button>
           </div>
         </div>
         <div class="builder-body">
-          <!-- Widgets list -->
+          <!-- Widget list -->
           <div class="widgets-panel">
-            <div class="sidebar-section" style="padding-bottom:2px;">
-              <div class="sidebar-label">Gráficas</div>
-            </div>
+            <div style="padding:12px 10px 4px;"><div class="sidebar-label">Gráficas</div></div>
             <div id="widget-list"></div>
             <button class="widget-add-btn" onclick="addWidget()">＋ Agregar gráfica</button>
           </div>
-
           <!-- Config panel -->
-          <div class="config-panel" id="config-panel">
-            <div class="no-widget-msg" id="no-widget-msg">
-              <div class="no-widget-msg-icon">📊</div>
-              <div>Agrega una gráfica para comenzar</div>
-            </div>
+          <div class="config-panel">
+            <div class="no-widget-msg" id="no-widget-msg"><div style="font-size:28px;">📊</div><div>Agrega una gráfica para comenzar</div></div>
             <div id="widget-config-content" style="display:none;">
+
+              <div class="config-section">
+                <div class="config-title">📌 Nombre</div>
+                <input type="text" class="config-input" id="widget-name-input" placeholder="Nombre de la gráfica..." oninput="syncWidgetName()">
+              </div>
+
               <div class="config-section">
                 <div class="config-title">📊 Tipo de Gráfica</div>
                 <div class="chart-type-grid" id="chart-type-grid">
                   <button class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar',this)"><span class="ct-icon">📊</span>Barras</button>
-                  <button class="chart-type-btn" data-type="horizontalBar" onclick="selectChartType('horizontalBar',this)"><span class="ct-icon">📉</span>H. Bar</button>
+                  <button class="chart-type-btn" data-type="horizontalBar" onclick="selectChartType('horizontalBar',this)"><span class="ct-icon">📉</span>H.Bar</button>
                   <button class="chart-type-btn" data-type="line" onclick="selectChartType('line',this)"><span class="ct-icon">📈</span>Línea</button>
                   <button class="chart-type-btn" data-type="pie" onclick="selectChartType('pie',this)"><span class="ct-icon">🥧</span>Pastel</button>
                   <button class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut',this)"><span class="ct-icon">🍩</span>Dona</button>
+                  <button class="chart-type-btn" data-type="scatter" onclick="selectChartType('scatter',this)"><span class="ct-icon">🔵</span>Dispersión</button>
+                  <button class="chart-type-btn" data-type="gauge" onclick="selectChartType('gauge',this)"><span class="ct-icon">🎯</span>Gauge</button>
+                  <button class="chart-type-btn" data-type="compare" onclick="selectChartType('compare',this)"><span class="ct-icon">📋</span>Comparar</button>
+                  <button class="chart-type-btn" data-type="map" onclick="selectChartType('map',this)"><span class="ct-icon">🗺️</span>Mapa</button>
                   <button class="chart-type-btn" data-type="table" onclick="selectChartType('table',this)"><span class="ct-icon">🗃️</span>Tabla</button>
                   <button class="chart-type-btn" data-type="kpi" onclick="selectChartType('kpi',this)"><span class="ct-icon">🎯</span>KPI</button>
                 </div>
-              </div>
-
-              <div class="config-section">
-                <div class="config-title">📝 Nombre de la gráfica</div>
-                <input type="text" class="config-input" id="widget-name-input" placeholder="Ej: Ventas por Vendedor" oninput="syncWidgetName()">
               </div>
 
               <div class="config-section">
@@ -356,27 +317,76 @@
                 <select class="config-select" id="table-select" style="display:none" onchange="loadTableColumns()">
                   <option value="">— Selecciona tabla —</option>
                 </select>
-                <div id="columns-loading" class="loading-indicator" style="display:none;"><span class="spinner"></span>Cargando columnas...</div>
+                <div class="config-label">Filas a cargar</div>
+                <select class="config-select" id="data-limit">
+                  <option value="500">500</option>
+                  <option value="1000" selected>1,000</option>
+                  <option value="2000">2,000</option>
+                  <option value="5000">5,000</option>
+                  <option value="99999">Todas</option>
+                </select>
+                <div id="columns-loading" style="display:none;" class="loading-indicator"><span class="spinner"></span>Cargando columnas...</div>
               </div>
 
-              <div class="config-section" id="axes-section" style="display:none">
+              <div class="config-section" id="date-section" style="display:none;">
+                <div class="config-title">📅 Filtro de Fecha</div>
+                <div class="config-label">Columna de fecha</div>
+                <select class="config-select" id="date-col" onchange="onDateColChange()">
+                  <option value="">— Sin filtro de fecha —</option>
+                </select>
+                <div id="date-options" style="display:none;">
+                  <div class="config-label">Período rápido</div>
+                  <div class="preset-grid" id="preset-grid">
+                    <button class="preset-btn active" data-p="" onclick="selectPreset(this,'')">Todos</button>
+                    <button class="preset-btn" data-p="today" onclick="selectPreset(this,'today')">Hoy</button>
+                    <button class="preset-btn" data-p="thisWeek" onclick="selectPreset(this,'thisWeek')">Semana</button>
+                    <button class="preset-btn" data-p="thisMonth" onclick="selectPreset(this,'thisMonth')">Este mes</button>
+                    <button class="preset-btn" data-p="lastMonth" onclick="selectPreset(this,'lastMonth')">Mes ant.</button>
+                    <button class="preset-btn" data-p="thisYear" onclick="selectPreset(this,'thisYear')">Este año</button>
+                    <button class="preset-btn" data-p="lastYear" onclick="selectPreset(this,'lastYear')">Año ant.</button>
+                    <button class="preset-btn" data-p="q1" onclick="selectPreset(this,'q1')">Q1</button>
+                    <button class="preset-btn" data-p="q2" onclick="selectPreset(this,'q2')">Q2</button>
+                    <button class="preset-btn" data-p="q3" onclick="selectPreset(this,'q3')">Q3</button>
+                    <button class="preset-btn" data-p="q4" onclick="selectPreset(this,'q4')">Q4</button>
+                    <button class="preset-btn" data-p="custom" onclick="selectPreset(this,'custom')">Rango</button>
+                  </div>
+                  <div id="custom-date-row" class="date-row" style="display:none;">
+                    <input type="date" class="config-input" id="date-from" style="margin:0;" onchange="onDateRangeChange()">
+                    <input type="date" class="config-input" id="date-to" style="margin:0;" onchange="onDateRangeChange()">
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-section" id="axes-section" style="display:none;">
                 <div class="config-title">⚙️ Configuración</div>
                 <div id="axes-config"></div>
               </div>
 
-              <div class="config-section" id="filter-section" style="display:none">
-                <div class="config-title">🔍 Filtros</div>
+              <div class="config-section" id="filter-section" style="display:none;">
+                <div class="config-title">🔍 Filtros de Datos</div>
                 <div id="filters-container"></div>
-                <button onclick="addFilter()" style="background:none;border:1px dashed #333;color:var(--text-muted);padding:6px 10px;cursor:pointer;font-size:11px;width:100%;margin-top:4px;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='#333';this.style.color='var(--text-muted)'">＋ Agregar filtro</button>
+                <button onclick="addFilter()" style="background:none;border:1px dashed #333;color:var(--text-muted);padding:5px 8px;cursor:pointer;font-size:10px;width:100%;margin-top:4px;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='#333';this.style.color='var(--text-muted)'">＋ Agregar filtro</button>
+              </div>
+
+              <div class="config-section" id="display-section" style="display:none;">
+                <div class="config-title">🎨 Visual</div>
+                <div class="config-label">Color principal</div>
+                <input type="color" class="config-input" id="chart-color" value="#c8a84b" style="height:32px;padding:3px;" onchange="onAxesChange()">
+                <div id="sort-row" class="config-label" style="margin-top:4px;">Ordenar</div>
+                <select class="config-select" id="sort-order" onchange="onAxesChange()">
+                  <option value="desc">Mayor a menor ↓</option>
+                  <option value="asc">Menor a mayor ↑</option>
+                  <option value="alpha-asc">A → Z</option>
+                  <option value="alpha-desc">Z → A</option>
+                </select>
               </div>
             </div>
           </div>
-
           <!-- Preview -->
           <div class="preview-area" id="preview-area">
             <div class="preview-placeholder" style="height:100%;border:none;">
-              <div class="preview-placeholder-icon">📊</div>
-              <div>Selecciona una gráfica para ver la vista previa</div>
+              <div style="font-size:32px;">📊</div>
+              <div>Selecciona una gráfica para configurar</div>
             </div>
           </div>
         </div>
@@ -390,7 +400,7 @@
             <div class="dash-view-meta" id="dv-meta">—</div>
           </div>
           <div class="dash-view-actions">
-            <button class="btn-sm outline" onclick="refreshDashboard()" title="Actualizar datos">↺ Actualizar</button>
+            <button class="btn-sm outline" onclick="refreshDashboard()">↺ Actualizar</button>
             <button class="btn-sm outline" onclick="editCurrentDashboard()">✏️ Editar</button>
             <button class="btn-sm danger" onclick="confirmDelete()">🗑️ Eliminar</button>
           </div>
@@ -400,7 +410,6 @@
 
     </div>
   </div>
-
   <div class="status-bar">
     <div class="status-item"><div class="status-dot" id="status-dot"></div><span id="status-text">Conectando...</span></div>
     <div class="status-item">Catosa API</div>
@@ -421,51 +430,74 @@
 </div>
 
 <script>
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  CONFIG
-// ════════════════════════════════
+// ══════════════════════════════════════════
 const API = 'https://api.catosaapps.lat';
 
 const AREAS = [
-  { id: 'refacciones', name: 'Refacciones',  icon: '🔧', dept: 'Departamento', pass: 'ref2024' },
-  { id: 'servicio',    name: 'Servicio',      icon: '🛠️', dept: 'Departamento', pass: 'srv2024' },
-  { id: 'unidades',    name: 'Unidades',      icon: '🚛', dept: 'Departamento', pass: 'uni2024' },
-  { id: 'seminuevos',  name: 'Seminuevos',    icon: '🚗', dept: 'Departamento', pass: 'sem2024' },
-  { id: 'finanzas',    name: 'Finanzas',      icon: '💰', dept: 'Área',         pass: 'fin2024' },
-  { id: 'marketing',   name: 'Marketing',     icon: '📣', dept: 'Área',         pass: 'mkt2024' },
+  { id:'refacciones', name:'Refacciones',  icon:'🔧', dept:'Departamento', pass:'ref2024' },
+  { id:'servicio',    name:'Servicio',      icon:'🛠️', dept:'Departamento', pass:'srv2024' },
+  { id:'unidades',    name:'Unidades',      icon:'🚛', dept:'Departamento', pass:'uni2024' },
+  { id:'seminuevos',  name:'Seminuevos',    icon:'🚗', dept:'Departamento', pass:'sem2024' },
+  { id:'finanzas',    name:'Finanzas',      icon:'💰', dept:'Área',         pass:'fin2024' },
+  { id:'marketing',   name:'Marketing',     icon:'📣', dept:'Área',         pass:'mkt2024' },
 ];
 
-const CHART_ICONS = { bar:'📊', horizontalBar:'📉', line:'📈', pie:'🥧', doughnut:'🍩', table:'🗃️', kpi:'🎯' };
-const GOLD_PALETTE = ['#c8a84b','#e2c46e','#a08030','#f0d88a','#7a6020','#dab85e','#b89038','#eed070','#907028','#6a5018'];
+const CHART_ICONS = { bar:'📊',horizontalBar:'📉',line:'📈',pie:'🥧',doughnut:'🍩',scatter:'🔵',gauge:'🎯',compare:'📋',map:'🗺️',table:'🗃️',kpi:'🎯' };
 
-// ════════════════════════════════
-//  STATE
-// ════════════════════════════════
-let state = {
-  area: null,
-  userName: '',
-  dashboards: [],
-  currentDashId: null,
-  tables: [],
-  // Builder state
-  editingId: null,
-  widgets: [],          // array of widget configs
-  activeWidgetIdx: null,
-  columns: [],
-  rawData: null,
-  chartInstances: {},   // preview chart instances
-  dvChartInstances: {}, // dashboard view chart instances
+// Mexico cities coordinates
+const MX_CITIES = {
+  'AGUASCALIENTES':[21.8818,-102.2916],'MEXICALI':[32.6245,-115.4523],'TIJUANA':[32.5027,-117.0037],
+  'ENSENADA':[31.8667,-116.5963],'LA PAZ':[24.1426,-110.3128],'CAMPECHE':[19.8301,-90.5349],
+  'SALTILLO':[25.4232,-101.0000],'TORREON':[25.5428,-103.4068],'TORREÓN':[25.5428,-103.4068],
+  'MONCLOVA':[26.9078,-101.4229],'PIEDRAS NEGRAS':[28.7006,-100.5248],'ACUNA':[29.3222,-100.9267],
+  'ACUÑA':[29.3222,-100.9267],'COLIMA':[19.2452,-103.7241],'TUXTLA GUTIERREZ':[16.7516,-93.1152],
+  'CHIHUAHUA':[28.6330,-106.0691],'CIUDAD JUAREZ':[31.6904,-106.4245],'JUAREZ':[31.6904,-106.4245],
+  'CUAUHTEMOC':[28.4100,-106.8657],'PARRAL':[26.9311,-105.6666],'DELICIAS':[28.1883,-105.4691],
+  'MEXICO':[19.4326,-99.1332],'CIUDAD DE MEXICO':[19.4326,-99.1332],'CDMX':[19.4326,-99.1332],
+  'DF':[19.4326,-99.1332],'DURANGO':[24.0277,-104.6532],'GOMEZ PALACIO':[25.5654,-103.4991],
+  'LERDO':[25.5353,-103.5271],'GUANAJUATO':[21.0190,-101.2574],'LEON':[21.1221,-101.6848],
+  'IRAPUATO':[20.6770,-101.3556],'CELAYA':[20.5236,-100.8122],'SALAMANCA':[20.5710,-101.1960],
+  'GUADALAJARA':[20.6597,-103.3496],'ZAPOPAN':[20.7214,-103.3917],'TLAQUEPAQUE':[20.6431,-103.3167],
+  'PUERTO VALLARTA':[20.6534,-105.2253],'TOLUCA':[19.2826,-99.6557],'ECATEPEC':[19.6008,-99.0600],
+  'NAUCALPAN':[19.4800,-99.2300],'MORELIA':[19.7060,-101.1950],'ZAMORA':[19.9833,-102.2833],
+  'CUERNAVACA':[18.9242,-99.2216],'MONTERREY':[25.6866,-100.3161],'GUADALUPE':[25.6761,-100.2597],
+  'SAN PEDRO GARZA GARCIA':[25.6572,-100.4026],'SAN NICOLAS':[25.7461,-100.3062],
+  'APODACA':[25.7791,-100.1870],'GARCIA':[25.8062,-100.5878],'SANTA CATARINA':[25.6735,-100.4598],
+  'LINARES':[24.8572,-99.5641],'MONTEMORELOS':[25.1872,-99.8271],'OAXACA':[17.0600,-96.7200],
+  'PUEBLA':[19.0414,-98.2063],'QUERETARO':[20.5888,-100.3899],'QUERETARO':[20.5888,-100.3899],
+  'CANCUN':[21.1619,-86.8515],'CHETUMAL':[18.5001,-88.2962],'PLAYA DEL CARMEN':[20.6296,-87.0739],
+  'SAN LUIS POTOSI':[22.1508,-100.9762],'CULIACAN':[24.7994,-107.3886],'MAZATLAN':[23.2469,-106.4113],
+  'LOS MOCHIS':[25.7961,-108.9917],'HERMOSILLO':[29.0729,-110.9559],'CIUDAD OBREGON':[27.4892,-109.9406],
+  'OBREGON':[27.4892,-109.9406],'NAVOJOA':[27.0728,-109.4427],'NOGALES':[31.2980,-110.9415],
+  'VILLAHERMOSA':[17.9869,-92.9303],'TAMPICO':[22.2331,-97.8619],'MATAMOROS':[25.8696,-97.5025],
+  'NUEVO LAREDO':[27.4769,-99.5152],'REYNOSA':[26.0921,-98.2712],'MCALLEN':[26.2034,-98.2300],
+  'TLAXCALA':[19.3139,-98.2404],'VERACRUZ':[19.1738,-96.1342],'XALAPA':[19.5438,-96.9102],
+  'COATZACOALCOS':[18.1500,-94.4333],'MERIDA':[20.9670,-89.6237],'ZACATECAS':[22.7709,-102.5832],
+  'FRESNILLO':[23.1757,-102.8752],'ACAPULCO':[16.8531,-99.8237],'TEPIC':[21.5026,-104.8952],
+  'PACHUCA':[20.1011,-98.7591],'HIDALGO':[20.1011,-98.7591],'CHILPANCINGO':[17.5520,-99.5021],
+  'LAZARO CARDENAS':[17.9585,-102.2015],'MANZANILLO':[19.1002,-104.3220],
+  'CIUDAD VICTORIA':[23.7369,-99.1411],'TAMPICO':[22.2331,-97.8619],
+  'ANA':[25.5428,-103.4068],'GOMEZ':[25.5654,-103.4991],
 };
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let state = {
+  area:null, userName:'', dashboards:[], currentDashId:null, tables:[],
+  editingId:null, widgets:[], activeWidgetIdx:null, columns:[], rawData:null,
+  chartInstances:{}, dvChartInstances:{}, mapInstances:{},
+};
+
+// ══════════════════════════════════════════
 //  INIT
-// ════════════════════════════════
+// ══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
   buildAreaGrid();
   checkSession();
-  document.getElementById('builder-name').addEventListener('input', () => {
-    document.getElementById('preview-area') && renderBuilderPreview();
-  });
+  document.getElementById('builder-name').addEventListener('input', renderBuilderPreview);
 });
 
 function buildAreaGrid() {
@@ -478,397 +510,489 @@ function buildAreaGrid() {
 }
 
 function checkSession() {
-  const saved = sessionStorage.getItem('catosa_session');
-  if (saved) {
-    const s = JSON.parse(saved);
-    state.area = AREAS.find(a => a.id === s.areaId);
-    state.userName = s.userName;
-    if (state.area) enterApp();
-  }
+  const s = sessionStorage.getItem('catosa_session');
+  if (s) { const d = JSON.parse(s); state.area = AREAS.find(a=>a.id===d.areaId); state.userName = d.userName; if(state.area) enterApp(); }
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  LOGIN
-// ════════════════════════════════
+// ══════════════════════════════════════════
 let selectedArea = null;
-
 function selectArea(id) {
-  selectedArea = AREAS.find(a => a.id === id);
+  selectedArea = AREAS.find(a=>a.id===id);
   document.getElementById('selected-area-name').textContent = `${selectedArea.icon} ${selectedArea.name}`;
   document.getElementById('step-area').style.display = 'none';
   document.getElementById('step-pass').classList.add('show');
   document.getElementById('pass-input').value = '';
   document.getElementById('user-name').value = '';
   document.getElementById('login-error').classList.remove('show');
-  setTimeout(() => document.getElementById('user-name').focus(), 100);
+  setTimeout(()=>document.getElementById('user-name').focus(),100);
 }
-
 function backToAreas() {
-  document.getElementById('step-area').style.display = 'block';
+  document.getElementById('step-area').style.display='block';
   document.getElementById('step-pass').classList.remove('show');
 }
-
 function doLogin() {
   const pass = document.getElementById('pass-input').value;
   const name = document.getElementById('user-name').value.trim();
   const err = document.getElementById('login-error');
-  if (!name) { err.textContent = 'Escribe tu nombre'; err.classList.add('show'); return; }
-  if (pass !== selectedArea.pass) { err.textContent = 'Contraseña incorrecta'; err.classList.add('show'); return; }
-  state.area = selectedArea;
-  state.userName = name;
-  sessionStorage.setItem('catosa_session', JSON.stringify({ areaId: selectedArea.id, userName: name }));
+  if (!name) { err.textContent='Escribe tu nombre'; err.classList.add('show'); return; }
+  if (pass !== selectedArea.pass) { err.textContent='Contraseña incorrecta'; err.classList.add('show'); return; }
+  state.area = selectedArea; state.userName = name;
+  sessionStorage.setItem('catosa_session', JSON.stringify({areaId:selectedArea.id, userName:name}));
   enterApp();
 }
+function logout() { sessionStorage.removeItem('catosa_session'); location.reload(); }
 
-function logout() {
-  sessionStorage.removeItem('catosa_session');
-  location.reload();
-}
-
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  ENTER APP
-// ════════════════════════════════
+// ══════════════════════════════════════════
 function enterApp() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('app').classList.add('show');
   document.getElementById('topbar-area-name').textContent = state.area.name;
   const h = new Date().getHours();
-  const g = h < 12 ? 'Buenos días' : h < 19 ? 'Buenas tardes' : 'Buenas noches';
+  const g = h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches';
   document.getElementById('home-greeting-title').textContent = `${g}, ${state.userName} ${state.area.icon}`;
-  checkServerStatus();
-  loadDashboards();
-  loadTablesFromServer();
+  checkServerStatus(); loadDashboards(); loadTablesFromServer();
 }
 
-// ════════════════════════════════
-//  SERVER STATUS
-// ════════════════════════════════
 async function checkServerStatus() {
-  const dot = document.getElementById('status-dot');
-  const txt = document.getElementById('status-text');
+  const dot = document.getElementById('status-dot'); const txt = document.getElementById('status-text');
   try {
-    const r = await fetch(`${API}/api/tables`, { signal: AbortSignal.timeout(6000) });
-    if (r.ok) { dot.classList.remove('off'); txt.textContent = 'Conectado'; }
-    else throw new Error();
-  } catch {
-    dot.classList.add('off');
-    txt.textContent = 'Sin conexión';
-  }
+    const r = await fetch(`${API}/api/tables`,{signal:AbortSignal.timeout(6000)});
+    if(r.ok){dot.classList.remove('off');txt.textContent='Conectado';}else throw new Error();
+  } catch { dot.classList.add('off'); txt.textContent='Sin conexión'; }
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  DASHBOARDS
-// ════════════════════════════════
+// ══════════════════════════════════════════
 function loadDashboards() {
-  const key = `catosa_dash_${state.area.id}`;
-  state.dashboards = JSON.parse(localStorage.getItem(key) || '[]');
-  renderSidebar();
-  renderHomeGrid();
+  state.dashboards = JSON.parse(localStorage.getItem(`catosa_dash_${state.area.id}`) || '[]');
+  renderSidebar(); renderHomeGrid();
 }
-
 function saveDashboardsToStorage() {
   localStorage.setItem(`catosa_dash_${state.area.id}`, JSON.stringify(state.dashboards));
 }
-
 function renderSidebar() {
   const list = document.getElementById('sidebar-list');
-  if (!state.dashboards.length) {
-    list.innerHTML = '<div class="sidebar-item" style="cursor:default;opacity:0.4;font-size:11px;">Sin tableros aún</div>';
-    return;
-  }
-  list.innerHTML = state.dashboards.map(d => {
-    const mainIcon = d.widgets?.length ? CHART_ICONS[d.widgets[0].chartType] || '📊' : '📊';
-    return `<div class="sidebar-item ${d.id === state.currentDashId ? 'active' : ''}" onclick="openDashboard('${d.id}')">
-      <span class="item-icon">${mainIcon}</span>
+  if (!state.dashboards.length) { list.innerHTML='<div class="sidebar-item" style="cursor:default;opacity:.4;font-size:11px;">Sin tableros aún</div>'; return; }
+  list.innerHTML = state.dashboards.map(d=>`
+    <div class="sidebar-item ${d.id===state.currentDashId?'active':''}" onclick="openDashboard('${d.id}')">
+      <span class="item-icon">${d.widgets?.length?CHART_ICONS[d.widgets[0].chartType]||'📊':'📊'}</span>
       <div class="item-info">
         <div class="item-name">${d.name}</div>
-        <div class="item-author">por ${d.author} · ${d.widgets?.length || 0} gráfica${d.widgets?.length !== 1 ? 's' : ''}</div>
+        <div class="item-author">por ${d.author} · ${d.widgets?.length||0} gráf.</div>
       </div>
-    </div>`;
-  }).join('');
+    </div>`).join('');
 }
-
 function renderHomeGrid() {
   const grid = document.getElementById('dashboards-grid');
   if (!state.dashboards.length) {
-    grid.innerHTML = `<div class="empty-state"><div class="empty-state-icon">📊</div><h3>Sin tableros todavía</h3><p>Crea tu primer tablero conectado a los datos de Catosa.</p></div>`;
-    return;
+    grid.innerHTML=`<div class="empty-state"><div class="empty-state-icon">📊</div><h3>Sin tableros todavía</h3><p>Crea tu primer tablero conectado a los datos de Catosa.</p></div>`; return;
   }
-  grid.innerHTML = state.dashboards.map(d => {
-    const icons = (d.widgets || []).map(w => CHART_ICONS[w.chartType] || '📊').slice(0, 4).join(' ');
-    return `<div class="dash-card" onclick="openDashboard('${d.id}')">
+  grid.innerHTML = state.dashboards.map(d=>`
+    <div class="dash-card" onclick="openDashboard('${d.id}')">
       <div class="dash-card-header">
-        <div class="dash-card-icon">${icons || '📊'}</div>
-        <div class="dash-card-badges"><span class="badge">${d.widgets?.length || 0} gráfica${d.widgets?.length !== 1 ? 's' : ''}</span></div>
+        <div style="font-size:22px;">${(d.widgets||[]).map(w=>CHART_ICONS[w.chartType]||'📊').slice(0,3).join(' ')}</div>
+        <span class="badge">${d.widgets?.length||0} gráf.</span>
       </div>
       <div class="dash-card-name">${d.name}</div>
       <div class="dash-card-info">por ${d.author}<br>${new Date(d.createdAt).toLocaleDateString('es-MX')}</div>
-    </div>`;
-  }).join('');
-  document.getElementById('home-greeting-sub').textContent = `Área ${state.area.name} · ${state.dashboards.length} tablero${state.dashboards.length !== 1 ? 's' : ''}`;
+    </div>`).join('');
+  document.getElementById('home-greeting-sub').textContent = `Área ${state.area.name} · ${state.dashboards.length} tablero${state.dashboards.length!==1?'s':''}`;
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  VIEWS
-// ════════════════════════════════
+// ══════════════════════════════════════════
 function showView(name) {
   document.getElementById('view-home').style.display = 'none';
   document.getElementById('view-builder').classList.remove('show');
   document.getElementById('view-dashboard').classList.remove('show');
-  if (name === 'home') document.getElementById('view-home').style.display = 'block';
-  if (name === 'builder') document.getElementById('view-builder').classList.add('show');
-  if (name === 'dashboard') document.getElementById('view-dashboard').classList.add('show');
+  if(name==='home') document.getElementById('view-home').style.display='block';
+  if(name==='builder') document.getElementById('view-builder').classList.add('show');
+  if(name==='dashboard') document.getElementById('view-dashboard').classList.add('show');
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  LOAD TABLES
-// ════════════════════════════════
+// ══════════════════════════════════════════
 async function loadTablesFromServer() {
   try {
     const r = await fetch(`${API}/api/tables`);
     const data = await r.json();
     state.tables = data.tables || [];
     document.getElementById('status-tables').textContent = `${state.tables.length} tablas`;
-    populateTableSelect();
-    document.getElementById('tables-loading').style.display = 'none';
-    document.getElementById('table-select').style.display = 'block';
+    const sel = document.getElementById('table-select');
+    sel.innerHTML = '<option value="">— Selecciona tabla —</option>' + state.tables.map(t=>`<option value="${t}">${t}</option>`).join('');
+    document.getElementById('tables-loading').style.display='none';
+    sel.style.display='block';
   } catch {
-    document.getElementById('tables-loading').innerHTML = '<span style="color:var(--danger);font-size:11px;">⚠️ No se pudo conectar al servidor</span>';
+    document.getElementById('tables-loading').innerHTML='<span style="color:var(--danger);font-size:11px;">⚠️ Sin conexión al servidor</span>';
   }
 }
 
-function populateTableSelect() {
-  const sel = document.getElementById('table-select');
-  const current = sel.value;
-  sel.innerHTML = '<option value="">— Selecciona tabla —</option>' +
-    state.tables.map(t => `<option value="${t}">${t}</option>`).join('');
-  if (current) sel.value = current;
+// ══════════════════════════════════════════
+//  DATE HELPERS
+// ══════════════════════════════════════════
+function getDateRange(preset) {
+  const now = new Date(); const y = now.getFullYear(); const m = now.getMonth();
+  switch(preset) {
+    case 'today':     return [startOf(now,'day'), endOf(now,'day')];
+    case 'thisWeek':  const dow=now.getDay(); const mon=new Date(now); mon.setDate(now.getDate()-dow+1); return [startOf(mon,'day'), endOf(now,'day')];
+    case 'thisMonth': return [new Date(y,m,1), new Date(y,m+1,0,23,59,59)];
+    case 'lastMonth': return [new Date(y,m-1,1), new Date(y,m,0,23,59,59)];
+    case 'thisYear':  return [new Date(y,0,1), new Date(y,11,31,23,59,59)];
+    case 'lastYear':  return [new Date(y-1,0,1), new Date(y-1,11,31,23,59,59)];
+    case 'q1': return [new Date(y,0,1), new Date(y,2,31,23,59,59)];
+    case 'q2': return [new Date(y,3,1), new Date(y,5,30,23,59,59)];
+    case 'q3': return [new Date(y,6,1), new Date(y,8,30,23,59,59)];
+    case 'q4': return [new Date(y,9,1), new Date(y,11,31,23,59,59)];
+    default:   return [null,null];
+  }
+}
+function startOf(d,unit){ const r=new Date(d); if(unit==='day'){r.setHours(0,0,0,0);} return r; }
+function endOf(d,unit){ const r=new Date(d); if(unit==='day'){r.setHours(23,59,59,999);} return r; }
+
+function applyDateFilter(rows, w) {
+  if (!w.dateCol) return rows;
+  let from=null, to=null;
+  if (w.datePreset && w.datePreset !== 'custom') {
+    [from,to] = getDateRange(w.datePreset);
+  } else if (w.datePreset === 'custom') {
+    if (w.dateFrom) { from = new Date(w.dateFrom); from.setHours(0,0,0,0); }
+    if (w.dateTo)   { to   = new Date(w.dateTo);   to.setHours(23,59,59,999); }
+  }
+  if (!from && !to) return rows;
+  return rows.filter(r => {
+    const raw = r[w.dateCol]; if(!raw) return false;
+    const d = new Date(raw); if(isNaN(d)) return false;
+    if(from && d < from) return false;
+    if(to && d > to) return false;
+    return true;
+  });
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
+//  FILTERS
+// ══════════════════════════════════════════
+function applyFilters(rows, w) {
+  let r2 = applyDateFilter(rows, w);
+  if (!w.filters || !w.filters.length) return r2;
+  return r2.filter(row => w.filters.every(f => {
+    if (!f.col || f.val==='') return true;
+    const cell = String(row[f.col]??''); const fnum=parseFloat(f.val); const num=parseFloat(cell);
+    switch(f.op) {
+      case 'contains': return cell.toLowerCase().includes(f.val.toLowerCase());
+      case 'equals':   return cell.toLowerCase()===f.val.toLowerCase();
+      case 'gt':  return !isNaN(num)&&num>fnum;
+      case 'lt':  return !isNaN(num)&&num<fnum;
+      case 'gte': return !isNaN(num)&&num>=fnum;
+      case 'lte': return !isNaN(num)&&num<=fnum;
+      case 'notempty': return cell.trim()!=='';
+      default: return true;
+    }
+  }));
+}
+
+// ══════════════════════════════════════════
+//  AGGREGATE
+// ══════════════════════════════════════════
+function aggregateData(rows, axisX, axisY, aggFunc, limit, sortOrder) {
+  const groups={}; const vals={};
+  rows.forEach(r=>{
+    const k=String(r[axisX]??'N/A').substring(0,35);
+    const v=parseFloat(r[axisY])||0;
+    if(!groups[k]){groups[k]=0;vals[k]=[];}
+    groups[k]+=v; vals[k].push(v);
+  });
+  let entries=Object.entries(groups);
+  if(aggFunc==='COUNT'){entries=entries.map(([k])=>[k,vals[k].length]);}
+  else if(aggFunc==='AVG'){entries=entries.map(([k])=>[k,vals[k].reduce((a,b)=>a+b,0)/(vals[k].length||1)]);}
+  else if(aggFunc==='MAX'){entries=entries.map(([k])=>[k,Math.max(...vals[k])]);}
+  else if(aggFunc==='MIN'){entries=entries.map(([k])=>[k,Math.min(...vals[k])]);}
+  // Sort
+  const so = sortOrder || 'desc';
+  if(so==='desc')   entries.sort((a,b)=>b[1]-a[1]);
+  else if(so==='asc') entries.sort((a,b)=>a[1]-b[1]);
+  else if(so==='alpha-asc') entries.sort((a,b)=>a[0].localeCompare(b[0]));
+  else if(so==='alpha-desc') entries.sort((a,b)=>b[0].localeCompare(a[0]));
+  const lim = parseInt(limit)||20;
+  return lim>=99999 ? entries : entries.slice(0,lim);
+}
+
+// ══════════════════════════════════════════
 //  BUILDER — WIDGET MANAGEMENT
-// ════════════════════════════════
+// ══════════════════════════════════════════
 function newDashboard() {
-  state.editingId = null;
-  state.widgets = [];
-  state.activeWidgetIdx = null;
-  state.rawData = null;
-  state.columns = [];
-  document.getElementById('builder-name').value = 'Mi Tablero';
-  destroyAllPreviewCharts();
-  renderWidgetList();
-  resetConfigPanel();
-  showView('builder');
-  state.currentDashId = null;
-  renderSidebar();
+  state.editingId=null; state.widgets=[]; state.activeWidgetIdx=null; state.rawData=null; state.columns=[];
+  document.getElementById('builder-name').value='Mi Tablero';
+  destroyPreviewCharts(); renderWidgetList(); resetConfigPanel(); showView('builder');
+  state.currentDashId=null; renderSidebar();
 }
-
-function cancelBuilder() {
-  destroyAllPreviewCharts();
-  showView('home');
-  renderHomeGrid();
-}
+function cancelBuilder() { destroyPreviewCharts(); showView('home'); renderHomeGrid(); }
 
 function addWidget() {
-  const w = {
-    id: `w_${Date.now()}`,
-    name: `Gráfica ${state.widgets.length + 1}`,
-    chartType: 'bar',
-    tableName: '',
-    axisX: '',
-    axisY: '',
-    aggFunc: 'SUM',
-    limit: 20,
-    filters: [],
-    tableCols: [],
-    width: 'half',
-  };
-  state.widgets.push(w);
-  selectWidget(state.widgets.length - 1);
-  renderWidgetList();
+  const w={id:`w_${Date.now()}`,name:`Gráfica ${state.widgets.length+1}`,chartType:'bar',
+    tableName:'',axisX:'',axisY:'',axisY2:'',aggFunc:'SUM',limit:20,dataLimit:1000,
+    filters:[],dateCol:'',datePreset:'',dateFrom:'',dateTo:'',tableCols:[],
+    color:'#c8a84b',sortOrder:'desc',gaugeTarget:100,scatterX:'',scatterY:'',scatterLabel:''};
+  state.widgets.push(w); selectWidget(state.widgets.length-1); renderWidgetList();
 }
 
 function selectWidget(idx) {
-  state.activeWidgetIdx = idx;
-  state.rawData = null;
-  state.columns = [];
-  renderWidgetList();
-  loadWidgetConfig(idx);
+  state.activeWidgetIdx=idx; state.rawData=null; state.columns=[];
+  renderWidgetList(); loadWidgetConfig(idx);
 }
 
-function removeWidget(idx, e) {
-  e.stopPropagation();
-  state.widgets.splice(idx, 1);
-  if (state.activeWidgetIdx >= state.widgets.length) state.activeWidgetIdx = state.widgets.length - 1;
-  if (state.widgets.length === 0) { state.activeWidgetIdx = null; resetConfigPanel(); }
+function removeWidget(idx,e) {
+  e.stopPropagation(); state.widgets.splice(idx,1);
+  if(state.activeWidgetIdx>=state.widgets.length) state.activeWidgetIdx=state.widgets.length-1;
+  if(!state.widgets.length){state.activeWidgetIdx=null;resetConfigPanel();}
   else selectWidget(state.activeWidgetIdx);
   renderWidgetList();
 }
 
 function renderWidgetList() {
-  const list = document.getElementById('widget-list');
-  if (!state.widgets.length) {
-    list.innerHTML = '';
-    return;
-  }
-  list.innerHTML = state.widgets.map((w, i) => `
-    <div class="widget-item ${i === state.activeWidgetIdx ? 'active' : ''}" onclick="selectWidget(${i})">
+  document.getElementById('widget-list').innerHTML = state.widgets.map((w,i)=>`
+    <div class="widget-item ${i===state.activeWidgetIdx?'active':''}" onclick="selectWidget(${i})">
       <div class="widget-item-header">
-        <span class="widget-item-icon">${CHART_ICONS[w.chartType] || '📊'}</span>
+        <span style="font-size:12px;">${CHART_ICONS[w.chartType]||'📊'}</span>
         <span class="widget-item-name">${w.name}</span>
-        <button class="widget-item-del" onclick="removeWidget(${i}, event)">✕</button>
+        <button class="widget-item-del" onclick="removeWidget(${i},event)">✕</button>
       </div>
-      <div class="widget-item-sub">${w.tableName || 'Sin tabla'}</div>
+      <div class="widget-item-sub">${w.tableName||'Sin tabla'}</div>
     </div>`).join('');
 }
 
 function resetConfigPanel() {
-  document.getElementById('no-widget-msg').style.display = 'flex';
-  document.getElementById('widget-config-content').style.display = 'none';
-  document.getElementById('preview-area').innerHTML = `
-    <div class="preview-placeholder" style="height:100%;border:none;">
-      <div class="preview-placeholder-icon">📊</div>
-      <div>Selecciona una gráfica para ver la vista previa</div>
-    </div>`;
+  document.getElementById('no-widget-msg').style.display='flex';
+  document.getElementById('widget-config-content').style.display='none';
+  document.getElementById('preview-area').innerHTML=`<div class="preview-placeholder" style="height:100%;border:none;"><div style="font-size:32px;">📊</div><div>Selecciona una gráfica para configurar</div></div>`;
 }
 
 async function loadWidgetConfig(idx) {
-  const w = state.widgets[idx];
-  if (!w) return;
-
-  document.getElementById('no-widget-msg').style.display = 'none';
-  document.getElementById('widget-config-content').style.display = 'block';
-
-  // Set chart type buttons
-  document.querySelectorAll('.chart-type-btn').forEach(b => {
-    b.classList.toggle('active', b.dataset.type === w.chartType);
-  });
-
-  // Set widget name
-  document.getElementById('widget-name-input').value = w.name;
-
-  // Set table select
-  if (state.tables.length) {
-    const sel = document.getElementById('table-select');
-    sel.style.display = 'block';
-    document.getElementById('tables-loading').style.display = 'none';
-    sel.value = w.tableName || '';
+  const w = state.widgets[idx]; if(!w) return;
+  document.getElementById('no-widget-msg').style.display='none';
+  document.getElementById('widget-config-content').style.display='block';
+  // Chart type
+  document.querySelectorAll('.chart-type-btn').forEach(b=>b.classList.toggle('active',b.dataset.type===w.chartType));
+  // Name
+  document.getElementById('widget-name-input').value=w.name;
+  // Color & sort
+  document.getElementById('chart-color').value=w.color||'#c8a84b';
+  document.getElementById('sort-order').value=w.sortOrder||'desc';
+  // Table
+  if(state.tables.length){
+    document.getElementById('table-select').style.display='block';
+    document.getElementById('tables-loading').style.display='none';
+    document.getElementById('table-select').value=w.tableName||'';
+    document.getElementById('data-limit').value=w.dataLimit||1000;
   }
-
-  if (w.tableName) {
-    await fetchTableData(w.tableName);
+  if(w.tableName){
+    await fetchTableData(w.tableName, w.dataLimit||1000);
+    populateDateColSelect(w);
     renderAxesConfig(w);
     renderFilterConfig(w);
+    document.getElementById('date-section').style.display='block';
+    document.getElementById('display-section').style.display='block';
     renderBuilderPreview();
   } else {
-    document.getElementById('axes-section').style.display = 'none';
-    document.getElementById('filter-section').style.display = 'none';
-    document.getElementById('preview-area').innerHTML = `
-      <div class="preview-placeholder" style="height:100%;border:none;">
-        <div class="preview-placeholder-icon">📊</div>
-        <div>Selecciona una tabla para comenzar</div>
-      </div>`;
+    document.getElementById('axes-section').style.display='none';
+    document.getElementById('filter-section').style.display='none';
+    document.getElementById('date-section').style.display='none';
+    document.getElementById('display-section').style.display='none';
+    document.getElementById('preview-area').innerHTML=`<div class="preview-placeholder" style="height:100%;border:none;"><div style="font-size:32px;">📊</div><div>Selecciona una tabla para comenzar</div></div>`;
   }
 }
 
 function syncWidgetName() {
-  if (state.activeWidgetIdx === null) return;
-  state.widgets[state.activeWidgetIdx].name = document.getElementById('widget-name-input').value;
+  if(state.activeWidgetIdx===null) return;
+  state.widgets[state.activeWidgetIdx].name=document.getElementById('widget-name-input').value;
   renderWidgetList();
 }
 
-// ════════════════════════════════
-//  CHART TYPE SELECT
-// ════════════════════════════════
-function selectChartType(type, btn) {
-  if (state.activeWidgetIdx === null) return;
-  state.widgets[state.activeWidgetIdx].chartType = type;
-  document.querySelectorAll('.chart-type-btn').forEach(b => b.classList.remove('active'));
+// ══════════════════════════════════════════
+//  CHART TYPE
+// ══════════════════════════════════════════
+function selectChartType(type,btn) {
+  if(state.activeWidgetIdx===null) return;
+  state.widgets[state.activeWidgetIdx].chartType=type;
+  document.querySelectorAll('.chart-type-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   renderWidgetList();
-  if (state.columns.length) renderAxesConfig(state.widgets[state.activeWidgetIdx]);
+  if(state.columns.length) renderAxesConfig(state.widgets[state.activeWidgetIdx]);
   renderBuilderPreview();
 }
 
-// ════════════════════════════════
-//  TABLE & COLUMNS
-// ════════════════════════════════
+// ══════════════════════════════════════════
+//  TABLE & COLUMNS LOAD
+// ══════════════════════════════════════════
 async function loadTableColumns() {
   const tbl = document.getElementById('table-select').value;
-  if (state.activeWidgetIdx === null) return;
-  state.widgets[state.activeWidgetIdx].tableName = tbl;
-  state.widgets[state.activeWidgetIdx].axisX = '';
-  state.widgets[state.activeWidgetIdx].axisY = '';
-  state.widgets[state.activeWidgetIdx].filters = [];
-  state.widgets[state.activeWidgetIdx].tableCols = [];
+  const dataLim = parseInt(document.getElementById('data-limit').value)||1000;
+  if(state.activeWidgetIdx===null) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  w.tableName=tbl; w.dataLimit=dataLim;
+  w.axisX='';w.axisY='';w.axisY2='';w.filters=[];w.tableCols=[];w.dateCol='';w.datePreset='';
   renderWidgetList();
-
-  if (!tbl) {
-    document.getElementById('axes-section').style.display = 'none';
-    document.getElementById('filter-section').style.display = 'none';
-    state.columns = [];
-    state.rawData = null;
-    return;
+  if(!tbl){
+    document.getElementById('axes-section').style.display='none';
+    document.getElementById('filter-section').style.display='none';
+    document.getElementById('date-section').style.display='none';
+    document.getElementById('display-section').style.display='none';
+    state.columns=[]; state.rawData=null; return;
   }
-
-  document.getElementById('columns-loading').style.display = 'block';
-  document.getElementById('axes-section').style.display = 'none';
-  document.getElementById('filter-section').style.display = 'none';
-
-  await fetchTableData(tbl);
-  renderAxesConfig(state.widgets[state.activeWidgetIdx]);
-  renderFilterConfig(state.widgets[state.activeWidgetIdx]);
+  document.getElementById('columns-loading').style.display='block';
+  document.getElementById('axes-section').style.display='none';
+  document.getElementById('filter-section').style.display='none';
+  await fetchTableData(tbl, dataLim);
+  populateDateColSelect(w);
+  renderAxesConfig(w); renderFilterConfig(w);
+  document.getElementById('date-section').style.display='block';
+  document.getElementById('display-section').style.display='block';
   renderBuilderPreview();
 }
 
-async function fetchTableData(tbl) {
+async function fetchTableData(tbl, limit) {
+  document.getElementById('columns-loading').style.display='block';
   try {
-    const r = await fetch(`${API}/api/table/${encodeURIComponent(tbl)}?limit=500`);
+    const r = await fetch(`${API}/api/table/${encodeURIComponent(tbl)}?limit=${limit||1000}`);
     const data = await r.json();
-    state.rawData = data.rows || [];
-    state.columns = data.columns || (state.rawData.length ? Object.keys(state.rawData[0]) : []);
-    document.getElementById('columns-loading').style.display = 'none';
+    state.rawData = data.rows||[];
+    state.columns = data.columns||(state.rawData.length?Object.keys(state.rawData[0]):[]);
+    document.getElementById('columns-loading').style.display='none';
   } catch {
-    document.getElementById('columns-loading').innerHTML = '<span style="color:var(--danger);font-size:11px;">Error al cargar datos</span>';
-    state.rawData = null;
-    state.columns = [];
+    document.getElementById('columns-loading').innerHTML='<span style="color:var(--danger);font-size:11px;">Error al cargar datos</span>';
+    state.rawData=null; state.columns=[];
   }
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
+//  DATE FILTER UI
+// ══════════════════════════════════════════
+function populateDateColSelect(w) {
+  const sel = document.getElementById('date-col');
+  sel.innerHTML='<option value="">— Sin filtro de fecha —</option>'+state.columns.map(c=>`<option value="${c}" ${w.dateCol===c?'selected':''}>${c}</option>`).join('');
+  if(w.dateCol) {
+    document.getElementById('date-options').style.display='block';
+    restoreDatePreset(w);
+  } else {
+    document.getElementById('date-options').style.display='none';
+  }
+}
+
+function onDateColChange() {
+  if(state.activeWidgetIdx===null) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  w.dateCol=document.getElementById('date-col').value;
+  w.datePreset=''; w.dateFrom=''; w.dateTo='';
+  const hasCol = !!w.dateCol;
+  document.getElementById('date-options').style.display=hasCol?'block':'none';
+  if(hasCol) restoreDatePreset(w);
+  renderBuilderPreview();
+}
+
+function restoreDatePreset(w) {
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('active',b.dataset.p===(w.datePreset||'')));
+  document.getElementById('custom-date-row').style.display=w.datePreset==='custom'?'grid':'none';
+  if(w.dateFrom) document.getElementById('date-from').value=w.dateFrom;
+  if(w.dateTo)   document.getElementById('date-to').value=w.dateTo;
+}
+
+function selectPreset(btn, preset) {
+  if(state.activeWidgetIdx===null) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  w.datePreset=preset; w.dateFrom=''; w.dateTo='';
+  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('custom-date-row').style.display=preset==='custom'?'grid':'none';
+  renderBuilderPreview();
+}
+
+function onDateRangeChange() {
+  if(state.activeWidgetIdx===null) return;
+  const w = state.widgets[state.activeWidgetIdx];
+  w.dateFrom=document.getElementById('date-from').value;
+  w.dateTo=document.getElementById('date-to').value;
+  renderBuilderPreview();
+}
+
+// ══════════════════════════════════════════
 //  AXES CONFIG
-// ════════════════════════════════
+// ══════════════════════════════════════════
 function renderAxesConfig(w) {
-  const cols = state.columns;
-  const section = document.getElementById('axes-section');
-  const cfg = document.getElementById('axes-config');
-  section.style.display = 'block';
+  const cols=state.columns; const section=document.getElementById('axes-section');
+  const cfg=document.getElementById('axes-config');
+  section.style.display='block';
+  const colOpts=cols.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const colOptsE=`<option value="">— Sin agrupar —</option>`+colOpts;
+  const aggOpts=['SUM','COUNT','AVG','MAX','MIN'].map(a=>`<option value="${a}" ${w.aggFunc===a?'selected':''}>${a}</option>`).join('');
+  const limOpts=[10,20,50,100,200].map(n=>`<option value="${n}" ${w.limit==n?'selected':''}>${n}</option>`).join('')+`<option value="99999" ${w.limit==99999?'selected':''}>Todos</option>`;
 
-  const colOpts = cols.map(c => `<option value="${c}">${c}</option>`).join('');
-  const colOptsEmpty = `<option value="">— Sin agrupar —</option>` + colOpts;
-  const aggOpts = ['SUM','COUNT','AVG','MAX','MIN'].map(a => `<option value="${a}" ${w.aggFunc===a?'selected':''}>${a}</option>`).join('');
-  const limitOpts = [10,20,50,100].map(n => `<option value="${n}" ${w.limit==n?'selected':''}>${n}</option>`).join('') + `<option value="999" ${w.limit==999?'selected':''}">Todos</option>`;
-
-  if (w.chartType === 'kpi') {
-    cfg.innerHTML = `
-      <div class="config-label">Columna numérica</div>
-      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Función</div>
-      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
-      <div class="config-label">Agrupar por (opcional)</div>
-      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOptsEmpty}</select>`;
-  } else if (w.chartType === 'table') {
-    cfg.innerHTML = `
+  if(w.chartType==='table'){
+    cfg.innerHTML=`
       <div class="config-label">Columnas a mostrar</div>
-      <div class="check-group">${cols.map((c,i) => `
+      <div class="check-group">${cols.map((c,i)=>`
         <label class="check-item">
           <input type="checkbox" value="${c}" ${(w.tableCols.includes(c)||(w.tableCols.length===0&&i<6))?'checked':''} onchange="onAxesChange()">
           ${c}
         </label>`).join('')}</div>
       <div class="config-label" style="margin-top:8px;">Máx. filas</div>
-      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limitOpts}</select>`;
+      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limOpts}</select>`;
+  } else if(w.chartType==='kpi'){
+    cfg.innerHTML=`
+      <div class="config-label">Columna numérica</div>
+      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Función</div>
+      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
+      <div class="config-label">Agrupar por (opcional)</div>
+      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOptsE}</select>`;
+  } else if(w.chartType==='gauge'){
+    cfg.innerHTML=`
+      <div class="config-label">Columna numérica (valor)</div>
+      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Función</div>
+      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
+      <div class="config-label">Meta (valor objetivo)</div>
+      <input type="number" class="config-input" id="gauge-target" value="${w.gaugeTarget||100}" placeholder="Ej: 1000000" onchange="onAxesChange()">
+      <div class="config-label">Unidad (opcional)</div>
+      <input type="text" class="config-input" id="gauge-unit" value="${w.gaugeUnit||''}" placeholder="Ej: $ o %" oninput="onAxesChange()">`;
+  } else if(w.chartType==='scatter'){
+    cfg.innerHTML=`
+      <div class="config-label">Eje X (numérico)</div>
+      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Eje Y (numérico)</div>
+      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Etiqueta (tooltip)</div>
+      <select class="config-select" id="ax-label" onchange="onAxesChange()">${colOptsE}</select>
+      <div class="config-label">Máx. puntos</div>
+      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limOpts}</select>`;
+  } else if(w.chartType==='map'){
+    cfg.innerHTML=`
+      <div class="config-label">Columna de ciudad/municipio</div>
+      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Columna de valor</div>
+      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Función</div>
+      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>`;
+  } else if(w.chartType==='compare'){
+    cfg.innerHTML=`
+      <div class="config-label">Eje X (categoría)</div>
+      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Valor 1 (Y izquierdo)</div>
+      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Valor 2 (Y derecho)</div>
+      <select class="config-select" id="ax-y2" onchange="onAxesChange()">${colOpts}</select>
+      <div class="config-label">Función de agregación</div>
+      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
+      <div class="config-label">Máx. categorías</div>
+      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limOpts}</select>`;
   } else {
-    cfg.innerHTML = `
+    // bar, horizontalBar, line, pie, doughnut
+    cfg.innerHTML=`
       <div class="config-label">Eje X (categoría)</div>
       <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
       <div class="config-label">Eje Y (valor)</div>
@@ -876,457 +1000,472 @@ function renderAxesConfig(w) {
       <div class="config-label">Función de agregación</div>
       <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
       <div class="config-label">Máx. categorías</div>
-      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limitOpts}</select>`;
+      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limOpts}</select>`;
   }
 
   // Restore saved values
-  setTimeout(() => {
-    const xEl = document.getElementById('ax-x');
-    const yEl = document.getElementById('ax-y');
-    const aggEl = document.getElementById('ax-agg');
-    const limEl = document.getElementById('ax-limit');
-    if (xEl && w.axisX) xEl.value = w.axisX;
-    if (yEl && w.axisY) yEl.value = w.axisY;
-    if (aggEl && w.aggFunc) aggEl.value = w.aggFunc;
-    if (limEl && w.limit) limEl.value = w.limit;
-  }, 0);
+  setTimeout(()=>{
+    const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined)el.value=v;};
+    set('ax-x',w.axisX);set('ax-y',w.axisY);set('ax-y2',w.axisY2);
+    set('ax-agg',w.aggFunc);set('ax-limit',w.limit);
+    set('ax-label',w.scatterLabel);set('gauge-target',w.gaugeTarget);set('gauge-unit',w.gaugeUnit||'');
+  },0);
 }
 
 function onAxesChange() {
-  if (state.activeWidgetIdx === null) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  const xEl = document.getElementById('ax-x');
-  const yEl = document.getElementById('ax-y');
-  const aggEl = document.getElementById('ax-agg');
-  const limEl = document.getElementById('ax-limit');
-  if (xEl) w.axisX = xEl.value;
-  if (yEl) w.axisY = yEl.value;
-  if (aggEl) w.aggFunc = aggEl.value;
-  if (limEl) w.limit = parseInt(limEl.value);
-  if (w.chartType === 'table') {
-    w.tableCols = Array.from(document.querySelectorAll('#axes-config input[type=checkbox]:checked')).map(c => c.value);
+  if(state.activeWidgetIdx===null) return;
+  const w=state.widgets[state.activeWidgetIdx];
+  const g=id=>{const e=document.getElementById(id);return e?e.value:undefined;};
+  w.axisX=g('ax-x')||w.axisX;
+  w.axisY=g('ax-y')||w.axisY;
+  w.axisY2=g('ax-y2')||w.axisY2;
+  w.aggFunc=g('ax-agg')||w.aggFunc;
+  const lim=g('ax-limit'); if(lim!==undefined)w.limit=parseInt(lim);
+  w.scatterLabel=g('ax-label')||w.scatterLabel;
+  const gt=g('gauge-target');if(gt!==undefined)w.gaugeTarget=parseFloat(gt)||100;
+  const gu=g('gauge-unit');if(gu!==undefined)w.gaugeUnit=gu;
+  w.color=document.getElementById('chart-color')?.value||w.color;
+  w.sortOrder=document.getElementById('sort-order')?.value||w.sortOrder;
+  if(w.chartType==='table'){
+    w.tableCols=Array.from(document.querySelectorAll('#axes-config input[type=checkbox]:checked')).map(c=>c.value);
   }
   renderBuilderPreview();
 }
 
-// ════════════════════════════════
-//  FILTERS
-// ════════════════════════════════
+// ══════════════════════════════════════════
+//  FILTER ROWS
+// ══════════════════════════════════════════
 function renderFilterConfig(w) {
-  const section = document.getElementById('filter-section');
-  section.style.display = 'block';
+  document.getElementById('filter-section').style.display='block';
   renderFilterRows(w);
 }
-
 function renderFilterRows(w) {
-  const cols = state.columns;
-  const container = document.getElementById('filters-container');
-  if (!w.filters) w.filters = [];
-  container.innerHTML = w.filters.map((f, i) => `
-    <div style="display:grid;grid-template-columns:1fr 80px 1fr 24px;gap:4px;margin-bottom:6px;align-items:center;">
-      <select class="config-select" style="margin:0;" onchange="updateFilter(${i},'col',this.value)">
+  const cols=state.columns;
+  document.getElementById('filters-container').innerHTML=(w.filters||[]).map((f,i)=>`
+    <div style="display:grid;grid-template-columns:1fr 70px 1fr 22px;gap:3px;margin-bottom:5px;">
+      <select class="config-select" style="margin:0;font-size:11px;" onchange="updateFilter(${i},'col',this.value)">
         <option value="">Col</option>${cols.map(c=>`<option value="${c}" ${f.col===c?'selected':''}>${c}</option>`).join('')}
       </select>
-      <select class="config-select" style="margin:0;font-size:10px;" onchange="updateFilter(${i},'op',this.value)">
+      <select class="config-select" style="margin:0;font-size:9px;" onchange="updateFilter(${i},'op',this.value)">
         <option value="contains" ${f.op==='contains'?'selected':''}>contiene</option>
         <option value="equals" ${f.op==='equals'?'selected':''}>igual</option>
-        <option value="gt" ${f.op==='gt'?'selected':''}>mayor</option>
-        <option value="lt" ${f.op==='lt'?'selected':''}>menor</option>
-        <option value="gte" ${f.op==='gte'?'selected':''}>≥</option>
-        <option value="lte" ${f.op==='lte'?'selected':''}>≤</option>
+        <option value="gt" ${f.op==='gt'?'selected':''}>></option>
+        <option value="lt" ${f.op==='lt'?'selected':''}><</option>
+        <option value="gte" ${f.op==='gte'?'selected':''}>>=</option>
+        <option value="lte" ${f.op==='lte'?'selected':''}>&lt;=</option>
+        <option value="notempty" ${f.op==='notempty'?'selected':''}>≠ vacío</option>
       </select>
       <input type="text" class="config-input" style="margin:0;" value="${f.val||''}" placeholder="Valor" oninput="updateFilter(${i},'val',this.value)">
-      <button onclick="removeFilter(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;padding:0;line-height:1;">✕</button>
+      <button onclick="removeFilter(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;padding:0;">✕</button>
     </div>`).join('');
 }
-
-function addFilter() {
-  if (state.activeWidgetIdx === null) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  if (!w.filters) w.filters = [];
-  w.filters.push({ col: '', op: 'contains', val: '' });
+function addFilter(){
+  if(state.activeWidgetIdx===null) return;
+  const w=state.widgets[state.activeWidgetIdx];
+  if(!w.filters)w.filters=[];
+  w.filters.push({col:'',op:'contains',val:''});
   renderFilterRows(w);
 }
-
-function updateFilter(i, key, val) {
-  if (state.activeWidgetIdx === null) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  w.filters[i][key] = val;
-  renderBuilderPreview();
+function updateFilter(i,key,val){
+  if(state.activeWidgetIdx===null) return;
+  const w=state.widgets[state.activeWidgetIdx];
+  w.filters[i][key]=val; renderBuilderPreview();
+}
+function removeFilter(i){
+  if(state.activeWidgetIdx===null) return;
+  const w=state.widgets[state.activeWidgetIdx];
+  w.filters.splice(i,1); renderFilterRows(w); renderBuilderPreview();
 }
 
-function removeFilter(i) {
-  if (state.activeWidgetIdx === null) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  w.filters.splice(i, 1);
-  renderFilterRows(w);
-  renderBuilderPreview();
-}
-
-// ════════════════════════════════
-//  APPLY FILTERS
-// ════════════════════════════════
-function applyFilters(rows, filters) {
-  if (!filters || !filters.length) return rows;
-  return rows.filter(row => {
-    return filters.every(f => {
-      if (!f.col || !f.val) return true;
-      const cell = String(row[f.col] ?? '');
-      const val = f.val;
-      const num = parseFloat(cell);
-      const fnum = parseFloat(val);
-      switch (f.op) {
-        case 'contains': return cell.toLowerCase().includes(val.toLowerCase());
-        case 'equals':   return cell.toLowerCase() === val.toLowerCase();
-        case 'gt':  return !isNaN(num) && num > fnum;
-        case 'lt':  return !isNaN(num) && num < fnum;
-        case 'gte': return !isNaN(num) && num >= fnum;
-        case 'lte': return !isNaN(num) && num <= fnum;
-        default: return true;
-      }
-    });
-  });
-}
-
-// ════════════════════════════════
-//  AGGREGATE DATA
-// ════════════════════════════════
-function aggregateData(rows, axisX, axisY, aggFunc, limit) {
-  if (aggFunc === 'COUNT') {
-    const groups = {};
-    rows.forEach(r => {
-      const k = String(r[axisX] ?? 'N/A').substring(0, 30);
-      groups[k] = (groups[k] || 0) + 1;
-    });
-    return Object.entries(groups).sort((a,b) => b[1]-a[1]).slice(0, limit);
-  }
-  const groups = {};
-  const groupVals = {};
-  rows.forEach(r => {
-    const k = String(r[axisX] ?? 'N/A').substring(0, 30);
-    const v = parseFloat(r[axisY]) || 0;
-    if (!groups[k]) { groups[k] = 0; groupVals[k] = []; }
-    groups[k] += v;
-    groupVals[k].push(v);
-  });
-  let entries = Object.entries(groups);
-  if (aggFunc === 'AVG') entries = entries.map(([k]) => [k, groupVals[k].reduce((a,b)=>a+b,0)/groupVals[k].length]);
-  if (aggFunc === 'MAX') entries = entries.map(([k]) => [k, Math.max(...groupVals[k])]);
-  if (aggFunc === 'MIN') entries = entries.map(([k]) => [k, Math.min(...groupVals[k])]);
-  return entries.sort((a,b) => b[1]-a[1]).slice(0, limit);
-}
-
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  BUILDER PREVIEW
-// ════════════════════════════════
+// ══════════════════════════════════════════
 function renderBuilderPreview() {
-  if (state.activeWidgetIdx === null || !state.rawData) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  const rows = applyFilters(state.rawData, w.filters);
-
-  const previewArea = document.getElementById('preview-area');
-  previewArea.innerHTML = `
-    <div class="preview-card">
-      <div class="preview-title">${w.name || 'Sin título'}</div>
-      <div class="preview-meta">Tabla: ${w.tableName} · ${rows.length} registros</div>
-      <div id="preview-content-inner"></div>
-    </div>`;
-
-  destroyAllPreviewCharts();
-
-  const inner = document.getElementById('preview-content-inner');
-  if (w.chartType === 'table') renderTableWidget(inner, rows, w, true);
-  else if (w.chartType === 'kpi') renderKPIWidget(inner, rows, w);
-  else renderChartWidget(inner, rows, w, 'preview-chart', true);
+  if(state.activeWidgetIdx===null||!state.rawData) return;
+  const w=state.widgets[state.activeWidgetIdx];
+  const rows=applyFilters(state.rawData,w);
+  const area=document.getElementById('preview-area');
+  area.innerHTML=`<div class="preview-card"><div class="preview-title">${w.name||'Sin título'}</div><div class="preview-meta">Tabla: ${w.tableName} · ${rows.length} registros tras filtros</div><div id="preview-content-inner"></div></div>`;
+  destroyPreviewCharts();
+  const inner=document.getElementById('preview-content-inner');
+  renderWidget(inner,rows,w,'prev-chart',true);
 }
 
-function destroyAllPreviewCharts() {
-  Object.values(state.chartInstances).forEach(c => { try { c.destroy(); } catch(e){} });
-  state.chartInstances = {};
+function destroyPreviewCharts() {
+  Object.values(state.chartInstances).forEach(c=>{try{c.destroy();}catch(e){}});
+  state.chartInstances={};
+  Object.values(state.mapInstances).forEach(m=>{try{if(m._leaflet_id)m.remove();}catch(e){}});
+  // don't clear all map instances, only preview ones
 }
 
-// ════════════════════════════════
-//  WIDGET RENDERERS
-// ════════════════════════════════
-function renderTableWidget(container, rows, w, isPreview) {
-  const cols = w.tableCols && w.tableCols.length ? w.tableCols : (state.columns.length ? state.columns.slice(0,6) : Object.keys(rows[0]||{}).slice(0,6));
-  const limit = w.limit || 20;
-  const shown = rows.slice(0, limit);
-  container.innerHTML = `
-    <div style="overflow-x:auto;">
-      <table class="table-preview">
-        <thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
-        <tbody>${shown.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??'—'}</td>`).join('')}</tr>`).join('')}</tbody>
-      </table>
-      ${rows.length > limit ? `<div style="padding:8px 10px;font-size:10px;color:var(--text-muted);">Mostrando ${limit} de ${rows.length} registros</div>` : ''}
-    </div>`;
+// ══════════════════════════════════════════
+//  WIDGET RENDERER (routes to correct type)
+// ══════════════════════════════════════════
+function renderWidget(container, rows, w, canvasId, isPreview) {
+  switch(w.chartType){
+    case 'table':       return renderTableWidget(container,rows,w);
+    case 'kpi':         return renderKPIWidget(container,rows,w);
+    case 'gauge':       return renderGaugeWidget(container,rows,w,canvasId,isPreview);
+    case 'scatter':     return renderScatterWidget(container,rows,w,canvasId,isPreview);
+    case 'compare':     return renderCompareWidget(container,rows,w,canvasId,isPreview);
+    case 'map':         return renderMapWidget(container,rows,w,canvasId,isPreview);
+    default:            return renderChartWidget(container,rows,w,canvasId,isPreview);
+  }
 }
 
+// TABLE
+function renderTableWidget(container, rows, w) {
+  const cols=w.tableCols&&w.tableCols.length?w.tableCols:state.columns.slice(0,6);
+  const lim=w.limit&&w.limit<99999?w.limit:50;
+  const shown=rows.slice(0,lim);
+  container.innerHTML=`<div style="overflow-x:auto;"><table class="table-preview"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${shown.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??'—'}</td>`).join('')}</tr>`).join('')}</tbody></table>${rows.length>lim?`<div style="padding:6px 9px;font-size:10px;color:var(--text-muted);">Mostrando ${lim} de ${rows.length}</div>`:''}</div>`;
+}
+
+// KPI
 function renderKPIWidget(container, rows, w) {
-  const yCol = w.axisY;
-  const xCol = w.axisX;
-  const aggFunc = w.aggFunc || 'SUM';
-  if (!yCol) { container.innerHTML = '<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columna numérica</div>'; return; }
-
-  let kpis = [];
-  if (xCol) {
-    const entries = aggregateData(rows, xCol, yCol, aggFunc, 8);
-    kpis = entries.map(([k, v]) => ({ label: k, value: v, count: rows.filter(r => String(r[xCol]??'') === k).length }));
-  } else {
-    let val = 0;
-    if (aggFunc === 'SUM') val = rows.reduce((s,r) => s + (parseFloat(r[yCol])||0), 0);
-    else if (aggFunc === 'COUNT') val = rows.length;
-    else if (aggFunc === 'AVG') val = rows.reduce((s,r) => s + (parseFloat(r[yCol])||0), 0) / (rows.length||1);
-    else if (aggFunc === 'MAX') val = Math.max(...rows.map(r => parseFloat(r[yCol])||0));
-    else if (aggFunc === 'MIN') val = Math.min(...rows.map(r => parseFloat(r[yCol])||0));
-    kpis = [{ label: `${aggFunc} de ${yCol}`, value: val, count: rows.length }];
+  const yCol=w.axisY; const xCol=w.axisX; const aggFunc=w.aggFunc||'SUM';
+  if(!yCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columna numérica</div>';return;}
+  let kpis=[];
+  if(xCol){
+    const entries=aggregateData(rows,xCol,yCol,aggFunc,8,w.sortOrder);
+    kpis=entries.map(([k,v])=>({label:k,value:v,count:rows.filter(r=>String(r[xCol]??'')===k).length}));
+  }else{
+    let val=0;
+    if(aggFunc==='SUM')val=rows.reduce((s,r)=>s+(parseFloat(r[yCol])||0),0);
+    else if(aggFunc==='COUNT')val=rows.length;
+    else if(aggFunc==='AVG')val=rows.reduce((s,r)=>s+(parseFloat(r[yCol])||0),0)/(rows.length||1);
+    else if(aggFunc==='MAX')val=Math.max(...rows.map(r=>parseFloat(r[yCol])||0));
+    else if(aggFunc==='MIN')val=Math.min(...rows.map(r=>parseFloat(r[yCol])||0));
+    kpis=[{label:`${aggFunc} · ${yCol}`,value:val,count:rows.length}];
   }
-
-  container.innerHTML = `<div class="kpi-grid">${kpis.map(k=>`
-    <div class="kpi-card">
-      <div class="kpi-label">${k.label}</div>
-      <div class="kpi-value">${formatNum(k.value)}</div>
-      <div class="kpi-sub">${k.count} registros</div>
-    </div>`).join('')}</div>`;
+  container.innerHTML=`<div class="kpi-grid">${kpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="color:${w.color||'var(--gold)'};">${formatNum(k.value)}</div><div class="kpi-sub">${k.count} reg.</div></div>`).join('')}</div>`;
 }
 
-function renderChartWidget(container, rows, w, canvasId, isPreview) {
-  const xCol = w.axisX;
-  const yCol = w.axisY;
-  const aggFunc = w.aggFunc || 'SUM';
-  const limit = w.limit || 20;
-
-  if (!xCol) { container.innerHTML = '<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columnas para el eje X e Y</div>'; return; }
-
-  const entries = aggregateData(rows, xCol, aggFunc === 'COUNT' ? xCol : yCol, aggFunc, limit);
-  const labels = entries.map(e => e[0]);
-  const values = entries.map(e => e[1]);
-
-  const isHBar = w.chartType === 'horizontalBar';
-  const chartType = isHBar ? 'bar' : w.chartType;
-  const isPie = chartType === 'pie' || chartType === 'doughnut';
-
-  container.innerHTML = `<div class="widget-chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
-
-  const ctx = document.getElementById(canvasId).getContext('2d');
-  const inst = new Chart(ctx, {
-    type: chartType,
-    data: {
-      labels,
-      datasets: [{
-        label: aggFunc === 'COUNT' ? `COUNT de ${xCol}` : `${aggFunc} de ${yCol}`,
-        data: values,
-        backgroundColor: isPie ? GOLD_PALETTE.slice(0, labels.length) : 'rgba(200,168,75,0.75)',
-        borderColor: isPie ? GOLD_PALETTE.slice(0, labels.length) : '#c8a84b',
-        borderWidth: 1,
-        tension: 0.3,
-      }]
-    },
-    options: {
-      indexAxis: isHBar ? 'y' : 'x',
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { labels: { color: '#e8e4d8', font: { family: 'DM Sans', size: 11 } } },
-        tooltip: { backgroundColor: '#1f1f1f', titleColor: '#c8a84b', bodyColor: '#e8e4d8',
-          callbacks: { label: ctx => ` ${formatNum(ctx.parsed[isHBar?'x':'y'] ?? ctx.parsed)}` }
-        }
-      },
-      scales: isPie ? {} : {
-        x: { ticks: { color: '#888', maxRotation: isHBar ? 0 : 35, font: { size: 10 } }, grid: { color: '#2a2a2a' } },
-        y: { ticks: { color: '#888', font: { size: 10 }, callback: v => formatNum(v) }, grid: { color: '#2a2a2a' } }
-      }
+// GAUGE
+function renderGaugeWidget(container, rows, w, canvasId, isPreview) {
+  const yCol=w.axisY; const aggFunc=w.aggFunc||'SUM';
+  if(!yCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columna numérica</div>';return;}
+  let value=0;
+  if(aggFunc==='SUM')value=rows.reduce((s,r)=>s+(parseFloat(r[yCol])||0),0);
+  else if(aggFunc==='COUNT')value=rows.length;
+  else if(aggFunc==='AVG')value=rows.reduce((s,r)=>s+(parseFloat(r[yCol])||0),0)/(rows.length||1);
+  else if(aggFunc==='MAX')value=Math.max(...rows.map(r=>parseFloat(r[yCol])||0));
+  else if(aggFunc==='MIN')value=Math.min(...rows.map(r=>parseFloat(r[yCol])||0));
+  const target=parseFloat(w.gaugeTarget)||100;
+  const pct=Math.min(Math.max(value/target,0),1);
+  const unit=w.gaugeUnit||'';
+  const color=w.color||'#c8a84b';
+  container.innerHTML=`<div class="gauge-container"><canvas id="${canvasId}" width="280" height="165"></canvas><div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:${color};margin-top:-24px;">${formatNum(value)}${unit}</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Meta: ${formatNum(target)}${unit} · ${Math.round(pct*100)}% completado</div></div>`;
+  setTimeout(()=>{
+    const canvas=document.getElementById(canvasId); if(!canvas)return;
+    const ctx=canvas.getContext('2d');
+    const W=canvas.width,H=canvas.height;
+    const cx=W/2, cy=H*0.82, r=Math.min(W,H)*0.62;
+    ctx.clearRect(0,0,W,H);
+    // BG arc
+    ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,0);
+    ctx.strokeStyle='#2a2a2a';ctx.lineWidth=22;ctx.lineCap='round';ctx.stroke();
+    // Zones
+    const zones=[[0,.5,'#4caf7d'],[.5,.8,'#e2a84b'],[.8,1.0,'#e05555']];
+    zones.forEach(([s,e,c])=>{
+      const sa=Math.PI+(s*Math.PI), ea=Math.PI+(e*Math.PI);
+      ctx.beginPath();ctx.arc(cx,cy,r,sa,ea);
+      ctx.strokeStyle=c+'33';ctx.lineWidth=22;ctx.lineCap='butt';ctx.stroke();
+    });
+    // Value arc
+    if(pct>0){
+      const grad=ctx.createLinearGradient(cx-r,cy,cx+r,cy);
+      grad.addColorStop(0,'#a08030');grad.addColorStop(1,color);
+      ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+(pct*Math.PI));
+      ctx.strokeStyle=grad;ctx.lineWidth=22;ctx.lineCap='round';ctx.stroke();
     }
+    // Needle
+    const needleAngle=Math.PI+(pct*Math.PI);
+    const nx=cx+(r-5)*Math.cos(needleAngle), ny=cy+(r-5)*Math.sin(needleAngle);
+    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(nx,ny);
+    ctx.strokeStyle=color;ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);
+    ctx.fillStyle=color;ctx.fill();
+    // Ticks
+    for(let i=0;i<=10;i++){
+      const a=Math.PI+(i/10)*Math.PI;
+      const x1=cx+(r-26)*Math.cos(a),y1=cy+(r-26)*Math.sin(a);
+      const x2=cx+(r-14)*Math.cos(a),y2=cy+(r-14)*Math.sin(a);
+      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
+      ctx.strokeStyle=i%5===0?'#666':'#333';ctx.lineWidth=i%5===0?2:1;ctx.stroke();
+    }
+    // Labels 0% and 100%
+    ctx.font='10px DM Sans,sans-serif';ctx.fillStyle='#666';ctx.textAlign='center';
+    ctx.fillText('0',cx-r+8,cy+14);ctx.fillText('100%',cx+r-10,cy+14);
+  },80);
+}
+
+// SCATTER
+function renderScatterWidget(container, rows, w, canvasId, isPreview) {
+  const xCol=w.axisX||w.scatterX; const yCol=w.axisY||w.scatterY;
+  if(!xCol||!yCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columnas X e Y</div>';return;}
+  const lim=w.limit||200;
+  const pts=rows.slice(0,lim).map(r=>({x:parseFloat(r[xCol])||0,y:parseFloat(r[yCol])||0,label:w.scatterLabel?r[w.scatterLabel]:null})).filter(p=>!isNaN(p.x)&&!isNaN(p.y));
+  const color=w.color||'#c8a84b';
+  container.innerHTML=`<div class="widget-chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
+  const ctx=document.getElementById(canvasId).getContext('2d');
+  const inst=new Chart(ctx,{
+    type:'scatter',
+    data:{datasets:[{label:`${xCol} vs ${yCol}`,data:pts,backgroundColor:color+'99',borderColor:color,borderWidth:1,pointRadius:5,pointHoverRadius:7}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans'}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:color,bodyColor:'#e8e4d8',callbacks:{label:ctx=>{const p=ctx.raw;return `${p.label?p.label+': ':''}(${formatNum(p.x)}, ${formatNum(p.y)})`;}}}},
+      scales:{x:{ticks:{color:'#888'},grid:{color:'#2a2a2a'},title:{display:true,text:xCol,color:'#888'}},y:{ticks:{color:'#888',callback:v=>formatNum(v)},grid:{color:'#2a2a2a'},title:{display:true,text:yCol,color:'#888'}}}}
   });
-
-  if (isPreview) state.chartInstances[canvasId] = inst;
-  else state.dvChartInstances[canvasId] = inst;
+  if(isPreview)state.chartInstances[canvasId]=inst;else state.dvChartInstances[canvasId]=inst;
 }
 
-// ════════════════════════════════
-//  EXPORT
-// ════════════════════════════════
-function exportChart(canvasId, name) {
-  const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
-  const a = document.createElement('a');
-  a.download = `${name || 'grafica'}.png`;
-  a.href = canvas.toDataURL('image/png');
-  a.click();
-  toast('Gráfica exportada como PNG ✓', 'success');
-}
-
-function exportTable(rows, w, name) {
-  const cols = w.tableCols && w.tableCols.length ? w.tableCols : Object.keys(rows[0]||{});
-  const csvRows = [cols.join(','), ...rows.map(r => cols.map(c => `"${String(r[c]??'').replace(/"/g,'""')}"`).join(','))];
-  const blob = new Blob([csvRows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `${name || 'tabla'}.csv`;
-  a.click(); URL.revokeObjectURL(url);
-  toast('Tabla exportada como CSV ✓', 'success');
-}
-
-// ════════════════════════════════
-//  SAVE DASHBOARD
-// ════════════════════════════════
-function saveCurrentDashboard() {
-  const name = document.getElementById('builder-name').value.trim();
-  if (!name) { toast('Ponle un nombre al tablero', 'error'); return; }
-  if (!state.widgets.length) { toast('Agrega al menos una gráfica', 'error'); return; }
-  const emptyWidget = state.widgets.find(w => !w.tableName);
-  if (emptyWidget) { toast(`La gráfica "${emptyWidget.name}" no tiene tabla seleccionada`, 'error'); return; }
-
-  const now = new Date().toISOString();
-  if (state.editingId) {
-    const idx = state.dashboards.findIndex(d => d.id === state.editingId);
-    if (idx >= 0) {
-      state.dashboards[idx] = { ...state.dashboards[idx], name, widgets: [...state.widgets], updatedAt: now };
-    }
-    state.currentDashId = state.editingId;
-    toast('Tablero actualizado ✓', 'success');
-  } else {
-    const dash = { id: `d_${Date.now()}`, name, author: state.userName, createdAt: now, updatedAt: now, widgets: [...state.widgets] };
-    state.dashboards.unshift(dash);
-    state.currentDashId = dash.id;
-    toast('Tablero guardado ✓', 'success');
+// COMPARE (grouped bar)
+function renderCompareWidget(container, rows, w, canvasId, isPreview) {
+  const xCol=w.axisX; const yCol=w.axisY; const y2Col=w.axisY2;
+  const aggFunc=w.aggFunc||'SUM'; const lim=w.limit||20;
+  if(!xCol||!yCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columnas</div>';return;}
+  const e1=aggregateData(rows,xCol,yCol,aggFunc,lim,w.sortOrder);
+  const labels=e1.map(e=>e[0]);
+  const d1=e1.map(e=>e[1]);
+  let d2=[];
+  if(y2Col){
+    const map2={}; aggregateData(rows,xCol,y2Col,aggFunc,lim,w.sortOrder).forEach(([k,v])=>map2[k]=v);
+    d2=labels.map(l=>map2[l]||0);
   }
-  saveDashboardsToStorage();
-  renderSidebar();
-  renderHomeGrid();
-  destroyAllPreviewCharts();
-  openDashboard(state.currentDashId);
+  const color=w.color||'#c8a84b';
+  container.innerHTML=`<div class="widget-chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
+  const ctx=document.getElementById(canvasId).getContext('2d');
+  const datasets=[{label:yCol,data:d1,backgroundColor:color+'cc',borderColor:color,borderWidth:1}];
+  if(y2Col)datasets.push({label:y2Col,data:d2,backgroundColor:'#5b9cf699',borderColor:'#5b9cf6',borderWidth:1});
+  const inst=new Chart(ctx,{
+    type:'bar',data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans'}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:color,bodyColor:'#e8e4d8'}},
+      scales:{x:{ticks:{color:'#888',maxRotation:35},grid:{color:'#2a2a2a'}},y:{ticks:{color:'#888',callback:v=>formatNum(v)},grid:{color:'#2a2a2a'}}}}
+  });
+  if(isPreview)state.chartInstances[canvasId]=inst;else state.dvChartInstances[canvasId]=inst;
 }
 
-// ════════════════════════════════
+// MAP
+function renderMapWidget(container, rows, w, mapId, isPreview) {
+  const cityCol=w.axisX; const valueCol=w.axisY; const aggFunc=w.aggFunc||'SUM';
+  if(!cityCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columna de ciudad</div>';return;}
+  const entries=aggregateData(rows,cityCol,valueCol,aggFunc,200,'desc');
+  const maxVal=Math.max(...entries.map(e=>e[1]),1);
+  container.innerHTML=`<div id="${mapId}" class="map-container"></div>`;
+  setTimeout(()=>{
+    const el=document.getElementById(mapId); if(!el)return;
+    // Destroy old instance
+    if(state.mapInstances[mapId]){try{state.mapInstances[mapId].remove();}catch(e){}}
+    const map=L.map(mapId,{zoomControl:true}).setView([24,-102],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
+    let found=0;
+    entries.forEach(([city,value])=>{
+      const coords=findCityCoords(city); if(!coords)return;
+      found++;
+      const radius=12+(value/maxVal)*30;
+      const color=w.color||'#c8a84b';
+      L.circleMarker(coords,{radius,fillColor:color,color:color,weight:2,opacity:.9,fillOpacity:.55})
+       .addTo(map)
+       .bindPopup(`<b style="color:#c8a84b;">${city}</b><br><span style="font-size:12px;">${aggFunc}: <b>${formatNum(value)}</b></span>`);
+    });
+    if(!found){
+      el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:12px;flex-direction:column;gap:8px;"><div>🗺️</div><div>No se encontraron ciudades reconocidas</div><div style="font-size:10px;">Revisa que la columna tenga nombres de ciudades de México</div></div>';
+      return;
+    }
+    state.mapInstances[mapId]=map;
+  },150);
+}
+
+function findCityCoords(rawName) {
+  if(!rawName) return null;
+  const name=String(rawName).toUpperCase().trim();
+  if(MX_CITIES[name]) return MX_CITIES[name];
+  // Partial match
+  for(const [city,coords] of Object.entries(MX_CITIES)){
+    if(name.includes(city)||city.includes(name)) return coords;
+  }
+  return null;
+}
+
+// CHART (bar, horizontalBar, line, pie, doughnut)
+function renderChartWidget(container, rows, w, canvasId, isPreview) {
+  const xCol=w.axisX; const yCol=w.axisY; const aggFunc=w.aggFunc||'SUM'; const lim=w.limit||20;
+  if(!xCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columnas X e Y</div>';return;}
+  const entries=aggregateData(rows,xCol,aggFunc==='COUNT'?xCol:yCol,aggFunc,lim,w.sortOrder);
+  const labels=entries.map(e=>e[0]); const values=entries.map(e=>e[1]);
+  const isHBar=w.chartType==='horizontalBar';
+  const chartType=isHBar?'bar':w.chartType;
+  const isPie=chartType==='pie'||chartType==='doughnut';
+  const color=w.color||'#c8a84b';
+  const palette=[color,'#e2c46e','#a08030','#f0d88a','#7a6020','#dab85e','#b89038','#eed070','#907028','#6a5018'];
+  container.innerHTML=`<div class="widget-chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
+  const ctx=document.getElementById(canvasId).getContext('2d');
+  const inst=new Chart(ctx,{
+    type:chartType,
+    data:{labels,datasets:[{label:aggFunc==='COUNT'?`COUNT de ${xCol}`:`${aggFunc} de ${yCol||xCol}`,data:values,backgroundColor:isPie?palette.slice(0,labels.length):color+'cc',borderColor:isPie?palette.slice(0,labels.length):color,borderWidth:1,tension:.3}]},
+    options:{indexAxis:isHBar?'y':'x',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans',size:11}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:color,bodyColor:'#e8e4d8',callbacks:{label:ctx=>`  ${formatNum(isHBar?ctx.parsed.x:ctx.parsed.y??ctx.parsed)}`}}},
+      scales:isPie?{}:{x:{ticks:{color:'#888',maxRotation:isHBar?0:35,font:{size:10}},grid:{color:'#2a2a2a'}},y:{ticks:{color:'#888',font:{size:10},callback:v=>isHBar?v:formatNum(v)},grid:{color:'#2a2a2a'}}}}
+  });
+  if(isPreview)state.chartInstances[canvasId]=inst;else state.dvChartInstances[canvasId]=inst;
+}
+
+// ══════════════════════════════════════════
+//  SAVE DASHBOARD
+// ══════════════════════════════════════════
+function saveCurrentDashboard() {
+  const name=document.getElementById('builder-name').value.trim();
+  if(!name){toast('Ponle un nombre al tablero','error');return;}
+  if(!state.widgets.length){toast('Agrega al menos una gráfica','error');return;}
+  const empty=state.widgets.find(w=>!w.tableName);
+  if(empty){toast(`"${empty.name}" no tiene tabla seleccionada`,'error');return;}
+  const now=new Date().toISOString();
+  if(state.editingId){
+    const idx=state.dashboards.findIndex(d=>d.id===state.editingId);
+    if(idx>=0)state.dashboards[idx]={...state.dashboards[idx],name,widgets:JSON.parse(JSON.stringify(state.widgets)),updatedAt:now};
+    state.currentDashId=state.editingId; toast('Tablero actualizado ✓','success');
+  }else{
+    const dash={id:`d_${Date.now()}`,name,author:state.userName,createdAt:now,updatedAt:now,widgets:JSON.parse(JSON.stringify(state.widgets))};
+    state.dashboards.unshift(dash); state.currentDashId=dash.id; toast('Tablero guardado ✓','success');
+  }
+  saveDashboardsToStorage(); renderSidebar(); renderHomeGrid();
+  destroyPreviewCharts(); openDashboard(state.currentDashId);
+}
+
+// ══════════════════════════════════════════
 //  OPEN DASHBOARD
-// ════════════════════════════════
+// ══════════════════════════════════════════
 async function openDashboard(id) {
-  state.currentDashId = id;
-  const dash = state.dashboards.find(d => d.id === id);
-  if (!dash) return;
-  renderSidebar();
-  showView('dashboard');
-  document.getElementById('dv-title').textContent = dash.name;
-  document.getElementById('dv-meta').textContent = `Creado por ${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
-  Object.values(state.dvChartInstances).forEach(c => { try { c.destroy(); } catch(e){} });
-  state.dvChartInstances = {};
+  state.currentDashId=id;
+  const dash=state.dashboards.find(d=>d.id===id); if(!dash)return;
+  renderSidebar(); showView('dashboard');
+  document.getElementById('dv-title').textContent=dash.name;
+  document.getElementById('dv-meta').textContent=`${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+  destroyDvCharts();
   await renderDashboardWidgets(dash);
 }
 
+function destroyDvCharts() {
+  Object.values(state.dvChartInstances).forEach(c=>{try{c.destroy();}catch(e){}});
+  state.dvChartInstances={};
+  Object.entries(state.mapInstances).filter(([k])=>k.startsWith('dv')).forEach(([k,m])=>{try{m.remove();}catch(e){}delete state.mapInstances[k];});
+}
+
 async function renderDashboardWidgets(dash) {
-  const grid = document.getElementById('dv-widgets-grid');
-  grid.innerHTML = (dash.widgets||[]).map((w,i) =>
-    `<div class="widget-card" id="wcard-${i}">
+  const grid=document.getElementById('dv-widgets-grid');
+  grid.innerHTML=(dash.widgets||[]).map((w,i)=>`
+    <div class="widget-card ${w.chartType==='map'?'full-width':''}" id="wcard-${i}">
       <div class="widget-card-header">
         <div>
           <div class="widget-card-title">${CHART_ICONS[w.chartType]||'📊'} ${w.name}</div>
-          <div class="widget-card-meta">Tabla: ${w.tableName}</div>
+          <div class="widget-card-meta">${w.tableName}${w.datePreset?` · ${prettyPreset(w.datePreset)}`:w.dateFrom?` · ${w.dateFrom} → ${w.dateTo||'hoy'}`:''}</div>
         </div>
-        <div class="widget-actions" id="wactions-${i}">
-          <span style="color:var(--text-muted);font-size:11px;">Cargando...</span>
-        </div>
+        <div class="widget-actions" id="wact-${i}"><span class="spinner"></span></div>
       </div>
-      <div id="wcontent-${i}"><div class="loading-indicator"><span class="spinner"></span>Cargando datos...</div></div>
+      <div id="wcnt-${i}"><div class="loading-indicator"><span class="spinner"></span>Cargando...</div></div>
     </div>`).join('');
 
-  // Load each widget independently
-  for (let i = 0; i < (dash.widgets||[]).length; i++) {
-    const w = dash.widgets[i];
-    loadDashboardWidget(i, w);
+  for(let i=0;i<(dash.widgets||[]).length;i++){
+    loadDashboardWidget(i, dash.widgets[i]);
   }
 }
 
 async function loadDashboardWidget(i, w) {
   try {
-    const r = await fetch(`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=1000`);
-    const data = await r.json();
-    const allRows = data.rows || [];
-    const rows = applyFilters(allRows, w.filters);
-    const canvasId = `dvchart-${i}`;
-    const container = document.getElementById(`wcontent-${i}`);
-    container.innerHTML = '';
-
-    if (w.chartType === 'table') {
-      const cols = w.tableCols && w.tableCols.length ? w.tableCols : Object.keys(rows[0]||{}).slice(0,8);
-      renderTableWidget(container, rows, { ...w, tableCols: cols }, false);
-      // Export CSV button
-      document.getElementById(`wactions-${i}`).innerHTML = `
-        <button class="icon-btn" onclick="exportTable(${JSON.stringify(rows).replace(/</g,'\\u003c')}, ${JSON.stringify(w)}, '${w.name}')" title="Exportar CSV">⬇ CSV</button>`;
-    } else if (w.chartType === 'kpi') {
-      state.columns = data.columns || Object.keys(rows[0]||{});
-      renderKPIWidget(container, rows, w);
-      document.getElementById(`wactions-${i}`).innerHTML = `<span style="color:var(--success);font-size:10px;">✓ ${rows.length} registros</span>`;
+    const lim=w.dataLimit||1000;
+    const r=await fetch(`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=${lim}`);
+    const data=await r.json();
+    const allRows=data.rows||[];
+    // Temporarily set state.columns for renderers that need it
+    state.columns=data.columns||Object.keys(allRows[0]||{});
+    const rows=applyFilters(allRows,w);
+    const canvasId=`dvchart-${i}`;
+    const container=document.getElementById(`wcnt-${i}`);
+    container.innerHTML='';
+    renderWidget(container,rows,w,canvasId,false);
+    // Actions
+    const actDiv=document.getElementById(`wact-${i}`);
+    if(w.chartType==='table'){
+      actDiv.innerHTML=`<button class="icon-btn" onclick="exportTableData(${i})" title="CSV">⬇ CSV</button>`;
+      actDiv.dataset.rows=JSON.stringify(rows); actDiv.dataset.w=JSON.stringify(w);
+    } else if(w.chartType==='gauge'||w.chartType==='kpi'||w.chartType==='map'){
+      actDiv.innerHTML=`<span style="color:var(--success);font-size:10px;">✓ ${rows.length}</span>`;
     } else {
-      state.columns = data.columns || Object.keys(rows[0]||{});
-      renderChartWidget(container, rows, w, canvasId, false);
-      document.getElementById(`wactions-${i}`).innerHTML = `
-        <button class="icon-btn" onclick="exportChart('${canvasId}','${w.name}')" title="Exportar PNG">⬇ PNG</button>
-        <span style="color:var(--success);font-size:10px;margin-left:4px;">✓ ${rows.length}</span>`;
+      actDiv.innerHTML=`<button class="icon-btn" onclick="exportChart('${canvasId}','${w.name}')" title="PNG">⬇ PNG</button><span style="color:var(--success);font-size:10px;margin-left:4px;">✓ ${rows.length}</span>`;
     }
   } catch {
-    document.getElementById(`wcontent-${i}`).innerHTML = '<div style="color:var(--danger);padding:16px;font-size:12px;">⚠️ Error al cargar datos del servidor.</div>';
-    document.getElementById(`wactions-${i}`).innerHTML = '';
+    document.getElementById(`wcnt-${i}`).innerHTML='<div style="color:var(--danger);padding:14px;font-size:12px;">⚠️ Error al cargar datos.</div>';
+    document.getElementById(`wact-${i}`).innerHTML='';
   }
 }
 
+function prettyPreset(p){
+  const map={today:'Hoy',thisWeek:'Esta semana',thisMonth:'Este mes',lastMonth:'Mes anterior',thisYear:'Este año',lastYear:'Año anterior',q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',custom:'Rango personalizado'};
+  return map[p]||p;
+}
+
 async function refreshDashboard() {
-  const dash = state.dashboards.find(d => d.id === state.currentDashId);
-  if (!dash) return;
-  Object.values(state.dvChartInstances).forEach(c => { try { c.destroy(); } catch(e){} });
-  state.dvChartInstances = {};
+  const dash=state.dashboards.find(d=>d.id===state.currentDashId); if(!dash)return;
+  destroyDvCharts();
   await renderDashboardWidgets(dash);
-  toast('Datos actualizados ✓', 'success');
+  toast('Datos actualizados ✓','success');
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  EDIT DASHBOARD
-// ════════════════════════════════
+// ══════════════════════════════════════════
 function editCurrentDashboard() {
-  const dash = state.dashboards.find(d => d.id === state.currentDashId);
-  if (!dash) return;
-  state.editingId = dash.id;
-  state.widgets = dash.widgets ? JSON.parse(JSON.stringify(dash.widgets)) : [];
-  state.activeWidgetIdx = null;
-  document.getElementById('builder-name').value = dash.name;
-  destroyAllPreviewCharts();
-  renderWidgetList();
-  resetConfigPanel();
-  showView('builder');
-  renderSidebar();
+  const dash=state.dashboards.find(d=>d.id===state.currentDashId); if(!dash)return;
+  state.editingId=dash.id;
+  state.widgets=JSON.parse(JSON.stringify(dash.widgets||[]));
+  state.activeWidgetIdx=null;
+  document.getElementById('builder-name').value=dash.name;
+  destroyPreviewCharts(); renderWidgetList(); resetConfigPanel(); showView('builder'); renderSidebar();
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
 //  DELETE
-// ════════════════════════════════
-function confirmDelete() { document.getElementById('delete-modal').classList.add('show'); }
-function closeModal() { document.getElementById('delete-modal').classList.remove('show'); }
-function deleteDashboard() {
-  state.dashboards = state.dashboards.filter(d => d.id !== state.currentDashId);
-  saveDashboardsToStorage();
-  closeModal();
-  state.currentDashId = null;
-  renderSidebar();
-  renderHomeGrid();
-  showView('home');
-  toast('Tablero eliminado', 'error');
+// ══════════════════════════════════════════
+function confirmDelete(){document.getElementById('delete-modal').classList.add('show');}
+function closeModal(){document.getElementById('delete-modal').classList.remove('show');}
+function deleteDashboard(){
+  state.dashboards=state.dashboards.filter(d=>d.id!==state.currentDashId);
+  saveDashboardsToStorage(); closeModal(); state.currentDashId=null;
+  renderSidebar(); renderHomeGrid(); showView('home'); toast('Tablero eliminado','error');
 }
 
-// ════════════════════════════════
+// ══════════════════════════════════════════
+//  EXPORT
+// ══════════════════════════════════════════
+function exportChart(canvasId,name){
+  const canvas=document.getElementById(canvasId); if(!canvas)return;
+  const a=document.createElement('a');a.download=`${name||'grafica'}.png`;a.href=canvas.toDataURL('image/png');a.click();
+  toast('PNG exportado ✓','success');
+}
+function exportTableData(i){
+  const actDiv=document.getElementById(`wact-${i}`);
+  const rows=JSON.parse(actDiv.dataset.rows||'[]');
+  const w=JSON.parse(actDiv.dataset.w||'{}');
+  const cols=w.tableCols&&w.tableCols.length?w.tableCols:Object.keys(rows[0]||{});
+  const csv=[cols.join(','),...rows.map(r=>cols.map(c=>`"${String(r[c]??'').replace(/"/g,'""')}"`).join(','))].join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`tabla.csv`;a.click();URL.revokeObjectURL(url);
+  toast('CSV exportado ✓','success');
+}
+
+// ══════════════════════════════════════════
 //  HELPERS
-// ════════════════════════════════
-function formatNum(n) {
-  if (n === null || n === undefined || isNaN(n)) return '—';
-  if (Math.abs(n) >= 1000000) return (n/1000000).toFixed(1) + 'M';
-  if (Math.abs(n) >= 1000) return (n/1000).toFixed(1) + 'K';
-  return Number(n).toLocaleString('es-MX', { maximumFractionDigits: 2 });
+// ══════════════════════════════════════════
+function formatNum(n){
+  if(n===null||n===undefined||isNaN(n))return'—';
+  if(Math.abs(n)>=1000000)return(n/1000000).toFixed(1)+'M';
+  if(Math.abs(n)>=1000)return(n/1000).toFixed(1)+'K';
+  return Number(n).toLocaleString('es-MX',{maximumFractionDigits:2});
 }
-
-function toast(msg, type = '') {
-  const el = document.createElement('div');
-  el.className = `toast ${type}`;
-  el.textContent = msg;
-  document.getElementById('toast-container').appendChild(el);
-  setTimeout(() => el.remove(), 3500);
+function toast(msg,type=''){
+  const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;
+  document.getElementById('toast-container').appendChild(el);setTimeout(()=>el.remove(),3500);
 }
 </script>
 </body>

@@ -9,198 +9,247 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
-:root{--bg:#0d0d0d;--surface:#161616;--surface2:#1f1f1f;--surface3:#252525;--border:#2a2a2a;--gold:#c8a84b;--gold-light:#e2c46e;--gold-dim:rgba(200,168,75,0.12);--text:#e8e4d8;--text-muted:#888;--danger:#e05555;--success:#4caf7d;--blue:#5b9cf6;}
+:root{--bg:#0d0d0d;--surface:#161616;--surface2:#1f1f1f;--border:#2a2a2a;--gold:#c8a84b;--gold-light:#e2c46e;--gold-dim:rgba(200,168,75,.12);--text:#e8e4d8;--muted:#888;--danger:#e05555;--success:#4caf7d;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
 ::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:#333;border-radius:3px;}
 
-/* LOGIN */
+/* ── LOGIN ── */
 #login-screen{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:var(--bg);}
-.login-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(200,168,75,.06) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(200,168,75,.04) 0%,transparent 50%);}
-.login-grid{position:absolute;inset:0;opacity:.035;background-image:linear-gradient(var(--gold) 1px,transparent 1px),linear-gradient(90deg,var(--gold) 1px,transparent 1px);background-size:60px 60px;}
+.login-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,rgba(200,168,75,.06),transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(200,168,75,.04),transparent 50%);}
+.login-grid{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(var(--gold) 1px,transparent 1px),linear-gradient(90deg,var(--gold) 1px,transparent 1px);background-size:60px 60px;}
 .login-card{position:relative;z-index:1;width:420px;padding:48px 40px;background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);}
-.login-logo{margin-bottom:32px;}.login-sub{font-size:11px;color:var(--text-muted);letter-spacing:4px;text-transform:uppercase;margin-top:6px;}
+.login-sub{font-size:11px;color:var(--muted);letter-spacing:4px;text-transform:uppercase;margin-top:6px;}
 .login-title{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:6px;}
-.login-desc{font-size:13px;color:var(--text-muted);margin-bottom:28px;line-height:1.5;}
+.login-desc{font-size:13px;color:var(--muted);margin-bottom:26px;line-height:1.5;}
 .area-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:24px;}
-.area-btn{padding:14px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden;}
+.area-btn{padding:13px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;text-align:left;position:relative;overflow:hidden;}
 .area-btn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);opacity:0;transition:opacity .2s;}
-.area-btn:hover{border-color:var(--gold);background:var(--gold-dim);}
-.area-btn:hover::before{opacity:1;}
-.area-btn .area-icon{font-size:18px;display:block;margin-bottom:5px;}
-.area-btn .area-name{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;}
-.area-btn .area-dept{font-size:10px;color:var(--text-muted);margin-top:2px;}
-.login-pass-section{display:none;}.login-pass-section.show{display:block;}
-.pass-label{font-size:12px;color:var(--text-muted);margin-bottom:6px;}
-.pass-selected{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--gold);margin-bottom:14px;}
-.pass-input{width:100%;padding:11px 14px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;margin-bottom:10px;}
-.pass-input:focus{border-color:var(--gold);}.pass-input.error{border-color:var(--danger);}
-.btn-primary{width:100%;padding:13px;background:var(--gold);border:none;color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;}
-.btn-primary:hover{background:var(--gold-light);}
-.btn-back{background:none;border:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;padding:6px 0;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.area-btn:hover{border-color:var(--gold);background:var(--gold-dim);}.area-btn:hover::before{opacity:1;}
+.area-btn .ai{font-size:18px;display:block;margin-bottom:4px;}
+.area-btn .an{font-family:'Syne',sans-serif;font-weight:700;font-size:11px;letter-spacing:1px;}
+.area-btn .ad{font-size:10px;color:var(--muted);margin-top:2px;}
+.lps{display:none;}.lps.show{display:block;}
+.p-label{font-size:12px;color:var(--muted);margin-bottom:5px;}
+.p-sel{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--gold);margin-bottom:13px;}
+.p-inp{width:100%;padding:10px 13px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s;margin-bottom:9px;}
+.p-inp:focus{border-color:var(--gold);}.p-inp.err{border-color:var(--danger);}
+.btn-pri{width:100%;padding:12px;background:var(--gold);border:none;color:#000;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:background .2s;margin-top:12px;}
+.btn-pri:hover{background:var(--gold-light);}
+.btn-back{background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;padding:5px 0;margin-bottom:12px;display:flex;align-items:center;gap:6px;}
 .btn-back:hover{color:var(--text);}
-.login-error{font-size:12px;color:var(--danger);margin-top:6px;display:none;}.login-error.show{display:block;}
+.l-err{font-size:12px;color:var(--danger);margin-top:5px;display:none;}.l-err.show{display:block;}
 
-/* APP */
+/* ── APP ── */
 #app{display:none;height:100vh;overflow:hidden;flex-direction:column;}
 #app.show{display:flex;}
-.topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:14px;flex-shrink:0;}
+.topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px;flex-shrink:0;}
 .topbar-sep{width:1px;height:20px;background:var(--border);}
-.topbar-area{font-size:12px;color:var(--text-muted);}
-.topbar-area span{color:var(--text);}
-.topbar-actions{margin-left:auto;display:flex;gap:8px;align-items:center;}
-.btn-sm{padding:7px 14px;background:var(--gold);border:none;color:#000;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}
-.btn-sm:hover{background:var(--gold-light);}
-.btn-sm.outline{background:transparent;border:1px solid var(--border);color:var(--text-muted);}
-.btn-sm.outline:hover{border-color:var(--gold);color:var(--text);background:var(--gold-dim);}
-.btn-sm.danger{background:transparent;border:1px solid var(--danger);color:var(--danger);}
-.btn-sm.danger:hover{background:rgba(224,85,85,.1);}
-.logout-btn{background:none;border:none;color:var(--text-muted);font-size:12px;cursor:pointer;padding:6px 8px;font-family:'DM Sans',sans-serif;}
-.logout-btn:hover{color:var(--text);}
+.ta{font-size:12px;color:var(--muted);}
+.ta span{color:var(--text);}
+.topbar-actions{margin-left:auto;display:flex;gap:7px;align-items:center;}
+.btn{padding:6px 13px;background:var(--gold);border:none;color:#000;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}
+.btn:hover{background:var(--gold-light);}
+.btn.out{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn.out:hover{border-color:var(--gold);color:var(--text);background:var(--gold-dim);}
+.btn.red{background:transparent;border:1px solid var(--danger);color:var(--danger);}
+.btn.red:hover{background:rgba(224,85,85,.1);}
+.lout{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:5px 8px;font-family:'DM Sans',sans-serif;}
+.lout:hover{color:var(--text);}
 .main-body{display:flex;flex:1;overflow:hidden;}
 
-/* SIDEBAR */
+/* ── SIDEBAR ── */
 .sidebar{width:210px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
-.sidebar-section{padding:14px 12px 6px;}
-.sidebar-label{font-size:10px;color:var(--text-muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
-.sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:3px;font-size:12px;cursor:pointer;color:var(--text-muted);transition:all .15s;margin-bottom:2px;border:1px solid transparent;}
-.sidebar-item:hover{background:var(--surface2);color:var(--text);}
-.sidebar-item.active{background:var(--gold-dim);color:var(--gold);border-color:rgba(200,168,75,.2);}
-.sidebar-item .item-icon{font-size:13px;width:16px;text-align:center;flex-shrink:0;}
-.sidebar-item .item-info{flex:1;min-width:0;}
-.sidebar-item .item-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.sidebar-item .item-author{font-size:10px;color:var(--text-muted);}
-.sidebar-new{margin:6px 12px 12px;padding:9px;border:1px dashed #333;background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;width:calc(100% - 24px);text-align:center;}
-.sidebar-new:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+.sl{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:7px;}
+.si{display:flex;align-items:center;gap:7px;padding:7px 9px;border-radius:3px;font-size:12px;cursor:pointer;color:var(--muted);transition:all .15s;margin-bottom:2px;border:1px solid transparent;}
+.si:hover{background:var(--surface2);color:var(--text);}
+.si.active{background:var(--gold-dim);color:var(--gold);border-color:rgba(200,168,75,.2);}
+.si .ii{font-size:13px;width:15px;text-align:center;flex-shrink:0;}
+.si .in{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.si .ia{font-size:10px;color:var(--muted);}
+.snew{margin:5px 11px 11px;padding:8px;border:1px dashed #333;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;width:calc(100% - 22px);text-align:center;}
+.snew:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
 .content{flex:1;overflow-y:auto;background:var(--bg);}
 
-/* HOME */
-#view-home{padding:28px;}
-.home-greeting{margin-bottom:28px;}
-.home-greeting h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:4px;}
-.home-greeting p{color:var(--text-muted);font-size:13px;}
-.dashboards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;}
-.dash-card{background:var(--surface);border:1px solid var(--border);padding:18px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
-.dash-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .2s;}
-.dash-card:hover{border-color:#333;transform:translateY(-2px);}
-.dash-card:hover::after{transform:scaleX(1);}
-.dash-card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-.badge{font-size:9px;padding:2px 6px;border:1px solid var(--border);color:var(--text-muted);background:var(--surface2);}
-.dash-card-name{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:4px;}
-.dash-card-info{font-size:11px;color:var(--text-muted);line-height:1.5;}
-.empty-state{grid-column:1/-1;text-align:center;padding:60px 20px;}
-.empty-state-icon{font-size:48px;margin-bottom:14px;}
-.empty-state h3{font-family:'Syne',sans-serif;font-size:18px;margin-bottom:6px;}
-.empty-state p{color:var(--text-muted);font-size:13px;}
+/* ── HOME ── */
+#vh{padding:26px;}
+.hg{margin-bottom:26px;}
+.hg h1{font-family:'Syne',sans-serif;font-size:25px;font-weight:800;margin-bottom:4px;}
+.hg p{color:var(--muted);font-size:13px;}
+.dg{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;}
+.dc{background:var(--surface);border:1px solid var(--border);padding:16px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.dc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transition:transform .2s;}
+.dc:hover{border-color:#333;transform:translateY(-2px);}.dc:hover::after{transform:scaleX(1);}
+.dc-h{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;}
+.bx{font-size:9px;padding:2px 5px;border:1px solid var(--border);color:var(--muted);background:var(--surface2);}
+.dc-n{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:4px;}
+.dc-i{font-size:11px;color:var(--muted);line-height:1.5;}
+.es{grid-column:1/-1;text-align:center;padding:60px 20px;}
+.es-icon{font-size:48px;margin-bottom:12px;}
+.es h3{font-family:'Syne',sans-serif;font-size:18px;margin-bottom:5px;}
+.es p{color:var(--muted);font-size:13px;}
 
-/* BUILDER */
-#view-builder{display:none;height:100%;overflow:hidden;flex-direction:column;}
-#view-builder.show{display:flex;}
-.builder-topbar{padding:12px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:14px;background:var(--surface);flex-shrink:0;}
-.builder-name-input{flex:1;max-width:280px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;padding:7px 12px;outline:none;transition:border-color .2s;}
-.builder-name-input:focus{border-color:var(--gold);}
-.builder-body{display:flex;flex:1;overflow:hidden;}
-.widgets-panel{width:200px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
-.widget-item{padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
-.widget-item:hover{background:var(--surface2);}
-.widget-item.active{background:var(--gold-dim);border-left:2px solid var(--gold);}
-.widget-item-header{display:flex;align-items:center;gap:6px;margin-bottom:3px;}
-.widget-item-name{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.widget-item-del{background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:13px;padding:1px 3px;}
-.widget-item-del:hover{color:var(--danger);}
-.widget-item-sub{font-size:10px;color:var(--text-muted);}
-.widget-add-btn{margin:8px;padding:8px;border:1px dashed #333;background:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;text-align:center;}
-.widget-add-btn:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
-.config-panel{width:270px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;}
-.config-section{padding:12px 13px;border-bottom:1px solid var(--border);}
-.config-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:9px;font-weight:600;}
-.config-select,.config-input{width:100%;padding:7px 10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;transition:border-color .2s;margin-bottom:7px;cursor:pointer;}
-.config-select:focus,.config-input:focus{border-color:var(--gold);}
-.config-select option{background:var(--surface2);}
-.config-label{font-size:10px;color:var(--text-muted);margin-bottom:4px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
-.chart-type-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
-.chart-type-btn{padding:8px 3px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;color:var(--text-muted);font-size:9px;text-align:center;transition:all .15s;font-family:'DM Sans',sans-serif;}
-.chart-type-btn:hover{border-color:var(--gold);color:var(--text);}
-.chart-type-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
-.chart-type-btn .ct-icon{font-size:15px;display:block;margin-bottom:2px;}
-.loading-indicator{text-align:center;padding:14px;color:var(--text-muted);font-size:11px;}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-right:5px;vertical-align:middle;}
+/* ── BUILDER ── */
+#vb{display:none;height:100%;overflow:hidden;flex-direction:column;}
+#vb.show{display:flex;}
+.btbar{padding:10px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:var(--surface);flex-shrink:0;}
+.bni{flex:1;max-width:260px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;padding:6px 11px;outline:none;transition:border-color .2s;}
+.bni:focus{border-color:var(--gold);}
+.bbody{display:flex;flex:1;overflow:hidden;}
+
+/* Widgets panel */
+.wp{width:195px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+.gf-section{padding:10px 10px 6px;border-bottom:1px solid var(--border);}
+.gf-item{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1px solid var(--border);padding:5px 7px;margin-bottom:4px;font-size:11px;}
+.gf-col{flex:1;color:var(--gold);font-family:'Syne',sans-serif;font-size:10px;font-weight:700;}
+.gf-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;}
+.gf-del:hover{color:var(--danger);}
+.gf-add{background:none;border:1px dashed #333;color:var(--muted);padding:5px;width:100%;cursor:pointer;font-size:10px;margin-top:4px;}
+.gf-add:hover{border-color:var(--gold);color:var(--gold);}
+.wi{padding:9px 10px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+.wi:hover{background:var(--surface2);}
+.wi.active{background:var(--gold-dim);border-left:2px solid var(--gold);}
+.wi-h{display:flex;align-items:center;gap:5px;margin-bottom:2px;}
+.wi-n{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wi-d{background:none;border:none;color:var(--muted);cursor:pointer;font-size:12px;padding:1px 3px;}
+.wi-d:hover{color:var(--danger);}
+.wi-s{font-size:10px;color:var(--muted);}
+.wadd{margin:7px 8px;padding:8px;border:1px dashed #333;background:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;text-align:center;}
+.wadd:hover{border-color:var(--gold);color:var(--gold);background:var(--gold-dim);}
+
+/* Config panel */
+.cp{width:260px;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;}
+.cs{padding:11px 12px;border-bottom:1px solid var(--border);}
+.ct{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:600;}
+.cs select,.cs input[type=text],.cs input[type=number],.cs input[type=date]{width:100%;padding:6px 9px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;outline:none;transition:border-color .2s;margin-bottom:6px;cursor:pointer;}
+.cs select:focus,.cs input:focus{border-color:var(--gold);}
+.cs select option{background:var(--surface2);}
+.cl{font-size:9px;color:var(--muted);margin-bottom:3px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+.ctg{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.ctb{padding:7px 2px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;color:var(--muted);font-size:8px;text-align:center;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.ctb:hover{border-color:var(--gold);color:var(--text);}.ctb.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.ctb .ci{font-size:14px;display:block;margin-bottom:2px;}
+.li{text-align:center;padding:12px;color:var(--muted);font-size:11px;}
+.sp{display:inline-block;width:13px;height:13px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin-right:5px;vertical-align:middle;}
 @keyframes spin{to{transform:rotate(360deg);}}
-.preview-area{flex:1;overflow-y:auto;padding:16px;background:var(--bg);}
-.preview-card{background:var(--surface);border:1px solid var(--border);padding:18px;}
-.preview-title{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;margin-bottom:3px;}
-.preview-meta{font-size:10px;color:var(--text-muted);margin-bottom:14px;}
-.preview-placeholder{height:220px;display:flex;align-items:center;justify-content:center;border:1px dashed #2a2a2a;color:var(--text-muted);font-size:12px;flex-direction:column;gap:8px;}
-.chart-container{position:relative;height:260px;}
-.table-preview{width:100%;border-collapse:collapse;font-size:11px;}
-.table-preview th{background:var(--surface2);padding:8px 9px;text-align:left;font-family:'Syne',sans-serif;font-size:9px;letter-spacing:1px;color:var(--text-muted);border-bottom:1px solid var(--border);}
-.table-preview td{padding:7px 9px;border-bottom:1px solid var(--border);}
-.table-preview tr:hover td{background:var(--surface2);}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;}
-.kpi-card{background:var(--surface2);border:1px solid var(--border);padding:14px;text-align:center;}
-.kpi-label{font-size:9px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:5px;}
-.kpi-value{font-family:'Syne',sans-serif;font-size:24px;font-weight:800;color:var(--gold);}
-.kpi-sub{font-size:9px;color:var(--text-muted);margin-top:3px;}
 
-/* DATE PRESETS */
-.preset-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:8px;}
-.preset-btn{padding:5px 2px;background:var(--surface2);border:1px solid var(--border);color:var(--text-muted);font-size:9px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;text-align:center;}
-.preset-btn:hover,.preset-btn.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
-.date-row{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
+/* Width selector */
+.wsel{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;}
+.wb{padding:6px 2px;background:var(--surface2);border:1px solid var(--border);cursor:pointer;color:var(--muted);font-size:9px;text-align:center;transition:all .15s;font-family:'DM Sans',sans-serif;}
+.wb:hover{border-color:var(--gold);color:var(--text);}.wb.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
 
-/* CHECK GROUP */
-.check-group{max-height:140px;overflow-y:auto;border:1px solid var(--border);padding:7px;background:var(--surface2);}
-.check-item{display:flex;align-items:center;gap:6px;margin-bottom:4px;cursor:pointer;font-size:11px;}
-.check-item input{accent-color:var(--gold);}
+/* Preset btns */
+.pg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:6px;}
+.pb{padding:4px 2px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:8px;cursor:pointer;transition:all .15s;text-align:center;font-family:'DM Sans',sans-serif;}
+.pb:hover,.pb.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.dr{display:grid;grid-template-columns:1fr 1fr;gap:4px;}
 
-/* DASHBOARD VIEW */
-#view-dashboard{display:none;padding:18px;overflow-y:auto;}
-#view-dashboard.show{display:block;}
-.dash-view-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:18px;}
-.dash-view-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:3px;}
-.dash-view-meta{font-size:11px;color:var(--text-muted);}
-.dash-view-actions{margin-left:auto;display:flex;gap:7px;flex-shrink:0;}
-.widgets-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(400px,1fr));gap:14px;}
-.widget-card{background:var(--surface);border:1px solid var(--border);padding:16px;}
-.widget-card.full-width{grid-column:1/-1;}
-.widget-card-header{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-.widget-card-title{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;flex:1;}
-.widget-card-meta{font-size:10px;color:var(--text-muted);}
-.widget-actions{display:flex;gap:5px;align-items:center;}
-.icon-btn{background:none;border:1px solid var(--border);color:var(--text-muted);cursor:pointer;padding:4px 7px;font-size:11px;transition:all .15s;}
-.icon-btn:hover{border-color:var(--gold);color:var(--gold);}
-.widget-chart-wrap{position:relative;height:260px;}
-.map-container{height:280px;}
-.gauge-container{display:flex;flex-direction:column;align-items:center;padding:10px 0;}
+/* Check group */
+.ckg{max-height:130px;overflow-y:auto;border:1px solid var(--border);padding:6px;background:var(--surface2);}
+.cki{display:flex;align-items:center;gap:5px;margin-bottom:4px;cursor:pointer;font-size:11px;}
+.cki input{accent-color:var(--gold);}
 
-/* STATUS BAR */
-.status-bar{height:24px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:18px;flex-shrink:0;}
-.status-item{font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:5px;}
-.status-dot{width:6px;height:6px;border-radius:50%;background:var(--success);}
-.status-dot.off{background:var(--danger);}
+/* Filter rows */
+.fr{display:grid;grid-template-columns:1fr 65px 1fr 20px;gap:2px;margin-bottom:4px;}
+
+/* Preview */
+.prev-area{flex:1;overflow-y:auto;padding:14px;background:var(--bg);}
+.prev-card{background:var(--surface);border:1px solid var(--border);padding:16px;}
+.prev-title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:3px;}
+.prev-meta{font-size:10px;color:var(--muted);margin-bottom:12px;}
+.ph{height:220px;display:flex;align-items:center;justify-content:center;border:1px dashed var(--border);color:var(--muted);font-size:12px;flex-direction:column;gap:6px;}
+
+/* ── DASHBOARD VIEW ── */
+#vd{display:none;padding:0;overflow-y:auto;display:flex;flex-direction:column;}
+#vd.show{display:flex;}
+.dv-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:var(--surface);flex-shrink:0;}
+.dv-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:2px;}
+.dv-meta{font-size:11px;color:var(--muted);}
+.dv-acts{margin-left:auto;display:flex;gap:7px;flex-shrink:0;}
+
+/* Global filter bar */
+.gfbar{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;}
+.gfbar-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-right:4px;}
+.gf-drop{display:flex;align-items:center;gap:5px;}
+.gf-drop label{font-size:10px;color:var(--muted);}
+.gf-drop select{background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px 8px;font-family:'DM Sans',sans-serif;font-size:11px;outline:none;cursor:pointer;}
+.gf-drop select:focus{border-color:var(--gold);}
+.cf-chip{display:flex;align-items:center;gap:5px;background:var(--gold-dim);border:1px solid var(--gold);padding:4px 8px;font-size:10px;color:var(--gold);}
+.cf-chip button{background:none;border:none;color:var(--gold);cursor:pointer;font-size:12px;padding:0;}
+
+/* Widgets grid */
+.wgrid{padding:14px;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;align-items:start;}
+.wcard{background:var(--surface);border:1px solid var(--border);padding:14px;transition:border-color .2s;}
+.wcard:hover{border-color:#333;}
+.wcard.cf-active{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold-dim);}
+.wcard.w1{grid-column:span 2;}.wcard.w2{grid-column:span 3;}.wcard.w3{grid-column:span 4;}.wcard.w4{grid-column:span 6;}
+.wc-head{display:flex;align-items:center;gap:7px;margin-bottom:10px;}
+.wc-title{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;flex:1;}
+.wc-meta{font-size:9px;color:var(--muted);}
+.wc-acts{display:flex;gap:4px;align-items:center;}
+.ib{background:none;border:1px solid var(--border);color:var(--muted);cursor:pointer;padding:3px 6px;font-size:10px;transition:all .15s;}
+.ib:hover{border-color:var(--gold);color:var(--gold);}
+.wc-chart{position:relative;height:240px;}
+.wc-map{height:260px;}
+.wc-gauge{display:flex;flex-direction:column;align-items:center;padding:8px 0;}
+
+/* KPI grid */
+.kg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;}
+.kc{background:var(--surface2);border:1px solid var(--border);padding:12px;text-align:center;}
+.kl{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:4px;}
+.kv{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--gold);}
+.ks{font-size:9px;color:var(--muted);margin-top:3px;}
+
+/* Ranking widget */
+.rank-list{display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;}
+.rank-item{display:flex;align-items:center;gap:8px;padding:6px 8px;background:var(--surface2);border:1px solid var(--border);position:relative;overflow:hidden;}
+.rank-item.r1{border-color:#c8a84b;background:rgba(200,168,75,.08);}
+.rank-item.r2{border-color:#aaa;background:rgba(170,170,170,.06);}
+.rank-item.r3{border-color:#cd7f32;background:rgba(205,127,50,.06);}
+.rank-bar{position:absolute;left:0;top:0;bottom:0;background:rgba(200,168,75,.08);transition:width .5s;}
+.rank-pos{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;width:22px;text-align:center;flex-shrink:0;position:relative;}
+.r1 .rank-pos{color:#c8a84b;}.r2 .rank-pos{color:#aaa;}.r3 .rank-pos{color:#cd7f32;}
+.rank-name{flex:1;font-size:11px;font-weight:500;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.rank-val{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--gold);position:relative;flex-shrink:0;}
+
+/* Table */
+.tp{width:100%;border-collapse:collapse;font-size:11px;}
+.tp th{background:var(--surface2);padding:7px 8px;text-align:left;font-family:'Syne',sans-serif;font-size:8px;letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);}
+.tp td{padding:6px 8px;border-bottom:1px solid var(--border);}
+.tp tr:hover td{background:var(--surface2);}
+
+/* STATUS */
+.sbar{height:24px;background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 13px;gap:16px;flex-shrink:0;}
+.si2{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px;}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--success);}.sd.off{background:var(--danger);}
 
 /* TOAST */
-#toast-container{position:fixed;bottom:36px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:6px;}
-.toast{padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);font-size:12px;max-width:300px;animation:slideIn .3s ease;}
-.toast.success{border-left-color:var(--success);}.toast.error{border-left-color:var(--danger);}
-@keyframes slideIn{from{transform:translateX(20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
+#tc{position:fixed;bottom:34px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:5px;}
+.toast{padding:9px 14px;background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);font-size:11px;max-width:280px;animation:si .3s ease;}
+.toast.ok{border-left-color:var(--success);}.toast.err{border-left-color:var(--danger);}
+@keyframes si{from{transform:translateX(20px);opacity:0;}to{transform:translateX(0);opacity:1;}}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;}
-.modal-overlay.show{display:flex;}
-.modal{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:26px;width:360px;}
-.modal-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;margin-bottom:8px;}
-.modal-text{font-size:13px;color:var(--text-muted);margin-bottom:22px;line-height:1.5;}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;}
-.btn-danger{background:var(--danger);border:none;color:#fff;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:9px 16px;cursor:pointer;}
-.btn-cancel{background:none;border:1px solid var(--border);color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:12px;padding:9px 16px;cursor:pointer;}
-.btn-cancel:hover{border-color:var(--gold);color:var(--text);}
-.no-widget-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;color:var(--text-muted);font-size:12px;gap:8px;}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:500;display:none;align-items:center;justify-content:center;}
+.mo.show{display:flex;}
+.mb{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:24px;width:340px;}
+.mb-t{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:7px;}
+.mb-x{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.5;}
+.mb-a{display:flex;gap:7px;justify-content:flex-end;}
+.bdanger{background:var(--danger);border:none;color:#fff;font-family:'Syne',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:8px 14px;cursor:pointer;}
+.bcancel{background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;padding:8px 14px;cursor:pointer;}
+.bcancel:hover{border-color:var(--gold);color:var(--text);}
 
-/* Leaflet dark fix */
+/* GF Modal */
+.gf-modal-body{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--gold);padding:24px;width:380px;}
+.gf-modal-body input,.gf-modal-body select{width:100%;padding:8px 10px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:12px;outline:none;margin-bottom:8px;}
+.gf-modal-body input:focus,.gf-modal-body select:focus{border-color:var(--gold);}
+
+/* Leaflet */
 .leaflet-container{background:#1a1a1a;}
 .leaflet-popup-content-wrapper{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
 .leaflet-popup-tip{background:var(--surface2);}
+.no-wm{display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;color:var(--muted);font-size:12px;gap:7px;}
 </style>
 </head>
 <body>
@@ -209,11 +258,11 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 <div id="login-screen">
   <div class="login-bg"></div><div class="login-grid"></div>
   <div class="login-card">
-    <div class="login-logo">
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px;">
-        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:36px;object-fit:contain;">
-        <div style="width:1px;height:28px;background:var(--border);"></div>
-        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:30px;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;">
+    <div style="margin-bottom:28px;">
+      <div style="display:flex;align-items:center;gap:13px;margin-bottom:7px;">
+        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:34px;object-fit:contain;">
+        <div style="width:1px;height:26px;background:var(--border);"></div>
+        <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:28px;object-fit:contain;filter:brightness(0) invert(1);opacity:.85;">
       </div>
       <div class="login-sub">Plataforma de Tableros</div>
     </div>
@@ -222,14 +271,14 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
       <div class="login-desc">Elige el departamento al que perteneces para continuar.</div>
       <div class="area-grid" id="area-grid"></div>
     </div>
-    <div id="step-pass" class="login-pass-section">
+    <div id="step-pass" class="lps">
       <button class="btn-back" onclick="backToAreas()">← Volver</button>
-      <div class="pass-label">Accediendo como</div>
-      <div class="pass-selected" id="selected-area-name"></div>
-      <input type="text" class="pass-input" id="user-name" placeholder="Tu nombre">
-      <input type="password" class="pass-input" id="pass-input" placeholder="Contraseña del área" onkeydown="if(event.key==='Enter')doLogin()">
-      <div class="login-error" id="login-error"></div>
-      <button class="btn-primary" style="margin-top:14px;" onclick="doLogin()">ENTRAR</button>
+      <div class="p-label">Accediendo como</div>
+      <div class="p-sel" id="sel-area-name"></div>
+      <input type="text" class="p-inp" id="user-name" placeholder="Tu nombre">
+      <input type="password" class="p-inp" id="pass-input" placeholder="Contraseña del área" onkeydown="if(event.key==='Enter')doLogin()">
+      <div class="l-err" id="l-err"></div>
+      <button class="btn-pri" onclick="doLogin()">ENTRAR</button>
     </div>
   </div>
 </div>
@@ -237,143 +286,122 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 <!-- APP -->
 <div id="app">
   <div class="topbar">
-    <div style="display:flex;align-items:center;gap:10px;">
-      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:24px;object-fit:contain;">
-      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:20px;object-fit:contain;filter:brightness(0) invert(1);opacity:.8;">
+    <div style="display:flex;align-items:center;gap:9px;">
+      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-catosa.png" style="height:23px;object-fit:contain;">
+      <img src="https://raw.githubusercontent.com/AMHER-MX/catosa-api/main/logo-international.png" style="height:19px;object-fit:contain;filter:brightness(0) invert(1);opacity:.8;">
     </div>
     <div class="topbar-sep"></div>
-    <div class="topbar-area">Área: <span id="topbar-area-name">—</span></div>
+    <div class="ta">Área: <span id="ta-name">—</span></div>
     <div class="topbar-actions">
-      <button class="btn-sm" onclick="newDashboard()">+ Nuevo Tablero</button>
-      <button class="logout-btn" onclick="logout()">Salir</button>
+      <button class="btn" onclick="newDashboard()">+ Nuevo Tablero</button>
+      <button class="lout" onclick="logout()">Salir</button>
     </div>
   </div>
   <div class="main-body">
     <div class="sidebar">
-      <div class="sidebar-section">
-        <div class="sidebar-label">Mis Tableros</div>
-        <div id="sidebar-list"></div>
-      </div>
-      <button class="sidebar-new" onclick="newDashboard()">＋ Nuevo tablero</button>
+      <div style="padding:12px 10px 5px;"><div class="sl">Mis Tableros</div><div id="slist"></div></div>
+      <button class="snew" onclick="newDashboard()">＋ Nuevo tablero</button>
     </div>
     <div class="content">
 
       <!-- HOME -->
-      <div id="view-home" style="padding:28px;">
-        <div class="home-greeting">
-          <h1 id="home-greeting-title">Buenos días</h1>
-          <p id="home-greeting-sub">Selecciona un tablero o crea uno nuevo</p>
-        </div>
-        <div class="dashboards-grid" id="dashboards-grid"></div>
+      <div id="vh" style="padding:26px;">
+        <div class="hg"><h1 id="hgt">Buenos días</h1><p id="hgs">Selecciona un tablero o crea uno nuevo</p></div>
+        <div class="dg" id="dg"></div>
       </div>
 
       <!-- BUILDER -->
-      <div id="view-builder">
-        <div class="builder-topbar">
-          <input type="text" class="builder-name-input" id="builder-name" value="Mi Tablero" placeholder="Nombre del tablero...">
-          <div style="margin-left:auto;display:flex;gap:8px;">
-            <button class="btn-sm outline" onclick="cancelBuilder()">Cancelar</button>
-            <button class="btn-sm" onclick="saveCurrentDashboard()">Guardar Tablero</button>
+      <div id="vb">
+        <div class="btbar">
+          <input type="text" class="bni" id="b-name" value="Mi Tablero" placeholder="Nombre del tablero...">
+          <div style="margin-left:auto;display:flex;gap:7px;">
+            <button class="btn out" onclick="cancelBuilder()">Cancelar</button>
+            <button class="btn" onclick="saveCurrentDashboard()">Guardar Tablero</button>
           </div>
         </div>
-        <div class="builder-body">
-          <!-- Widget list -->
-          <div class="widgets-panel">
-            <div style="padding:12px 10px 4px;"><div class="sidebar-label">Gráficas</div></div>
-            <div id="widget-list"></div>
-            <button class="widget-add-btn" onclick="addWidget()">＋ Agregar gráfica</button>
+        <div class="bbody">
+          <!-- Widget panel -->
+          <div class="wp">
+            <div class="gf-section">
+              <div class="sl">Filtros del Tablero</div>
+              <div id="gf-list-builder"></div>
+              <button class="gf-add" onclick="showAddGFModal()">＋ Agregar filtro global</button>
+            </div>
+            <div style="padding:10px 10px 4px;"><div class="sl">Gráficas</div></div>
+            <div id="wlist"></div>
+            <button class="wadd" onclick="addWidget()">＋ Agregar gráfica</button>
           </div>
           <!-- Config panel -->
-          <div class="config-panel">
-            <div class="no-widget-msg" id="no-widget-msg"><div style="font-size:28px;">📊</div><div>Agrega una gráfica para comenzar</div></div>
-            <div id="widget-config-content" style="display:none;">
-
-              <div class="config-section">
-                <div class="config-title">📌 Nombre</div>
-                <input type="text" class="config-input" id="widget-name-input" placeholder="Nombre de la gráfica..." oninput="syncWidgetName()">
-              </div>
-
-              <div class="config-section">
-                <div class="config-title">📊 Tipo de Gráfica</div>
-                <div class="chart-type-grid" id="chart-type-grid">
-                  <button class="chart-type-btn active" data-type="bar" onclick="selectChartType('bar',this)"><span class="ct-icon">📊</span>Barras</button>
-                  <button class="chart-type-btn" data-type="horizontalBar" onclick="selectChartType('horizontalBar',this)"><span class="ct-icon">📉</span>H.Bar</button>
-                  <button class="chart-type-btn" data-type="line" onclick="selectChartType('line',this)"><span class="ct-icon">📈</span>Línea</button>
-                  <button class="chart-type-btn" data-type="pie" onclick="selectChartType('pie',this)"><span class="ct-icon">🥧</span>Pastel</button>
-                  <button class="chart-type-btn" data-type="doughnut" onclick="selectChartType('doughnut',this)"><span class="ct-icon">🍩</span>Dona</button>
-                  <button class="chart-type-btn" data-type="scatter" onclick="selectChartType('scatter',this)"><span class="ct-icon">🔵</span>Dispersión</button>
-                  <button class="chart-type-btn" data-type="gauge" onclick="selectChartType('gauge',this)"><span class="ct-icon">🎯</span>Gauge</button>
-                  <button class="chart-type-btn" data-type="compare" onclick="selectChartType('compare',this)"><span class="ct-icon">📋</span>Comparar</button>
-                  <button class="chart-type-btn" data-type="map" onclick="selectChartType('map',this)"><span class="ct-icon">🗺️</span>Mapa</button>
-                  <button class="chart-type-btn" data-type="table" onclick="selectChartType('table',this)"><span class="ct-icon">🗃️</span>Tabla</button>
-                  <button class="chart-type-btn" data-type="kpi" onclick="selectChartType('kpi',this)"><span class="ct-icon">🎯</span>KPI</button>
+          <div class="cp">
+            <div class="no-wm" id="no-wm"><div style="font-size:26px;">📊</div><div>Agrega una gráfica para comenzar</div></div>
+            <div id="wcc" style="display:none;">
+              <div class="cs"><div class="ct">📌 Nombre</div><input type="text" id="wni" placeholder="Nombre de la gráfica..." oninput="syncWN()"></div>
+              <div class="cs"><div class="ct">📊 Tipo de Gráfica</div>
+                <div class="ctg" id="ctg">
+                  <button class="ctb active" data-t="bar" onclick="selCT('bar',this)"><span class="ci">📊</span>Barras</button>
+                  <button class="ctb" data-t="horizontalBar" onclick="selCT('horizontalBar',this)"><span class="ci">📉</span>H.Bar</button>
+                  <button class="ctb" data-t="line" onclick="selCT('line',this)"><span class="ci">📈</span>Línea</button>
+                  <button class="ctb" data-t="pie" onclick="selCT('pie',this)"><span class="ci">🥧</span>Pastel</button>
+                  <button class="ctb" data-t="doughnut" onclick="selCT('doughnut',this)"><span class="ci">🍩</span>Dona</button>
+                  <button class="ctb" data-t="ranking" onclick="selCT('ranking',this)"><span class="ci">🏆</span>Ranking</button>
+                  <button class="ctb" data-t="scatter" onclick="selCT('scatter',this)"><span class="ci">🔵</span>Dispersión</button>
+                  <button class="ctb" data-t="gauge" onclick="selCT('gauge',this)"><span class="ci">🎯</span>Gauge</button>
+                  <button class="ctb" data-t="compare" onclick="selCT('compare',this)"><span class="ci">📋</span>Comparar</button>
+                  <button class="ctb" data-t="map" onclick="selCT('map',this)"><span class="ci">🗺️</span>Mapa</button>
+                  <button class="ctb" data-t="table" onclick="selCT('table',this)"><span class="ci">🗃️</span>Tabla</button>
+                  <button class="ctb" data-t="kpi" onclick="selCT('kpi',this)"><span class="ci">🎯</span>KPI</button>
                 </div>
               </div>
-
-              <div class="config-section">
-                <div class="config-title">🗄️ Fuente de Datos</div>
-                <div class="config-label">Tabla</div>
-                <div id="tables-loading" class="loading-indicator"><span class="spinner"></span>Cargando...</div>
-                <select class="config-select" id="table-select" style="display:none" onchange="loadTableColumns()">
-                  <option value="">— Selecciona tabla —</option>
-                </select>
-                <div class="config-label">Filas a cargar</div>
-                <select class="config-select" id="data-limit">
-                  <option value="500">500</option>
-                  <option value="1000" selected>1,000</option>
-                  <option value="2000">2,000</option>
-                  <option value="5000">5,000</option>
-                  <option value="99999">Todas</option>
-                </select>
-                <div id="columns-loading" style="display:none;" class="loading-indicator"><span class="spinner"></span>Cargando columnas...</div>
+              <div class="cs"><div class="ct">🗄️ Fuente de Datos</div>
+                <div class="cl">Tabla</div>
+                <div id="tl" class="li"><span class="sp"></span>Cargando...</div>
+                <select id="tsel" style="display:none" onchange="loadCols()"></select>
+                <div class="cl">Filas a cargar</div>
+                <select id="dlim"><option value="500">500</option><option value="1000" selected>1,000</option><option value="2000">2,000</option><option value="5000">5,000</option><option value="99999">Todas</option></select>
+                <div id="cl" style="display:none;" class="li"><span class="sp"></span>Cargando columnas...</div>
               </div>
-
-              <div class="config-section" id="date-section" style="display:none;">
-                <div class="config-title">📅 Filtro de Fecha</div>
-                <div class="config-label">Columna de fecha</div>
-                <select class="config-select" id="date-col" onchange="onDateColChange()">
-                  <option value="">— Sin filtro de fecha —</option>
-                </select>
-                <div id="date-options" style="display:none;">
-                  <div class="config-label">Período rápido</div>
-                  <div class="preset-grid" id="preset-grid">
-                    <button class="preset-btn active" data-p="" onclick="selectPreset(this,'')">Todos</button>
-                    <button class="preset-btn" data-p="today" onclick="selectPreset(this,'today')">Hoy</button>
-                    <button class="preset-btn" data-p="thisWeek" onclick="selectPreset(this,'thisWeek')">Semana</button>
-                    <button class="preset-btn" data-p="thisMonth" onclick="selectPreset(this,'thisMonth')">Este mes</button>
-                    <button class="preset-btn" data-p="lastMonth" onclick="selectPreset(this,'lastMonth')">Mes ant.</button>
-                    <button class="preset-btn" data-p="thisYear" onclick="selectPreset(this,'thisYear')">Este año</button>
-                    <button class="preset-btn" data-p="lastYear" onclick="selectPreset(this,'lastYear')">Año ant.</button>
-                    <button class="preset-btn" data-p="q1" onclick="selectPreset(this,'q1')">Q1</button>
-                    <button class="preset-btn" data-p="q2" onclick="selectPreset(this,'q2')">Q2</button>
-                    <button class="preset-btn" data-p="q3" onclick="selectPreset(this,'q3')">Q3</button>
-                    <button class="preset-btn" data-p="q4" onclick="selectPreset(this,'q4')">Q4</button>
-                    <button class="preset-btn" data-p="custom" onclick="selectPreset(this,'custom')">Rango</button>
+              <div class="cs" id="ds" style="display:none;"><div class="ct">📅 Filtro de Fecha</div>
+                <div class="cl">Columna de fecha</div>
+                <select id="dcol" onchange="onDCC()"><option value="">— Sin filtro de fecha —</option></select>
+                <div id="dopts" style="display:none;">
+                  <div class="cl">Período rápido</div>
+                  <div class="pg" id="pg">
+                    <button class="pb active" data-p="" onclick="selP(this,'')">Todos</button>
+                    <button class="pb" data-p="today" onclick="selP(this,'today')">Hoy</button>
+                    <button class="pb" data-p="thisWeek" onclick="selP(this,'thisWeek')">Semana</button>
+                    <button class="pb" data-p="thisMonth" onclick="selP(this,'thisMonth')">Este mes</button>
+                    <button class="pb" data-p="lastMonth" onclick="selP(this,'lastMonth')">Mes ant.</button>
+                    <button class="pb" data-p="thisYear" onclick="selP(this,'thisYear')">Este año</button>
+                    <button class="pb" data-p="lastYear" onclick="selP(this,'lastYear')">Año ant.</button>
+                    <button class="pb" data-p="q1" onclick="selP(this,'q1')">Q1</button>
+                    <button class="pb" data-p="q2" onclick="selP(this,'q2')">Q2</button>
+                    <button class="pb" data-p="q3" onclick="selP(this,'q3')">Q3</button>
+                    <button class="pb" data-p="q4" onclick="selP(this,'q4')">Q4</button>
+                    <button class="pb" data-p="custom" onclick="selP(this,'custom')">Rango</button>
                   </div>
-                  <div id="custom-date-row" class="date-row" style="display:none;">
-                    <input type="date" class="config-input" id="date-from" style="margin:0;" onchange="onDateRangeChange()">
-                    <input type="date" class="config-input" id="date-to" style="margin:0;" onchange="onDateRangeChange()">
+                  <div id="cdr" class="dr" style="display:none;">
+                    <input type="date" id="dfrom" onchange="onDRC()">
+                    <input type="date" id="dto" onchange="onDRC()">
                   </div>
                 </div>
               </div>
-
-              <div class="config-section" id="axes-section" style="display:none;">
-                <div class="config-title">⚙️ Configuración</div>
-                <div id="axes-config"></div>
+              <div class="cs" id="as" style="display:none;"><div class="ct">⚙️ Configuración</div><div id="ac"></div></div>
+              <div class="cs" id="fs" style="display:none;"><div class="ct">🔍 Filtros de datos</div>
+                <div id="fc"></div>
+                <button onclick="addF()" style="background:none;border:1px dashed #333;color:var(--muted);padding:5px 7px;cursor:pointer;font-size:10px;width:100%;margin-top:3px;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='#333';this.style.color='var(--muted)'">＋ Agregar filtro</button>
               </div>
-
-              <div class="config-section" id="filter-section" style="display:none;">
-                <div class="config-title">🔍 Filtros de Datos</div>
-                <div id="filters-container"></div>
-                <button onclick="addFilter()" style="background:none;border:1px dashed #333;color:var(--text-muted);padding:5px 8px;cursor:pointer;font-size:10px;width:100%;margin-top:4px;transition:all .2s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='#333';this.style.color='var(--text-muted)'">＋ Agregar filtro</button>
-              </div>
-
-              <div class="config-section" id="display-section" style="display:none;">
-                <div class="config-title">🎨 Visual</div>
-                <div class="config-label">Color principal</div>
-                <input type="color" class="config-input" id="chart-color" value="#c8a84b" style="height:32px;padding:3px;" onchange="onAxesChange()">
-                <div id="sort-row" class="config-label" style="margin-top:4px;">Ordenar</div>
-                <select class="config-select" id="sort-order" onchange="onAxesChange()">
+              <div class="cs" id="vis-s" style="display:none;"><div class="ct">🎨 Visual</div>
+                <div class="cl">Ancho en el tablero</div>
+                <div class="wsel">
+                  <button class="wb" data-w="1" onclick="selW('1',this)"><span style="font-size:12px;">▌</span><br>1/3</button>
+                  <button class="wb active" data-w="2" onclick="selW('2',this)"><span style="font-size:12px;">▌▌</span><br>1/2</button>
+                  <button class="wb" data-w="3" onclick="selW('3',this)"><span style="font-size:12px;">▌▌▌</span><br>2/3</button>
+                  <button class="wb" data-w="4" onclick="selW('4',this)"><span style="font-size:12px;">▌▌▌▌</span><br>Completo</button>
+                </div>
+                <div class="cl" style="margin-top:7px;">Color principal</div>
+                <input type="color" id="cc" value="#c8a84b" style="height:30px;padding:2px;width:100%;margin-bottom:6px;" onchange="onAC()">
+                <div class="cl">Ordenar</div>
+                <select id="so" onchange="onAC()">
                   <option value="desc">Mayor a menor ↓</option>
                   <option value="asc">Menor a mayor ↑</option>
                   <option value="alpha-asc">A → Z</option>
@@ -383,1090 +411,838 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
             </div>
           </div>
           <!-- Preview -->
-          <div class="preview-area" id="preview-area">
-            <div class="preview-placeholder" style="height:100%;border:none;">
-              <div style="font-size:32px;">📊</div>
-              <div>Selecciona una gráfica para configurar</div>
-            </div>
+          <div class="prev-area" id="prev-area">
+            <div class="ph" style="height:100%;border:none;"><div style="font-size:30px;">📊</div><div>Selecciona una gráfica para configurar</div></div>
           </div>
         </div>
       </div>
 
       <!-- DASHBOARD VIEW -->
-      <div id="view-dashboard">
-        <div class="dash-view-header">
+      <div id="vd">
+        <div class="dv-head">
           <div>
-            <div class="dash-view-title" id="dv-title">—</div>
-            <div class="dash-view-meta" id="dv-meta">—</div>
+            <div class="dv-title" id="dv-title">—</div>
+            <div class="dv-meta" id="dv-meta">—</div>
           </div>
-          <div class="dash-view-actions">
-            <button class="btn-sm outline" onclick="refreshDashboard()">↺ Actualizar</button>
-            <button class="btn-sm outline" onclick="editCurrentDashboard()">✏️ Editar</button>
-            <button class="btn-sm danger" onclick="confirmDelete()">🗑️ Eliminar</button>
+          <div class="dv-acts">
+            <button class="btn out" onclick="refreshDash()">↺ Actualizar</button>
+            <button class="btn out" onclick="editDash()">✏️ Editar</button>
+            <button class="btn red" onclick="confirmDel()">🗑️ Eliminar</button>
           </div>
         </div>
-        <div class="widgets-grid" id="dv-widgets-grid"></div>
+        <div class="gfbar" id="gfbar" style="display:none;"></div>
+        <div class="wgrid" id="wgrid"></div>
       </div>
 
     </div>
   </div>
-  <div class="status-bar">
-    <div class="status-item"><div class="status-dot" id="status-dot"></div><span id="status-text">Conectando...</span></div>
-    <div class="status-item">Catosa API</div>
-    <div class="status-item" id="status-tables"></div>
+  <div class="sbar">
+    <div class="si2"><div class="sd" id="sd"></div><span id="st">Conectando...</span></div>
+    <div class="si2">Catosa API</div>
+    <div class="si2" id="stbl"></div>
   </div>
 </div>
 
-<div id="toast-container"></div>
-<div class="modal-overlay" id="delete-modal">
-  <div class="modal">
-    <div class="modal-title">Eliminar tablero</div>
-    <div class="modal-text">¿Estás seguro? Esta acción no se puede deshacer.</div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
-      <button class="btn-danger" onclick="deleteDashboard()">Eliminar</button>
+<div id="tc"></div>
+
+<!-- Delete Modal -->
+<div class="mo" id="del-modal">
+  <div class="mb">
+    <div class="mb-t">Eliminar tablero</div>
+    <div class="mb-x">¿Estás seguro? Esta acción no se puede deshacer.</div>
+    <div class="mb-a"><button class="bcancel" onclick="closeMo('del-modal')">Cancelar</button><button class="bdanger" onclick="deleteDash()">Eliminar</button></div>
+  </div>
+</div>
+
+<!-- Add Global Filter Modal -->
+<div class="mo" id="gf-modal">
+  <div class="gf-modal-body">
+    <div class="mb-t" style="margin-bottom:14px;">Agregar Filtro Global</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:12px;">Los filtros globales aparecen en la parte superior del tablero y afectan a <b>todas</b> las gráficas que tengan esa columna.</div>
+    <div class="cl">Etiqueta (lo que verá el usuario)</div>
+    <input type="text" id="gf-label-inp" placeholder="Ej: Sucursal, Vendedor, Familia...">
+    <div class="cl">Columna del servidor</div>
+    <input type="text" id="gf-col-inp" placeholder="Nombre exacto de la columna en los datos">
+    <div class="cl">Tabla de donde obtener valores</div>
+    <select id="gf-tbl-inp"><option value="">— Selecciona tabla —</option></select>
+    <div class="mb-a" style="margin-top:12px;">
+      <button class="bcancel" onclick="closeMo('gf-modal')">Cancelar</button>
+      <button class="btn" onclick="confirmAddGF()">Agregar</button>
     </div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  CONFIG
-// ══════════════════════════════════════════
-const API = 'https://api.catosaapps.lat';
-
-const AREAS = [
-  { id:'refacciones', name:'Refacciones',  icon:'🔧', dept:'Departamento', pass:'ref2024' },
-  { id:'servicio',    name:'Servicio',      icon:'🛠️', dept:'Departamento', pass:'srv2024' },
-  { id:'unidades',    name:'Unidades',      icon:'🚛', dept:'Departamento', pass:'uni2024' },
-  { id:'seminuevos',  name:'Seminuevos',    icon:'🚗', dept:'Departamento', pass:'sem2024' },
-  { id:'finanzas',    name:'Finanzas',      icon:'💰', dept:'Área',         pass:'fin2024' },
-  { id:'marketing',   name:'Marketing',     icon:'📣', dept:'Área',         pass:'mkt2024' },
+// ═══════════════════════════════════
+const API='https://api.catosaapps.lat';
+const AREAS=[
+  {id:'refacciones',name:'Refacciones',icon:'🔧',dept:'Departamento',pass:'ref2024'},
+  {id:'servicio',name:'Servicio',icon:'🛠️',dept:'Departamento',pass:'srv2024'},
+  {id:'unidades',name:'Unidades',icon:'🚛',dept:'Departamento',pass:'uni2024'},
+  {id:'seminuevos',name:'Seminuevos',icon:'🚗',dept:'Departamento',pass:'sem2024'},
+  {id:'finanzas',name:'Finanzas',icon:'💰',dept:'Área',pass:'fin2024'},
+  {id:'marketing',name:'Marketing',icon:'📣',dept:'Área',pass:'mkt2024'},
 ];
+const CI={bar:'📊',horizontalBar:'📉',line:'📈',pie:'🥧',doughnut:'🍩',ranking:'🏆',scatter:'🔵',gauge:'🎯',compare:'📋',map:'🗺️',table:'🗃️',kpi:'🎯'};
+const GP=['#c8a84b','#e2c46e','#a08030','#f0d88a','#7a6020','#dab85e','#b89038','#eed070','#907028','#6a5018'];
 
-const CHART_ICONS = { bar:'📊',horizontalBar:'📉',line:'📈',pie:'🥧',doughnut:'🍩',scatter:'🔵',gauge:'🎯',compare:'📋',map:'🗺️',table:'🗃️',kpi:'🎯' };
+const MXC={'AGUASCALIENTES':[21.88,-102.29],'MEXICALI':[32.62,-115.45],'TIJUANA':[32.50,-117.00],'ENSENADA':[31.87,-116.60],'LA PAZ':[24.14,-110.31],'CAMPECHE':[19.83,-90.53],'SALTILLO':[25.42,-101.00],'TORREON':[25.54,-103.41],'TORREÓN':[25.54,-103.41],'MONCLOVA':[26.91,-101.42],'PIEDRAS NEGRAS':[28.70,-100.52],'ACUNA':[29.32,-100.93],'ACUÑA':[29.32,-100.93],'COLIMA':[19.25,-103.72],'TUXTLA GUTIERREZ':[16.75,-93.12],'CHIHUAHUA':[28.63,-106.07],'CIUDAD JUAREZ':[31.69,-106.42],'JUAREZ':[31.69,-106.42],'CUAUHTEMOC':[28.41,-106.87],'PARRAL':[26.93,-105.67],'DELICIAS':[28.19,-105.47],'MEXICO':[19.43,-99.13],'CIUDAD DE MEXICO':[19.43,-99.13],'CDMX':[19.43,-99.13],'DF':[19.43,-99.13],'DURANGO':[24.03,-104.65],'GOMEZ PALACIO':[25.57,-103.50],'LERDO':[25.54,-103.53],'GUANAJUATO':[21.02,-101.26],'LEON':[21.12,-101.68],'IRAPUATO':[20.68,-101.36],'CELAYA':[20.52,-100.81],'SALAMANCA':[20.57,-101.20],'GUADALAJARA':[20.66,-103.35],'ZAPOPAN':[20.72,-103.39],'PUERTO VALLARTA':[20.65,-105.23],'TOLUCA':[19.28,-99.66],'ECATEPEC':[19.60,-99.06],'NAUCALPAN':[19.48,-99.23],'MORELIA':[19.71,-101.20],'ZAMORA':[19.98,-102.28],'CUERNAVACA':[18.92,-99.22],'MONTERREY':[25.69,-100.32],'GUADALUPE':[25.68,-100.26],'SAN PEDRO GARZA GARCIA':[25.66,-100.40],'APODACA':[25.78,-100.19],'GARCIA':[25.81,-100.59],'SANTA CATARINA':[25.67,-100.46],'LINARES':[24.86,-99.56],'OAXACA':[17.06,-96.72],'PUEBLA':[19.04,-98.21],'QUERETARO':[20.59,-100.39],'CANCUN':[21.16,-86.85],'CHETUMAL':[18.50,-88.30],'SAN LUIS POTOSI':[22.15,-100.98],'CULIACAN':[24.80,-107.39],'MAZATLAN':[23.25,-106.41],'LOS MOCHIS':[25.80,-108.99],'HERMOSILLO':[29.07,-110.96],'CIUDAD OBREGON':[27.49,-109.94],'OBREGON':[27.49,-109.94],'NAVOJOA':[27.07,-109.44],'NOGALES':[31.30,-110.94],'VILLAHERMOSA':[17.99,-92.93],'TAMPICO':[22.23,-97.86],'MATAMOROS':[25.87,-97.50],'NUEVO LAREDO':[27.48,-99.52],'REYNOSA':[26.09,-98.27],'TLAXCALA':[19.31,-98.24],'VERACRUZ':[19.17,-96.13],'XALAPA':[19.54,-96.91],'COATZACOALCOS':[18.15,-94.43],'MERIDA':[20.97,-89.62],'ZACATECAS':[22.77,-102.58],'FRESNILLO':[23.18,-102.88],'ACAPULCO':[16.85,-99.82],'TEPIC':[21.50,-104.90],'PACHUCA':[20.10,-98.76],'CHILPANCINGO':[17.55,-99.50],'ANA':[25.54,-103.41],'GOMEZ':[25.57,-103.50],'RAMOS ARIZPE':[25.54,-100.95],'ARTEAGA':[25.46,-100.81],'FRONTERA':[25.94,-101.68],'SABINAS':[27.85,-101.12],'SAN PEDRO':[25.75,-102.99],'MATAMOROS':[25.87,-97.50]};
 
-// Mexico cities coordinates
-const MX_CITIES = {
-  'AGUASCALIENTES':[21.8818,-102.2916],'MEXICALI':[32.6245,-115.4523],'TIJUANA':[32.5027,-117.0037],
-  'ENSENADA':[31.8667,-116.5963],'LA PAZ':[24.1426,-110.3128],'CAMPECHE':[19.8301,-90.5349],
-  'SALTILLO':[25.4232,-101.0000],'TORREON':[25.5428,-103.4068],'TORREÓN':[25.5428,-103.4068],
-  'MONCLOVA':[26.9078,-101.4229],'PIEDRAS NEGRAS':[28.7006,-100.5248],'ACUNA':[29.3222,-100.9267],
-  'ACUÑA':[29.3222,-100.9267],'COLIMA':[19.2452,-103.7241],'TUXTLA GUTIERREZ':[16.7516,-93.1152],
-  'CHIHUAHUA':[28.6330,-106.0691],'CIUDAD JUAREZ':[31.6904,-106.4245],'JUAREZ':[31.6904,-106.4245],
-  'CUAUHTEMOC':[28.4100,-106.8657],'PARRAL':[26.9311,-105.6666],'DELICIAS':[28.1883,-105.4691],
-  'MEXICO':[19.4326,-99.1332],'CIUDAD DE MEXICO':[19.4326,-99.1332],'CDMX':[19.4326,-99.1332],
-  'DF':[19.4326,-99.1332],'DURANGO':[24.0277,-104.6532],'GOMEZ PALACIO':[25.5654,-103.4991],
-  'LERDO':[25.5353,-103.5271],'GUANAJUATO':[21.0190,-101.2574],'LEON':[21.1221,-101.6848],
-  'IRAPUATO':[20.6770,-101.3556],'CELAYA':[20.5236,-100.8122],'SALAMANCA':[20.5710,-101.1960],
-  'GUADALAJARA':[20.6597,-103.3496],'ZAPOPAN':[20.7214,-103.3917],'TLAQUEPAQUE':[20.6431,-103.3167],
-  'PUERTO VALLARTA':[20.6534,-105.2253],'TOLUCA':[19.2826,-99.6557],'ECATEPEC':[19.6008,-99.0600],
-  'NAUCALPAN':[19.4800,-99.2300],'MORELIA':[19.7060,-101.1950],'ZAMORA':[19.9833,-102.2833],
-  'CUERNAVACA':[18.9242,-99.2216],'MONTERREY':[25.6866,-100.3161],'GUADALUPE':[25.6761,-100.2597],
-  'SAN PEDRO GARZA GARCIA':[25.6572,-100.4026],'SAN NICOLAS':[25.7461,-100.3062],
-  'APODACA':[25.7791,-100.1870],'GARCIA':[25.8062,-100.5878],'SANTA CATARINA':[25.6735,-100.4598],
-  'LINARES':[24.8572,-99.5641],'MONTEMORELOS':[25.1872,-99.8271],'OAXACA':[17.0600,-96.7200],
-  'PUEBLA':[19.0414,-98.2063],'QUERETARO':[20.5888,-100.3899],'QUERETARO':[20.5888,-100.3899],
-  'CANCUN':[21.1619,-86.8515],'CHETUMAL':[18.5001,-88.2962],'PLAYA DEL CARMEN':[20.6296,-87.0739],
-  'SAN LUIS POTOSI':[22.1508,-100.9762],'CULIACAN':[24.7994,-107.3886],'MAZATLAN':[23.2469,-106.4113],
-  'LOS MOCHIS':[25.7961,-108.9917],'HERMOSILLO':[29.0729,-110.9559],'CIUDAD OBREGON':[27.4892,-109.9406],
-  'OBREGON':[27.4892,-109.9406],'NAVOJOA':[27.0728,-109.4427],'NOGALES':[31.2980,-110.9415],
-  'VILLAHERMOSA':[17.9869,-92.9303],'TAMPICO':[22.2331,-97.8619],'MATAMOROS':[25.8696,-97.5025],
-  'NUEVO LAREDO':[27.4769,-99.5152],'REYNOSA':[26.0921,-98.2712],'MCALLEN':[26.2034,-98.2300],
-  'TLAXCALA':[19.3139,-98.2404],'VERACRUZ':[19.1738,-96.1342],'XALAPA':[19.5438,-96.9102],
-  'COATZACOALCOS':[18.1500,-94.4333],'MERIDA':[20.9670,-89.6237],'ZACATECAS':[22.7709,-102.5832],
-  'FRESNILLO':[23.1757,-102.8752],'ACAPULCO':[16.8531,-99.8237],'TEPIC':[21.5026,-104.8952],
-  'PACHUCA':[20.1011,-98.7591],'HIDALGO':[20.1011,-98.7591],'CHILPANCINGO':[17.5520,-99.5021],
-  'LAZARO CARDENAS':[17.9585,-102.2015],'MANZANILLO':[19.1002,-104.3220],
-  'CIUDAD VICTORIA':[23.7369,-99.1411],'TAMPICO':[22.2331,-97.8619],
-  'ANA':[25.5428,-103.4068],'GOMEZ':[25.5654,-103.4991],
-};
-
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  STATE
-// ══════════════════════════════════════════
-let state = {
-  area:null, userName:'', dashboards:[], currentDashId:null, tables:[],
-  editingId:null, widgets:[], activeWidgetIdx:null, columns:[], rawData:null,
-  chartInstances:{}, dvChartInstances:{}, mapInstances:{},
+// ═══════════════════════════════════
+let S={
+  area:null,userName:'',dashboards:[],currentDashId:null,tables:[],
+  editingId:null,widgets:[],activeWIdx:null,columns:[],rawData:null,
+  chartInst:{},dvChartInst:{},mapInst:{},
+  dataCache:{},colsCache:{},
+  globalFilters:{}, // {col: selectedValue}
+  crossFilter:null, // {col,value}
+  dashGlobalFilters:[], // [{id,label,col,table}] current dash definition
 };
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  INIT
-// ══════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-  buildAreaGrid();
-  checkSession();
-  document.getElementById('builder-name').addEventListener('input', renderBuilderPreview);
+// ═══════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  buildAG();checkSession();
+  document.getElementById('b-name').addEventListener('input',renderPrev);
 });
-
-function buildAreaGrid() {
-  document.getElementById('area-grid').innerHTML = AREAS.map(a => `
-    <button class="area-btn" onclick="selectArea('${a.id}')">
-      <span class="area-icon">${a.icon}</span>
-      <span class="area-name">${a.name.toUpperCase()}</span>
-      <div class="area-dept">${a.dept}</div>
+function buildAG(){
+  document.getElementById('area-grid').innerHTML=AREAS.map(a=>`
+    <button class="area-btn" onclick="selArea('${a.id}')">
+      <span class="ai">${a.icon}</span><span class="an">${a.name.toUpperCase()}</span>
+      <div class="ad">${a.dept}</div>
     </button>`).join('');
 }
-
-function checkSession() {
-  const s = sessionStorage.getItem('catosa_session');
-  if (s) { const d = JSON.parse(s); state.area = AREAS.find(a=>a.id===d.areaId); state.userName = d.userName; if(state.area) enterApp(); }
+function checkSession(){
+  const s=sessionStorage.getItem('cs');
+  if(s){const d=JSON.parse(s);S.area=AREAS.find(a=>a.id===d.areaId);S.userName=d.userName;if(S.area)enterApp();}
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  LOGIN
-// ══════════════════════════════════════════
-let selectedArea = null;
-function selectArea(id) {
-  selectedArea = AREAS.find(a=>a.id===id);
-  document.getElementById('selected-area-name').textContent = `${selectedArea.icon} ${selectedArea.name}`;
-  document.getElementById('step-area').style.display = 'none';
+// ═══════════════════════════════════
+let selA=null;
+function selArea(id){
+  selA=AREAS.find(a=>a.id===id);
+  document.getElementById('sel-area-name').textContent=`${selA.icon} ${selA.name}`;
+  document.getElementById('step-area').style.display='none';
   document.getElementById('step-pass').classList.add('show');
-  document.getElementById('pass-input').value = '';
-  document.getElementById('user-name').value = '';
-  document.getElementById('login-error').classList.remove('show');
+  document.getElementById('pass-input').value='';document.getElementById('user-name').value='';
+  document.getElementById('l-err').classList.remove('show');
   setTimeout(()=>document.getElementById('user-name').focus(),100);
 }
-function backToAreas() {
-  document.getElementById('step-area').style.display='block';
-  document.getElementById('step-pass').classList.remove('show');
-}
-function doLogin() {
-  const pass = document.getElementById('pass-input').value;
-  const name = document.getElementById('user-name').value.trim();
-  const err = document.getElementById('login-error');
-  if (!name) { err.textContent='Escribe tu nombre'; err.classList.add('show'); return; }
-  if (pass !== selectedArea.pass) { err.textContent='Contraseña incorrecta'; err.classList.add('show'); return; }
-  state.area = selectedArea; state.userName = name;
-  sessionStorage.setItem('catosa_session', JSON.stringify({areaId:selectedArea.id, userName:name}));
+function backToAreas(){document.getElementById('step-area').style.display='block';document.getElementById('step-pass').classList.remove('show');}
+function doLogin(){
+  const pass=document.getElementById('pass-input').value;
+  const name=document.getElementById('user-name').value.trim();
+  const err=document.getElementById('l-err');
+  if(!name){err.textContent='Escribe tu nombre';err.classList.add('show');return;}
+  if(pass!==selA.pass){err.textContent='Contraseña incorrecta';err.classList.add('show');return;}
+  S.area=selA;S.userName=name;
+  sessionStorage.setItem('cs',JSON.stringify({areaId:selA.id,userName:name}));
   enterApp();
 }
-function logout() { sessionStorage.removeItem('catosa_session'); location.reload(); }
+function logout(){sessionStorage.removeItem('cs');location.reload();}
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  ENTER APP
-// ══════════════════════════════════════════
-function enterApp() {
-  document.getElementById('login-screen').style.display = 'none';
+// ═══════════════════════════════════
+function enterApp(){
+  document.getElementById('login-screen').style.display='none';
   document.getElementById('app').classList.add('show');
-  document.getElementById('topbar-area-name').textContent = state.area.name;
-  const h = new Date().getHours();
-  const g = h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches';
-  document.getElementById('home-greeting-title').textContent = `${g}, ${state.userName} ${state.area.icon}`;
-  checkServerStatus(); loadDashboards(); loadTablesFromServer();
+  document.getElementById('ta-name').textContent=S.area.name;
+  const h=new Date().getHours();
+  const g=h<12?'Buenos días':h<19?'Buenas tardes':'Buenas noches';
+  document.getElementById('hgt').textContent=`${g}, ${S.userName} ${S.area.icon}`;
+  checkSrv();loadDashs();loadTables();
+}
+async function checkSrv(){
+  const d=document.getElementById('sd'),t=document.getElementById('st');
+  try{const r=await fetch(`${API}/api/tables`,{signal:AbortSignal.timeout(6000)});if(r.ok){d.classList.remove('off');t.textContent='Conectado';}else throw 0;}
+  catch{d.classList.add('off');t.textContent='Sin conexión';}
 }
 
-async function checkServerStatus() {
-  const dot = document.getElementById('status-dot'); const txt = document.getElementById('status-text');
-  try {
-    const r = await fetch(`${API}/api/tables`,{signal:AbortSignal.timeout(6000)});
-    if(r.ok){dot.classList.remove('off');txt.textContent='Conectado';}else throw new Error();
-  } catch { dot.classList.add('off'); txt.textContent='Sin conexión'; }
-}
-
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  DASHBOARDS
-// ══════════════════════════════════════════
-function loadDashboards() {
-  state.dashboards = JSON.parse(localStorage.getItem(`catosa_dash_${state.area.id}`) || '[]');
-  renderSidebar(); renderHomeGrid();
+// ═══════════════════════════════════
+function loadDashs(){
+  S.dashboards=JSON.parse(localStorage.getItem(`cd_${S.area.id}`)||'[]');
+  renderSL();renderHG();
 }
-function saveDashboardsToStorage() {
-  localStorage.setItem(`catosa_dash_${state.area.id}`, JSON.stringify(state.dashboards));
-}
-function renderSidebar() {
-  const list = document.getElementById('sidebar-list');
-  if (!state.dashboards.length) { list.innerHTML='<div class="sidebar-item" style="cursor:default;opacity:.4;font-size:11px;">Sin tableros aún</div>'; return; }
-  list.innerHTML = state.dashboards.map(d=>`
-    <div class="sidebar-item ${d.id===state.currentDashId?'active':''}" onclick="openDashboard('${d.id}')">
-      <span class="item-icon">${d.widgets?.length?CHART_ICONS[d.widgets[0].chartType]||'📊':'📊'}</span>
-      <div class="item-info">
-        <div class="item-name">${d.name}</div>
-        <div class="item-author">por ${d.author} · ${d.widgets?.length||0} gráf.</div>
-      </div>
+function saveDashs(){localStorage.setItem(`cd_${S.area.id}`,JSON.stringify(S.dashboards));}
+function renderSL(){
+  const l=document.getElementById('slist');
+  if(!S.dashboards.length){l.innerHTML='<div class="si" style="cursor:default;opacity:.4;font-size:10px;">Sin tableros aún</div>';return;}
+  l.innerHTML=S.dashboards.map(d=>`
+    <div class="si ${d.id===S.currentDashId?'active':''}" onclick="openDash('${d.id}')">
+      <span class="ii">${d.widgets?.length?CI[d.widgets[0].chartType]||'📊':'📊'}</span>
+      <div style="flex:1;min-width:0;"><div class="in">${d.name}</div><div class="ia">por ${d.author}</div></div>
     </div>`).join('');
 }
-function renderHomeGrid() {
-  const grid = document.getElementById('dashboards-grid');
-  if (!state.dashboards.length) {
-    grid.innerHTML=`<div class="empty-state"><div class="empty-state-icon">📊</div><h3>Sin tableros todavía</h3><p>Crea tu primer tablero conectado a los datos de Catosa.</p></div>`; return;
-  }
-  grid.innerHTML = state.dashboards.map(d=>`
-    <div class="dash-card" onclick="openDashboard('${d.id}')">
-      <div class="dash-card-header">
-        <div style="font-size:22px;">${(d.widgets||[]).map(w=>CHART_ICONS[w.chartType]||'📊').slice(0,3).join(' ')}</div>
-        <span class="badge">${d.widgets?.length||0} gráf.</span>
-      </div>
-      <div class="dash-card-name">${d.name}</div>
-      <div class="dash-card-info">por ${d.author}<br>${new Date(d.createdAt).toLocaleDateString('es-MX')}</div>
+function renderHG(){
+  const g=document.getElementById('dg');
+  if(!S.dashboards.length){g.innerHTML=`<div class="es"><div class="es-icon">📊</div><h3>Sin tableros todavía</h3><p>Crea tu primer tablero conectado a los datos de Catosa.</p></div>`;return;}
+  g.innerHTML=S.dashboards.map(d=>`
+    <div class="dc" onclick="openDash('${d.id}')">
+      <div class="dc-h"><div style="font-size:20px;">${(d.widgets||[]).map(w=>CI[w.chartType]||'📊').slice(0,3).join(' ')}</div><span class="bx">${d.widgets?.length||0} gráf.</span></div>
+      <div class="dc-n">${d.name}</div>
+      <div class="dc-i">por ${d.author}<br>${new Date(d.createdAt).toLocaleDateString('es-MX')}${d.globalFilters?.length?`<br>✦ ${d.globalFilters.length} filtro${d.globalFilters.length>1?'s':''} global${d.globalFilters.length>1?'es':''}`:''}</div>
     </div>`).join('');
-  document.getElementById('home-greeting-sub').textContent = `Área ${state.area.name} · ${state.dashboards.length} tablero${state.dashboards.length!==1?'s':''}`;
+  document.getElementById('hgs').textContent=`Área ${S.area.name} · ${S.dashboards.length} tablero${S.dashboards.length!==1?'s':''}`;
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  VIEWS
-// ══════════════════════════════════════════
-function showView(name) {
-  document.getElementById('view-home').style.display = 'none';
-  document.getElementById('view-builder').classList.remove('show');
-  document.getElementById('view-dashboard').classList.remove('show');
-  if(name==='home') document.getElementById('view-home').style.display='block';
-  if(name==='builder') document.getElementById('view-builder').classList.add('show');
-  if(name==='dashboard') document.getElementById('view-dashboard').classList.add('show');
+// ═══════════════════════════════════
+function showView(n){
+  document.getElementById('vh').style.display='none';
+  document.getElementById('vb').classList.remove('show');
+  document.getElementById('vd').classList.remove('show');
+  if(n==='home')document.getElementById('vh').style.display='block';
+  if(n==='builder')document.getElementById('vb').classList.add('show');
+  if(n==='dashboard')document.getElementById('vd').classList.add('show');
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  LOAD TABLES
-// ══════════════════════════════════════════
-async function loadTablesFromServer() {
-  try {
-    const r = await fetch(`${API}/api/tables`);
-    const data = await r.json();
-    state.tables = data.tables || [];
-    document.getElementById('status-tables').textContent = `${state.tables.length} tablas`;
-    const sel = document.getElementById('table-select');
-    sel.innerHTML = '<option value="">— Selecciona tabla —</option>' + state.tables.map(t=>`<option value="${t}">${t}</option>`).join('');
-    document.getElementById('tables-loading').style.display='none';
-    sel.style.display='block';
-  } catch {
-    document.getElementById('tables-loading').innerHTML='<span style="color:var(--danger);font-size:11px;">⚠️ Sin conexión al servidor</span>';
-  }
+// ═══════════════════════════════════
+async function loadTables(){
+  try{
+    const r=await fetch(`${API}/api/tables`);
+    const d=await r.json();
+    S.tables=d.tables||[];
+    document.getElementById('stbl').textContent=`${S.tables.length} tablas`;
+    const o='<option value="">— Selecciona tabla —</option>'+S.tables.map(t=>`<option value="${t}">${t}</option>`).join('');
+    document.getElementById('tsel').innerHTML=o;
+    document.getElementById('tl').style.display='none';
+    document.getElementById('tsel').style.display='block';
+    document.getElementById('gf-tbl-inp').innerHTML='<option value="">— Selecciona tabla —</option>'+S.tables.map(t=>`<option value="${t}">${t}</option>`).join('');
+  }catch{document.getElementById('tl').innerHTML='<span style="color:var(--danger);font-size:10px;">⚠️ Sin conexión</span>';}
 }
 
-// ══════════════════════════════════════════
-//  DATE HELPERS
-// ══════════════════════════════════════════
-function getDateRange(preset) {
-  const now = new Date(); const y = now.getFullYear(); const m = now.getMonth();
-  switch(preset) {
-    case 'today':     return [startOf(now,'day'), endOf(now,'day')];
-    case 'thisWeek':  const dow=now.getDay(); const mon=new Date(now); mon.setDate(now.getDate()-dow+1); return [startOf(mon,'day'), endOf(now,'day')];
-    case 'thisMonth': return [new Date(y,m,1), new Date(y,m+1,0,23,59,59)];
-    case 'lastMonth': return [new Date(y,m-1,1), new Date(y,m,0,23,59,59)];
-    case 'thisYear':  return [new Date(y,0,1), new Date(y,11,31,23,59,59)];
-    case 'lastYear':  return [new Date(y-1,0,1), new Date(y-1,11,31,23,59,59)];
-    case 'q1': return [new Date(y,0,1), new Date(y,2,31,23,59,59)];
-    case 'q2': return [new Date(y,3,1), new Date(y,5,30,23,59,59)];
-    case 'q3': return [new Date(y,6,1), new Date(y,8,30,23,59,59)];
-    case 'q4': return [new Date(y,9,1), new Date(y,11,31,23,59,59)];
-    default:   return [null,null];
+// ═══════════════════════════════════
+//  DATES
+// ═══════════════════════════════════
+function getDR(p){
+  const n=new Date();const y=n.getFullYear();const m=n.getMonth();
+  switch(p){
+    case'today':return[sof(n),eof(n)];
+    case'thisWeek':const dw=n.getDay();const mo=new Date(n);mo.setDate(n.getDate()-dw+1);return[sof(mo),eof(n)];
+    case'thisMonth':return[new Date(y,m,1),new Date(y,m+1,0,23,59,59)];
+    case'lastMonth':return[new Date(y,m-1,1),new Date(y,m,0,23,59,59)];
+    case'thisYear':return[new Date(y,0,1),new Date(y,11,31,23,59,59)];
+    case'lastYear':return[new Date(y-1,0,1),new Date(y-1,11,31,23,59,59)];
+    case'q1':return[new Date(y,0,1),new Date(y,2,31,23,59,59)];
+    case'q2':return[new Date(y,3,1),new Date(y,5,30,23,59,59)];
+    case'q3':return[new Date(y,6,1),new Date(y,8,30,23,59,59)];
+    case'q4':return[new Date(y,9,1),new Date(y,11,31,23,59,59)];
+    default:return[null,null];
   }
 }
-function startOf(d,unit){ const r=new Date(d); if(unit==='day'){r.setHours(0,0,0,0);} return r; }
-function endOf(d,unit){ const r=new Date(d); if(unit==='day'){r.setHours(23,59,59,999);} return r; }
+function sof(d){const r=new Date(d);r.setHours(0,0,0,0);return r;}
+function eof(d){const r=new Date(d);r.setHours(23,59,59,999);return r;}
 
-function applyDateFilter(rows, w) {
-  if (!w.dateCol) return rows;
-  let from=null, to=null;
-  if (w.datePreset && w.datePreset !== 'custom') {
-    [from,to] = getDateRange(w.datePreset);
-  } else if (w.datePreset === 'custom') {
-    if (w.dateFrom) { from = new Date(w.dateFrom); from.setHours(0,0,0,0); }
-    if (w.dateTo)   { to   = new Date(w.dateTo);   to.setHours(23,59,59,999); }
+// ═══════════════════════════════════
+//  FILTER APPLICATION
+// ═══════════════════════════════════
+function applyAllFilters(rows,w,gfVals,cf){
+  let r=rows;
+  // Date filter
+  if(w.dateCol){
+    let from=null,to=null;
+    if(w.datePreset&&w.datePreset!=='custom')[from,to]=getDR(w.datePreset);
+    else if(w.datePreset==='custom'){if(w.dateFrom){from=sof(new Date(w.dateFrom));}if(w.dateTo){to=eof(new Date(w.dateTo));}}
+    if(from||to)r=r.filter(row=>{const v=row[w.dateCol];if(!v)return false;const d=new Date(v);if(isNaN(d))return false;if(from&&d<from)return false;if(to&&d>to)return false;return true;});
   }
-  if (!from && !to) return rows;
-  return rows.filter(r => {
-    const raw = r[w.dateCol]; if(!raw) return false;
-    const d = new Date(raw); if(isNaN(d)) return false;
-    if(from && d < from) return false;
-    if(to && d > to) return false;
-    return true;
-  });
-}
-
-// ══════════════════════════════════════════
-//  FILTERS
-// ══════════════════════════════════════════
-function applyFilters(rows, w) {
-  let r2 = applyDateFilter(rows, w);
-  if (!w.filters || !w.filters.length) return r2;
-  return r2.filter(row => w.filters.every(f => {
-    if (!f.col || f.val==='') return true;
-    const cell = String(row[f.col]??''); const fnum=parseFloat(f.val); const num=parseFloat(cell);
-    switch(f.op) {
-      case 'contains': return cell.toLowerCase().includes(f.val.toLowerCase());
-      case 'equals':   return cell.toLowerCase()===f.val.toLowerCase();
-      case 'gt':  return !isNaN(num)&&num>fnum;
-      case 'lt':  return !isNaN(num)&&num<fnum;
-      case 'gte': return !isNaN(num)&&num>=fnum;
-      case 'lte': return !isNaN(num)&&num<=fnum;
-      case 'notempty': return cell.trim()!=='';
-      default: return true;
-    }
+  // Widget filters
+  if(w.filters?.length)r=r.filter(row=>w.filters.every(f=>{
+    if(!f.col||f.val==='')return true;
+    const cell=String(row[f.col]??'');const fnum=parseFloat(f.val);const num=parseFloat(cell);
+    switch(f.op){case'contains':return cell.toLowerCase().includes(f.val.toLowerCase());case'equals':return cell.toLowerCase()===f.val.toLowerCase();case'gt':return!isNaN(num)&&num>fnum;case'lt':return!isNaN(num)&&num<fnum;case'gte':return!isNaN(num)&&num>=fnum;case'lte':return!isNaN(num)&&num<=fnum;case'notempty':return cell.trim()!=='';default:return true;}
   }));
+  // Global filters
+  if(gfVals){Object.entries(gfVals).forEach(([col,val])=>{if(val&&r[0]&&col in r[0])r=r.filter(row=>String(row[col]??'')===val);});}
+  // Cross filter
+  if(cf&&r[0]&&cf.col in r[0])r=r.filter(row=>String(row[cf.col]??'')===cf.value);
+  return r;
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  AGGREGATE
-// ══════════════════════════════════════════
-function aggregateData(rows, axisX, axisY, aggFunc, limit, sortOrder) {
-  const groups={}; const vals={};
-  rows.forEach(r=>{
-    const k=String(r[axisX]??'N/A').substring(0,35);
-    const v=parseFloat(r[axisY])||0;
-    if(!groups[k]){groups[k]=0;vals[k]=[];}
-    groups[k]+=v; vals[k].push(v);
-  });
-  let entries=Object.entries(groups);
-  if(aggFunc==='COUNT'){entries=entries.map(([k])=>[k,vals[k].length]);}
-  else if(aggFunc==='AVG'){entries=entries.map(([k])=>[k,vals[k].reduce((a,b)=>a+b,0)/(vals[k].length||1)]);}
-  else if(aggFunc==='MAX'){entries=entries.map(([k])=>[k,Math.max(...vals[k])]);}
-  else if(aggFunc==='MIN'){entries=entries.map(([k])=>[k,Math.min(...vals[k])]);}
-  // Sort
-  const so = sortOrder || 'desc';
-  if(so==='desc')   entries.sort((a,b)=>b[1]-a[1]);
-  else if(so==='asc') entries.sort((a,b)=>a[1]-b[1]);
-  else if(so==='alpha-asc') entries.sort((a,b)=>a[0].localeCompare(b[0]));
-  else if(so==='alpha-desc') entries.sort((a,b)=>b[0].localeCompare(a[0]));
-  const lim = parseInt(limit)||20;
-  return lim>=99999 ? entries : entries.slice(0,lim);
+// ═══════════════════════════════════
+function agg(rows,xCol,yCol,fn,lim,so){
+  const g={};const v={};
+  rows.forEach(r=>{const k=String(r[xCol]??'N/A').substring(0,35);const val=parseFloat(r[yCol])||0;if(!g[k]){g[k]=0;v[k]=[];}g[k]+=val;v[k].push(val);});
+  let e=Object.entries(g);
+  if(fn==='COUNT')e=e.map(([k])=>[k,v[k].length]);
+  else if(fn==='AVG')e=e.map(([k])=>[k,v[k].reduce((a,b)=>a+b,0)/(v[k].length||1)]);
+  else if(fn==='MAX')e=e.map(([k])=>[k,Math.max(...v[k])]);
+  else if(fn==='MIN')e=e.map(([k])=>[k,Math.min(...v[k])]);
+  const s=so||'desc';
+  if(s==='desc')e.sort((a,b)=>b[1]-a[1]);else if(s==='asc')e.sort((a,b)=>a[1]-b[1]);else if(s==='alpha-asc')e.sort((a,b)=>a[0].localeCompare(b[0]));else if(s==='alpha-desc')e.sort((a,b)=>b[0].localeCompare(a[0]));
+  const l=parseInt(lim)||20;return l>=99999?e:e.slice(0,l);
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  BUILDER — WIDGET MANAGEMENT
-// ══════════════════════════════════════════
-function newDashboard() {
-  state.editingId=null; state.widgets=[]; state.activeWidgetIdx=null; state.rawData=null; state.columns=[];
-  document.getElementById('builder-name').value='Mi Tablero';
-  destroyPreviewCharts(); renderWidgetList(); resetConfigPanel(); showView('builder');
-  state.currentDashId=null; renderSidebar();
+// ═══════════════════════════════════
+function newDashboard(){
+  S.editingId=null;S.widgets=[];S.activeWIdx=null;S.rawData=null;S.columns=[];S.dashGlobalFilters=[];
+  document.getElementById('b-name').value='Mi Tablero';
+  killPCharts();renderWL();resetCP();renderGFBuilder();showView('builder');S.currentDashId=null;renderSL();
 }
-function cancelBuilder() { destroyPreviewCharts(); showView('home'); renderHomeGrid(); }
-
-function addWidget() {
-  const w={id:`w_${Date.now()}`,name:`Gráfica ${state.widgets.length+1}`,chartType:'bar',
+function cancelBuilder(){killPCharts();showView('home');renderHG();}
+function addWidget(){
+  const w={id:`w_${Date.now()}`,name:`Gráfica ${S.widgets.length+1}`,chartType:'bar',
     tableName:'',axisX:'',axisY:'',axisY2:'',aggFunc:'SUM',limit:20,dataLimit:1000,
     filters:[],dateCol:'',datePreset:'',dateFrom:'',dateTo:'',tableCols:[],
-    color:'#c8a84b',sortOrder:'desc',gaugeTarget:100,scatterX:'',scatterY:'',scatterLabel:''};
-  state.widgets.push(w); selectWidget(state.widgets.length-1); renderWidgetList();
+    color:'#c8a84b',sortOrder:'desc',gaugeTarget:100,gaugeUnit:'',
+    scatterX:'',scatterY:'',scatterLabel:'',width:'2'};
+  S.widgets.push(w);selWidget(S.widgets.length-1);renderWL();
 }
-
-function selectWidget(idx) {
-  state.activeWidgetIdx=idx; state.rawData=null; state.columns=[];
-  renderWidgetList(); loadWidgetConfig(idx);
+function selWidget(idx){S.activeWIdx=idx;S.rawData=null;S.columns=[];renderWL();loadWConf(idx);}
+function remWidget(idx,e){
+  e.stopPropagation();S.widgets.splice(idx,1);
+  if(S.activeWIdx>=S.widgets.length)S.activeWIdx=S.widgets.length-1;
+  if(!S.widgets.length){S.activeWIdx=null;resetCP();}else selWidget(S.activeWIdx);
+  renderWL();
 }
-
-function removeWidget(idx,e) {
-  e.stopPropagation(); state.widgets.splice(idx,1);
-  if(state.activeWidgetIdx>=state.widgets.length) state.activeWidgetIdx=state.widgets.length-1;
-  if(!state.widgets.length){state.activeWidgetIdx=null;resetConfigPanel();}
-  else selectWidget(state.activeWidgetIdx);
-  renderWidgetList();
-}
-
-function renderWidgetList() {
-  document.getElementById('widget-list').innerHTML = state.widgets.map((w,i)=>`
-    <div class="widget-item ${i===state.activeWidgetIdx?'active':''}" onclick="selectWidget(${i})">
-      <div class="widget-item-header">
-        <span style="font-size:12px;">${CHART_ICONS[w.chartType]||'📊'}</span>
-        <span class="widget-item-name">${w.name}</span>
-        <button class="widget-item-del" onclick="removeWidget(${i},event)">✕</button>
-      </div>
-      <div class="widget-item-sub">${w.tableName||'Sin tabla'}</div>
+function renderWL(){
+  document.getElementById('wlist').innerHTML=S.widgets.map((w,i)=>`
+    <div class="wi ${i===S.activeWIdx?'active':''}" onclick="selWidget(${i})">
+      <div class="wi-h"><span style="font-size:12px;">${CI[w.chartType]||'📊'}</span><span class="wi-n">${w.name}</span><button class="wi-d" onclick="remWidget(${i},event)">✕</button></div>
+      <div class="wi-s">${w.tableName||'Sin tabla'} · ${w.width==='1'?'1/3':w.width==='2'?'1/2':w.width==='3'?'2/3':'Completo'}</div>
     </div>`).join('');
 }
+function resetCP(){
+  document.getElementById('no-wm').style.display='flex';
+  document.getElementById('wcc').style.display='none';
+  document.getElementById('prev-area').innerHTML=`<div class="ph" style="height:100%;border:none;"><div style="font-size:28px;">📊</div><div>Selecciona una gráfica para configurar</div></div>`;
+}
+async function loadWConf(idx){
+  const w=S.widgets[idx];if(!w)return;
+  document.getElementById('no-wm').style.display='none';
+  document.getElementById('wcc').style.display='block';
+  document.querySelectorAll('.ctb').forEach(b=>b.classList.toggle('active',b.dataset.t===w.chartType));
+  document.getElementById('wni').value=w.name;
+  document.getElementById('cc').value=w.color||'#c8a84b';
+  document.getElementById('so').value=w.sortOrder||'desc';
+  document.querySelectorAll('.wb').forEach(b=>b.classList.toggle('active',b.dataset.w===(w.width||'2')));
+  if(S.tables.length){document.getElementById('tsel').style.display='block';document.getElementById('tl').style.display='none';document.getElementById('tsel').value=w.tableName||'';document.getElementById('dlim').value=w.dataLimit||1000;}
+  if(w.tableName){await fetchTD(w.tableName,w.dataLimit||1000);popDateSel(w);renderAC(w);renderFC(w);document.getElementById('ds').style.display='block';document.getElementById('vis-s').style.display='block';renderPrev();}
+  else{document.getElementById('as').style.display='none';document.getElementById('fs').style.display='none';document.getElementById('ds').style.display='none';document.getElementById('vis-s').style.display='none';document.getElementById('prev-area').innerHTML=`<div class="ph" style="height:100%;border:none;"><div style="font-size:28px;">📊</div><div>Selecciona una tabla para comenzar</div></div>`;}
+}
+function syncWN(){if(S.activeWIdx===null)return;S.widgets[S.activeWIdx].name=document.getElementById('wni').value;renderWL();}
+function selCT(t,btn){if(S.activeWIdx===null)return;S.widgets[S.activeWIdx].chartType=t;document.querySelectorAll('.ctb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderWL();if(S.columns.length)renderAC(S.widgets[S.activeWIdx]);renderPrev();}
+function selW(w,btn){if(S.activeWIdx===null)return;S.widgets[S.activeWIdx].width=w;document.querySelectorAll('.wb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderWL();}
 
-function resetConfigPanel() {
-  document.getElementById('no-widget-msg').style.display='flex';
-  document.getElementById('widget-config-content').style.display='none';
-  document.getElementById('preview-area').innerHTML=`<div class="preview-placeholder" style="height:100%;border:none;"><div style="font-size:32px;">📊</div><div>Selecciona una gráfica para configurar</div></div>`;
+// ═══════════════════════════════════
+//  TABLE LOAD
+// ═══════════════════════════════════
+async function loadCols(){
+  const tbl=document.getElementById('tsel').value;
+  const dl=parseInt(document.getElementById('dlim').value)||1000;
+  if(S.activeWIdx===null)return;
+  const w=S.widgets[S.activeWIdx];
+  w.tableName=tbl;w.dataLimit=dl;w.axisX='';w.axisY='';w.axisY2='';w.filters=[];w.tableCols=[];w.dateCol='';w.datePreset='';
+  renderWL();
+  if(!tbl){document.getElementById('as').style.display='none';document.getElementById('fs').style.display='none';document.getElementById('ds').style.display='none';document.getElementById('vis-s').style.display='none';S.columns=[];S.rawData=null;return;}
+  document.getElementById('cl').style.display='block';document.getElementById('as').style.display='none';document.getElementById('fs').style.display='none';
+  await fetchTD(tbl,dl);
+  popDateSel(w);renderAC(w);renderFC(w);
+  document.getElementById('ds').style.display='block';document.getElementById('vis-s').style.display='block';
+  renderPrev();
+}
+async function fetchTD(tbl,lim){
+  document.getElementById('cl').style.display='block';
+  try{
+    const r=await fetch(`${API}/api/table/${encodeURIComponent(tbl)}?limit=${lim||1000}`);
+    const d=await r.json();
+    S.rawData=d.rows||[];S.columns=d.columns||(S.rawData.length?Object.keys(S.rawData[0]):[]);
+    document.getElementById('cl').style.display='none';
+  }catch{document.getElementById('cl').innerHTML='<span style="color:var(--danger);font-size:10px;">Error</span>';S.rawData=null;S.columns=[];}
 }
 
-async function loadWidgetConfig(idx) {
-  const w = state.widgets[idx]; if(!w) return;
-  document.getElementById('no-widget-msg').style.display='none';
-  document.getElementById('widget-config-content').style.display='block';
-  // Chart type
-  document.querySelectorAll('.chart-type-btn').forEach(b=>b.classList.toggle('active',b.dataset.type===w.chartType));
-  // Name
-  document.getElementById('widget-name-input').value=w.name;
-  // Color & sort
-  document.getElementById('chart-color').value=w.color||'#c8a84b';
-  document.getElementById('sort-order').value=w.sortOrder||'desc';
-  // Table
-  if(state.tables.length){
-    document.getElementById('table-select').style.display='block';
-    document.getElementById('tables-loading').style.display='none';
-    document.getElementById('table-select').value=w.tableName||'';
-    document.getElementById('data-limit').value=w.dataLimit||1000;
-  }
-  if(w.tableName){
-    await fetchTableData(w.tableName, w.dataLimit||1000);
-    populateDateColSelect(w);
-    renderAxesConfig(w);
-    renderFilterConfig(w);
-    document.getElementById('date-section').style.display='block';
-    document.getElementById('display-section').style.display='block';
-    renderBuilderPreview();
-  } else {
-    document.getElementById('axes-section').style.display='none';
-    document.getElementById('filter-section').style.display='none';
-    document.getElementById('date-section').style.display='none';
-    document.getElementById('display-section').style.display='none';
-    document.getElementById('preview-area').innerHTML=`<div class="preview-placeholder" style="height:100%;border:none;"><div style="font-size:32px;">📊</div><div>Selecciona una tabla para comenzar</div></div>`;
-  }
+// ═══════════════════════════════════
+//  DATE CONFIG UI
+// ═══════════════════════════════════
+function popDateSel(w){
+  const sel=document.getElementById('dcol');
+  sel.innerHTML='<option value="">— Sin filtro de fecha —</option>'+S.columns.map(c=>`<option value="${c}" ${w.dateCol===c?'selected':''}>${c}</option>`).join('');
+  document.getElementById('dopts').style.display=w.dateCol?'block':'none';
+  if(w.dateCol)restoreDP(w);
 }
+function onDCC(){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.dateCol=document.getElementById('dcol').value;w.datePreset='';w.dateFrom='';w.dateTo='';document.getElementById('dopts').style.display=w.dateCol?'block':'none';if(w.dateCol)restoreDP(w);renderPrev();}
+function restoreDP(w){document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===(w.datePreset||'')));document.getElementById('cdr').style.display=w.datePreset==='custom'?'grid':'none';if(w.dateFrom)document.getElementById('dfrom').value=w.dateFrom;if(w.dateTo)document.getElementById('dto').value=w.dateTo;}
+function selP(btn,p){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.datePreset=p;w.dateFrom='';w.dateTo='';document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('cdr').style.display=p==='custom'?'grid':'none';renderPrev();}
+function onDRC(){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.dateFrom=document.getElementById('dfrom').value;w.dateTo=document.getElementById('dto').value;renderPrev();}
 
-function syncWidgetName() {
-  if(state.activeWidgetIdx===null) return;
-  state.widgets[state.activeWidgetIdx].name=document.getElementById('widget-name-input').value;
-  renderWidgetList();
-}
-
-// ══════════════════════════════════════════
-//  CHART TYPE
-// ══════════════════════════════════════════
-function selectChartType(type,btn) {
-  if(state.activeWidgetIdx===null) return;
-  state.widgets[state.activeWidgetIdx].chartType=type;
-  document.querySelectorAll('.chart-type-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderWidgetList();
-  if(state.columns.length) renderAxesConfig(state.widgets[state.activeWidgetIdx]);
-  renderBuilderPreview();
-}
-
-// ══════════════════════════════════════════
-//  TABLE & COLUMNS LOAD
-// ══════════════════════════════════════════
-async function loadTableColumns() {
-  const tbl = document.getElementById('table-select').value;
-  const dataLim = parseInt(document.getElementById('data-limit').value)||1000;
-  if(state.activeWidgetIdx===null) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  w.tableName=tbl; w.dataLimit=dataLim;
-  w.axisX='';w.axisY='';w.axisY2='';w.filters=[];w.tableCols=[];w.dateCol='';w.datePreset='';
-  renderWidgetList();
-  if(!tbl){
-    document.getElementById('axes-section').style.display='none';
-    document.getElementById('filter-section').style.display='none';
-    document.getElementById('date-section').style.display='none';
-    document.getElementById('display-section').style.display='none';
-    state.columns=[]; state.rawData=null; return;
-  }
-  document.getElementById('columns-loading').style.display='block';
-  document.getElementById('axes-section').style.display='none';
-  document.getElementById('filter-section').style.display='none';
-  await fetchTableData(tbl, dataLim);
-  populateDateColSelect(w);
-  renderAxesConfig(w); renderFilterConfig(w);
-  document.getElementById('date-section').style.display='block';
-  document.getElementById('display-section').style.display='block';
-  renderBuilderPreview();
-}
-
-async function fetchTableData(tbl, limit) {
-  document.getElementById('columns-loading').style.display='block';
-  try {
-    const r = await fetch(`${API}/api/table/${encodeURIComponent(tbl)}?limit=${limit||1000}`);
-    const data = await r.json();
-    state.rawData = data.rows||[];
-    state.columns = data.columns||(state.rawData.length?Object.keys(state.rawData[0]):[]);
-    document.getElementById('columns-loading').style.display='none';
-  } catch {
-    document.getElementById('columns-loading').innerHTML='<span style="color:var(--danger);font-size:11px;">Error al cargar datos</span>';
-    state.rawData=null; state.columns=[];
-  }
-}
-
-// ══════════════════════════════════════════
-//  DATE FILTER UI
-// ══════════════════════════════════════════
-function populateDateColSelect(w) {
-  const sel = document.getElementById('date-col');
-  sel.innerHTML='<option value="">— Sin filtro de fecha —</option>'+state.columns.map(c=>`<option value="${c}" ${w.dateCol===c?'selected':''}>${c}</option>`).join('');
-  if(w.dateCol) {
-    document.getElementById('date-options').style.display='block';
-    restoreDatePreset(w);
-  } else {
-    document.getElementById('date-options').style.display='none';
-  }
-}
-
-function onDateColChange() {
-  if(state.activeWidgetIdx===null) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  w.dateCol=document.getElementById('date-col').value;
-  w.datePreset=''; w.dateFrom=''; w.dateTo='';
-  const hasCol = !!w.dateCol;
-  document.getElementById('date-options').style.display=hasCol?'block':'none';
-  if(hasCol) restoreDatePreset(w);
-  renderBuilderPreview();
-}
-
-function restoreDatePreset(w) {
-  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.toggle('active',b.dataset.p===(w.datePreset||'')));
-  document.getElementById('custom-date-row').style.display=w.datePreset==='custom'?'grid':'none';
-  if(w.dateFrom) document.getElementById('date-from').value=w.dateFrom;
-  if(w.dateTo)   document.getElementById('date-to').value=w.dateTo;
-}
-
-function selectPreset(btn, preset) {
-  if(state.activeWidgetIdx===null) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  w.datePreset=preset; w.dateFrom=''; w.dateTo='';
-  document.querySelectorAll('.preset-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('custom-date-row').style.display=preset==='custom'?'grid':'none';
-  renderBuilderPreview();
-}
-
-function onDateRangeChange() {
-  if(state.activeWidgetIdx===null) return;
-  const w = state.widgets[state.activeWidgetIdx];
-  w.dateFrom=document.getElementById('date-from').value;
-  w.dateTo=document.getElementById('date-to').value;
-  renderBuilderPreview();
-}
-
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  AXES CONFIG
-// ══════════════════════════════════════════
-function renderAxesConfig(w) {
-  const cols=state.columns; const section=document.getElementById('axes-section');
-  const cfg=document.getElementById('axes-config');
-  section.style.display='block';
-  const colOpts=cols.map(c=>`<option value="${c}">${c}</option>`).join('');
-  const colOptsE=`<option value="">— Sin agrupar —</option>`+colOpts;
-  const aggOpts=['SUM','COUNT','AVG','MAX','MIN'].map(a=>`<option value="${a}" ${w.aggFunc===a?'selected':''}>${a}</option>`).join('');
-  const limOpts=[10,20,50,100,200].map(n=>`<option value="${n}" ${w.limit==n?'selected':''}>${n}</option>`).join('')+`<option value="99999" ${w.limit==99999?'selected':''}>Todos</option>`;
-
+// ═══════════════════════════════════
+function renderAC(w){
+  const cols=S.columns;const sec=document.getElementById('as');const cfg=document.getElementById('ac');
+  sec.style.display='block';
+  const co=cols.map(c=>`<option value="${c}">${c}</option>`).join('');
+  const coe=`<option value="">— Sin agrupar —</option>`+co;
+  const ag=['SUM','COUNT','AVG','MAX','MIN'].map(a=>`<option value="${a}" ${w.aggFunc===a?'selected':''}>${a}</option>`).join('');
+  const li=[10,20,50,100,200].map(n=>`<option value="${n}" ${w.limit==n?'selected':''}>${n}</option>`).join('')+`<option value="99999" ${w.limit==99999?'selected':''}>Todos</option>`;
   if(w.chartType==='table'){
-    cfg.innerHTML=`
-      <div class="config-label">Columnas a mostrar</div>
-      <div class="check-group">${cols.map((c,i)=>`
-        <label class="check-item">
-          <input type="checkbox" value="${c}" ${(w.tableCols.includes(c)||(w.tableCols.length===0&&i<6))?'checked':''} onchange="onAxesChange()">
-          ${c}
-        </label>`).join('')}</div>
-      <div class="config-label" style="margin-top:8px;">Máx. filas</div>
-      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limOpts}</select>`;
-  } else if(w.chartType==='kpi'){
-    cfg.innerHTML=`
-      <div class="config-label">Columna numérica</div>
-      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Función</div>
-      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
-      <div class="config-label">Agrupar por (opcional)</div>
-      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOptsE}</select>`;
-  } else if(w.chartType==='gauge'){
-    cfg.innerHTML=`
-      <div class="config-label">Columna numérica (valor)</div>
-      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Función</div>
-      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
-      <div class="config-label">Meta (valor objetivo)</div>
-      <input type="number" class="config-input" id="gauge-target" value="${w.gaugeTarget||100}" placeholder="Ej: 1000000" onchange="onAxesChange()">
-      <div class="config-label">Unidad (opcional)</div>
-      <input type="text" class="config-input" id="gauge-unit" value="${w.gaugeUnit||''}" placeholder="Ej: $ o %" oninput="onAxesChange()">`;
-  } else if(w.chartType==='scatter'){
-    cfg.innerHTML=`
-      <div class="config-label">Eje X (numérico)</div>
-      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Eje Y (numérico)</div>
-      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Etiqueta (tooltip)</div>
-      <select class="config-select" id="ax-label" onchange="onAxesChange()">${colOptsE}</select>
-      <div class="config-label">Máx. puntos</div>
-      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limOpts}</select>`;
-  } else if(w.chartType==='map'){
-    cfg.innerHTML=`
-      <div class="config-label">Columna de ciudad/municipio</div>
-      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Columna de valor</div>
-      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Función</div>
-      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>`;
-  } else if(w.chartType==='compare'){
-    cfg.innerHTML=`
-      <div class="config-label">Eje X (categoría)</div>
-      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Valor 1 (Y izquierdo)</div>
-      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Valor 2 (Y derecho)</div>
-      <select class="config-select" id="ax-y2" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Función de agregación</div>
-      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
-      <div class="config-label">Máx. categorías</div>
-      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limOpts}</select>`;
-  } else {
-    // bar, horizontalBar, line, pie, doughnut
-    cfg.innerHTML=`
-      <div class="config-label">Eje X (categoría)</div>
-      <select class="config-select" id="ax-x" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Eje Y (valor)</div>
-      <select class="config-select" id="ax-y" onchange="onAxesChange()">${colOpts}</select>
-      <div class="config-label">Función de agregación</div>
-      <select class="config-select" id="ax-agg" onchange="onAxesChange()">${aggOpts}</select>
-      <div class="config-label">Máx. categorías</div>
-      <select class="config-select" id="ax-limit" onchange="onAxesChange()">${limOpts}</select>`;
+    cfg.innerHTML=`<div class="cl">Columnas a mostrar</div><div class="ckg">${cols.map((c,i)=>`<label class="cki"><input type="checkbox" value="${c}" ${(w.tableCols.includes(c)||(w.tableCols.length===0&&i<6))?'checked':''} onchange="onAC()">${c}</label>`).join('')}</div><div class="cl" style="margin-top:6px;">Máx. filas</div><select id="al" onchange="onAC()">${li}</select>`;
+  }else if(w.chartType==='kpi'){
+    cfg.innerHTML=`<div class="cl">Columna numérica</div><select id="ay" onchange="onAC()">${co}</select><div class="cl">Función</div><select id="aag" onchange="onAC()">${ag}</select><div class="cl">Agrupar por</div><select id="ax" onchange="onAC()">${coe}</select>`;
+  }else if(w.chartType==='gauge'){
+    cfg.innerHTML=`<div class="cl">Columna numérica</div><select id="ay" onchange="onAC()">${co}</select><div class="cl">Función</div><select id="aag" onchange="onAC()">${ag}</select><div class="cl">Meta (objetivo)</div><input type="number" id="gt" value="${w.gaugeTarget||100}" onchange="onAC()"><div class="cl">Unidad (%, $, etc)</div><input type="text" id="gu" value="${w.gaugeUnit||''}" placeholder="Ej: $" oninput="onAC()">`;
+  }else if(w.chartType==='scatter'){
+    cfg.innerHTML=`<div class="cl">Eje X (numérico)</div><select id="ax" onchange="onAC()">${co}</select><div class="cl">Eje Y (numérico)</div><select id="ay" onchange="onAC()">${co}</select><div class="cl">Etiqueta tooltip</div><select id="alab" onchange="onAC()">${coe}</select><div class="cl">Máx. puntos</div><select id="al" onchange="onAC()">${li}</select>`;
+  }else if(w.chartType==='map'){
+    cfg.innerHTML=`<div class="cl">Columna ciudad/municipio</div><select id="ax" onchange="onAC()">${co}</select><div class="cl">Columna de valor</div><select id="ay" onchange="onAC()">${co}</select><div class="cl">Función</div><select id="aag" onchange="onAC()">${ag}</select>`;
+  }else if(w.chartType==='compare'){
+    cfg.innerHTML=`<div class="cl">Eje X (categoría)</div><select id="ax" onchange="onAC()">${co}</select><div class="cl">Valor 1 (Y1)</div><select id="ay" onchange="onAC()">${co}</select><div class="cl">Valor 2 (Y2)</div><select id="ay2" onchange="onAC()">${co}</select><div class="cl">Función</div><select id="aag" onchange="onAC()">${ag}</select><div class="cl">Máx.</div><select id="al" onchange="onAC()">${li}</select>`;
+  }else if(w.chartType==='ranking'){
+    cfg.innerHTML=`<div class="cl">Categoría (nombre)</div><select id="ax" onchange="onAC()">${co}</select><div class="cl">Valor numérico</div><select id="ay" onchange="onAC()">${co}</select><div class="cl">Función</div><select id="aag" onchange="onAC()">${ag}</select><div class="cl">Máx. en ranking</div><select id="al" onchange="onAC()">${li}</select>`;
+  }else{
+    cfg.innerHTML=`<div class="cl">Eje X (categoría)</div><select id="ax" onchange="onAC()">${co}</select><div class="cl">Eje Y (valor)</div><select id="ay" onchange="onAC()">${co}</select><div class="cl">Función de agregación</div><select id="aag" onchange="onAC()">${ag}</select><div class="cl">Máx. categorías</div><select id="al" onchange="onAC()">${li}</select>`;
   }
-
-  // Restore saved values
   setTimeout(()=>{
-    const set=(id,v)=>{const el=document.getElementById(id);if(el&&v!==undefined)el.value=v;};
-    set('ax-x',w.axisX);set('ax-y',w.axisY);set('ax-y2',w.axisY2);
-    set('ax-agg',w.aggFunc);set('ax-limit',w.limit);
-    set('ax-label',w.scatterLabel);set('gauge-target',w.gaugeTarget);set('gauge-unit',w.gaugeUnit||'');
+    const s=(id,v)=>{const e=document.getElementById(id);if(e&&v!==undefined)e.value=v;};
+    s('ax',w.axisX);s('ay',w.axisY);s('ay2',w.axisY2);s('aag',w.aggFunc);s('al',w.limit);s('alab',w.scatterLabel);s('gt',w.gaugeTarget);s('gu',w.gaugeUnit||'');
   },0);
 }
-
-function onAxesChange() {
-  if(state.activeWidgetIdx===null) return;
-  const w=state.widgets[state.activeWidgetIdx];
+function onAC(){
+  if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];
   const g=id=>{const e=document.getElementById(id);return e?e.value:undefined;};
-  w.axisX=g('ax-x')||w.axisX;
-  w.axisY=g('ax-y')||w.axisY;
-  w.axisY2=g('ax-y2')||w.axisY2;
-  w.aggFunc=g('ax-agg')||w.aggFunc;
-  const lim=g('ax-limit'); if(lim!==undefined)w.limit=parseInt(lim);
-  w.scatterLabel=g('ax-label')||w.scatterLabel;
-  const gt=g('gauge-target');if(gt!==undefined)w.gaugeTarget=parseFloat(gt)||100;
-  const gu=g('gauge-unit');if(gu!==undefined)w.gaugeUnit=gu;
-  w.color=document.getElementById('chart-color')?.value||w.color;
-  w.sortOrder=document.getElementById('sort-order')?.value||w.sortOrder;
-  if(w.chartType==='table'){
-    w.tableCols=Array.from(document.querySelectorAll('#axes-config input[type=checkbox]:checked')).map(c=>c.value);
-  }
-  renderBuilderPreview();
+  const v=g('ax');if(v!==undefined)w.axisX=v;
+  const y=g('ay');if(y!==undefined)w.axisY=y;
+  const y2=g('ay2');if(y2!==undefined)w.axisY2=y2;
+  const ag=g('aag');if(ag!==undefined)w.aggFunc=ag;
+  const l=g('al');if(l!==undefined)w.limit=parseInt(l);
+  const lab=g('alab');if(lab!==undefined)w.scatterLabel=lab;
+  const gt=g('gt');if(gt!==undefined)w.gaugeTarget=parseFloat(gt)||100;
+  const gu=g('gu');if(gu!==undefined)w.gaugeUnit=gu;
+  w.color=document.getElementById('cc')?.value||w.color;
+  w.sortOrder=document.getElementById('so')?.value||w.sortOrder;
+  if(w.chartType==='table')w.tableCols=Array.from(document.querySelectorAll('#ac input[type=checkbox]:checked')).map(c=>c.value);
+  renderPrev();
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  FILTER ROWS
-// ══════════════════════════════════════════
-function renderFilterConfig(w) {
-  document.getElementById('filter-section').style.display='block';
-  renderFilterRows(w);
-}
-function renderFilterRows(w) {
-  const cols=state.columns;
-  document.getElementById('filters-container').innerHTML=(w.filters||[]).map((f,i)=>`
-    <div style="display:grid;grid-template-columns:1fr 70px 1fr 22px;gap:3px;margin-bottom:5px;">
-      <select class="config-select" style="margin:0;font-size:11px;" onchange="updateFilter(${i},'col',this.value)">
-        <option value="">Col</option>${cols.map(c=>`<option value="${c}" ${f.col===c?'selected':''}>${c}</option>`).join('')}
-      </select>
-      <select class="config-select" style="margin:0;font-size:9px;" onchange="updateFilter(${i},'op',this.value)">
-        <option value="contains" ${f.op==='contains'?'selected':''}>contiene</option>
-        <option value="equals" ${f.op==='equals'?'selected':''}>igual</option>
-        <option value="gt" ${f.op==='gt'?'selected':''}>></option>
-        <option value="lt" ${f.op==='lt'?'selected':''}><</option>
-        <option value="gte" ${f.op==='gte'?'selected':''}>>=</option>
-        <option value="lte" ${f.op==='lte'?'selected':''}>&lt;=</option>
-        <option value="notempty" ${f.op==='notempty'?'selected':''}>≠ vacío</option>
-      </select>
-      <input type="text" class="config-input" style="margin:0;" value="${f.val||''}" placeholder="Valor" oninput="updateFilter(${i},'val',this.value)">
-      <button onclick="removeFilter(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:14px;padding:0;">✕</button>
+// ═══════════════════════════════════
+function renderFC(w){document.getElementById('fs').style.display='block';renderFRows(w);}
+function renderFRows(w){
+  document.getElementById('fc').innerHTML=(w.filters||[]).map((f,i)=>`
+    <div class="fr">
+      <select style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px;font-size:10px;outline:none;" onchange="updF(${i},'col',this.value)"><option value="">Col</option>${S.columns.map(c=>`<option value="${c}" ${f.col===c?'selected':''}>${c}</option>`).join('')}</select>
+      <select style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px;font-size:9px;outline:none;" onchange="updF(${i},'op',this.value)"><option value="contains" ${f.op==='contains'?'selected':''}>contiene</option><option value="equals" ${f.op==='equals'?'selected':''}>igual</option><option value="gt" ${f.op==='gt'?'selected':''}>></option><option value="lt" ${f.op==='lt'?'selected':''}><</option><option value="gte" ${f.op==='gte'?'selected':''}>>=</option><option value="lte" ${f.op==='lte'?'selected':''}>&lt;=</option><option value="notempty" ${f.op==='notempty'?'selected':''}>≠vacío</option></select>
+      <input type="text" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);padding:5px;font-size:10px;outline:none;width:100%;" value="${f.val||''}" placeholder="Valor" oninput="updF(${i},'val',this.value)">
+      <button onclick="remF(${i})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:13px;padding:0;">✕</button>
     </div>`).join('');
 }
-function addFilter(){
-  if(state.activeWidgetIdx===null) return;
-  const w=state.widgets[state.activeWidgetIdx];
-  if(!w.filters)w.filters=[];
-  w.filters.push({col:'',op:'contains',val:''});
-  renderFilterRows(w);
-}
-function updateFilter(i,key,val){
-  if(state.activeWidgetIdx===null) return;
-  const w=state.widgets[state.activeWidgetIdx];
-  w.filters[i][key]=val; renderBuilderPreview();
-}
-function removeFilter(i){
-  if(state.activeWidgetIdx===null) return;
-  const w=state.widgets[state.activeWidgetIdx];
-  w.filters.splice(i,1); renderFilterRows(w); renderBuilderPreview();
-}
+function addF(){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];if(!w.filters)w.filters=[];w.filters.push({col:'',op:'contains',val:''});renderFRows(w);}
+function updF(i,k,v){if(S.activeWIdx===null)return;S.widgets[S.activeWIdx].filters[i][k]=v;renderPrev();}
+function remF(i){if(S.activeWIdx===null)return;S.widgets[S.activeWIdx].filters.splice(i,1);renderFRows(S.widgets[S.activeWIdx]);renderPrev();}
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
+//  GLOBAL FILTERS BUILDER
+// ═══════════════════════════════════
+function renderGFBuilder(){
+  document.getElementById('gf-list-builder').innerHTML=(S.dashGlobalFilters||[]).map((f,i)=>`
+    <div class="gf-item">
+      <div style="flex:1;"><div class="gf-col">${f.label}</div><div style="font-size:9px;color:var(--muted);">${f.col} · ${f.table||'—'}</div></div>
+      <button class="gf-del" onclick="remGF(${i})">✕</button>
+    </div>`).join('');
+}
+function showAddGFModal(){document.getElementById('gf-label-inp').value='';document.getElementById('gf-col-inp').value='';document.getElementById('gf-tbl-inp').value='';document.getElementById('gf-modal').classList.add('show');}
+function confirmAddGF(){
+  const label=document.getElementById('gf-label-inp').value.trim();
+  const col=document.getElementById('gf-col-inp').value.trim();
+  const tbl=document.getElementById('gf-tbl-inp').value;
+  if(!label||!col){toast('Completa etiqueta y columna','err');return;}
+  if(!S.dashGlobalFilters)S.dashGlobalFilters=[];
+  S.dashGlobalFilters.push({id:`gf_${Date.now()}`,label,col,table:tbl});
+  closeMo('gf-modal');renderGFBuilder();toast('Filtro global agregado ✓','ok');
+}
+function remGF(i){S.dashGlobalFilters.splice(i,1);renderGFBuilder();}
+
+// ═══════════════════════════════════
 //  BUILDER PREVIEW
-// ══════════════════════════════════════════
-function renderBuilderPreview() {
-  if(state.activeWidgetIdx===null||!state.rawData) return;
-  const w=state.widgets[state.activeWidgetIdx];
-  const rows=applyFilters(state.rawData,w);
-  const area=document.getElementById('preview-area');
-  area.innerHTML=`<div class="preview-card"><div class="preview-title">${w.name||'Sin título'}</div><div class="preview-meta">Tabla: ${w.tableName} · ${rows.length} registros tras filtros</div><div id="preview-content-inner"></div></div>`;
-  destroyPreviewCharts();
-  const inner=document.getElementById('preview-content-inner');
-  renderWidget(inner,rows,w,'prev-chart',true);
+// ═══════════════════════════════════
+function renderPrev(){
+  if(S.activeWIdx===null||!S.rawData)return;
+  const w=S.widgets[S.activeWIdx];
+  const rows=applyAllFilters(S.rawData,w,null,null);
+  const area=document.getElementById('prev-area');
+  area.innerHTML=`<div class="prev-card"><div class="prev-title">${w.name||'Sin título'}</div><div class="prev-meta">Tabla: ${w.tableName} · ${rows.length} registros tras filtros</div><div id="pci"></div></div>`;
+  killPCharts();
+  renderW(document.getElementById('pci'),rows,w,'pc',true);
 }
+function killPCharts(){Object.values(S.chartInst).forEach(c=>{try{c.destroy();}catch(e){}});S.chartInst={};}
 
-function destroyPreviewCharts() {
-  Object.values(state.chartInstances).forEach(c=>{try{c.destroy();}catch(e){}});
-  state.chartInstances={};
-  Object.values(state.mapInstances).forEach(m=>{try{if(m._leaflet_id)m.remove();}catch(e){}});
-  // don't clear all map instances, only preview ones
-}
-
-// ══════════════════════════════════════════
-//  WIDGET RENDERER (routes to correct type)
-// ══════════════════════════════════════════
-function renderWidget(container, rows, w, canvasId, isPreview) {
-  switch(w.chartType){
-    case 'table':       return renderTableWidget(container,rows,w);
-    case 'kpi':         return renderKPIWidget(container,rows,w);
-    case 'gauge':       return renderGaugeWidget(container,rows,w,canvasId,isPreview);
-    case 'scatter':     return renderScatterWidget(container,rows,w,canvasId,isPreview);
-    case 'compare':     return renderCompareWidget(container,rows,w,canvasId,isPreview);
-    case 'map':         return renderMapWidget(container,rows,w,canvasId,isPreview);
-    default:            return renderChartWidget(container,rows,w,canvasId,isPreview);
-  }
-}
-
-// TABLE
-function renderTableWidget(container, rows, w) {
-  const cols=w.tableCols&&w.tableCols.length?w.tableCols:state.columns.slice(0,6);
-  const lim=w.limit&&w.limit<99999?w.limit:50;
-  const shown=rows.slice(0,lim);
-  container.innerHTML=`<div style="overflow-x:auto;"><table class="table-preview"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${shown.map(row=>`<tr>${cols.map(c=>`<td>${row[c]??'—'}</td>`).join('')}</tr>`).join('')}</tbody></table>${rows.length>lim?`<div style="padding:6px 9px;font-size:10px;color:var(--text-muted);">Mostrando ${lim} de ${rows.length}</div>`:''}</div>`;
-}
-
-// KPI
-function renderKPIWidget(container, rows, w) {
-  const yCol=w.axisY; const xCol=w.axisX; const aggFunc=w.aggFunc||'SUM';
-  if(!yCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columna numérica</div>';return;}
-  let kpis=[];
-  if(xCol){
-    const entries=aggregateData(rows,xCol,yCol,aggFunc,8,w.sortOrder);
-    kpis=entries.map(([k,v])=>({label:k,value:v,count:rows.filter(r=>String(r[xCol]??'')===k).length}));
-  }else{
-    let val=0;
-    if(aggFunc==='SUM')val=rows.reduce((s,r)=>s+(parseFloat(r[yCol])||0),0);
-    else if(aggFunc==='COUNT')val=rows.length;
-    else if(aggFunc==='AVG')val=rows.reduce((s,r)=>s+(parseFloat(r[yCol])||0),0)/(rows.length||1);
-    else if(aggFunc==='MAX')val=Math.max(...rows.map(r=>parseFloat(r[yCol])||0));
-    else if(aggFunc==='MIN')val=Math.min(...rows.map(r=>parseFloat(r[yCol])||0));
-    kpis=[{label:`${aggFunc} · ${yCol}`,value:val,count:rows.length}];
-  }
-  container.innerHTML=`<div class="kpi-grid">${kpis.map(k=>`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="color:${w.color||'var(--gold)'};">${formatNum(k.value)}</div><div class="kpi-sub">${k.count} reg.</div></div>`).join('')}</div>`;
-}
-
-// GAUGE
-function renderGaugeWidget(container, rows, w, canvasId, isPreview) {
-  const yCol=w.axisY; const aggFunc=w.aggFunc||'SUM';
-  if(!yCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columna numérica</div>';return;}
-  let value=0;
-  if(aggFunc==='SUM')value=rows.reduce((s,r)=>s+(parseFloat(r[yCol])||0),0);
-  else if(aggFunc==='COUNT')value=rows.length;
-  else if(aggFunc==='AVG')value=rows.reduce((s,r)=>s+(parseFloat(r[yCol])||0),0)/(rows.length||1);
-  else if(aggFunc==='MAX')value=Math.max(...rows.map(r=>parseFloat(r[yCol])||0));
-  else if(aggFunc==='MIN')value=Math.min(...rows.map(r=>parseFloat(r[yCol])||0));
-  const target=parseFloat(w.gaugeTarget)||100;
-  const pct=Math.min(Math.max(value/target,0),1);
-  const unit=w.gaugeUnit||'';
-  const color=w.color||'#c8a84b';
-  container.innerHTML=`<div class="gauge-container"><canvas id="${canvasId}" width="280" height="165"></canvas><div style="font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:${color};margin-top:-24px;">${formatNum(value)}${unit}</div><div style="font-size:11px;color:var(--text-muted);margin-top:4px;">Meta: ${formatNum(target)}${unit} · ${Math.round(pct*100)}% completado</div></div>`;
-  setTimeout(()=>{
-    const canvas=document.getElementById(canvasId); if(!canvas)return;
-    const ctx=canvas.getContext('2d');
-    const W=canvas.width,H=canvas.height;
-    const cx=W/2, cy=H*0.82, r=Math.min(W,H)*0.62;
-    ctx.clearRect(0,0,W,H);
-    // BG arc
-    ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,0);
-    ctx.strokeStyle='#2a2a2a';ctx.lineWidth=22;ctx.lineCap='round';ctx.stroke();
-    // Zones
-    const zones=[[0,.5,'#4caf7d'],[.5,.8,'#e2a84b'],[.8,1.0,'#e05555']];
-    zones.forEach(([s,e,c])=>{
-      const sa=Math.PI+(s*Math.PI), ea=Math.PI+(e*Math.PI);
-      ctx.beginPath();ctx.arc(cx,cy,r,sa,ea);
-      ctx.strokeStyle=c+'33';ctx.lineWidth=22;ctx.lineCap='butt';ctx.stroke();
-    });
-    // Value arc
-    if(pct>0){
-      const grad=ctx.createLinearGradient(cx-r,cy,cx+r,cy);
-      grad.addColorStop(0,'#a08030');grad.addColorStop(1,color);
-      ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+(pct*Math.PI));
-      ctx.strokeStyle=grad;ctx.lineWidth=22;ctx.lineCap='round';ctx.stroke();
-    }
-    // Needle
-    const needleAngle=Math.PI+(pct*Math.PI);
-    const nx=cx+(r-5)*Math.cos(needleAngle), ny=cy+(r-5)*Math.sin(needleAngle);
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(nx,ny);
-    ctx.strokeStyle=color;ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
-    ctx.beginPath();ctx.arc(cx,cy,8,0,Math.PI*2);
-    ctx.fillStyle=color;ctx.fill();
-    // Ticks
-    for(let i=0;i<=10;i++){
-      const a=Math.PI+(i/10)*Math.PI;
-      const x1=cx+(r-26)*Math.cos(a),y1=cy+(r-26)*Math.sin(a);
-      const x2=cx+(r-14)*Math.cos(a),y2=cy+(r-14)*Math.sin(a);
-      ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);
-      ctx.strokeStyle=i%5===0?'#666':'#333';ctx.lineWidth=i%5===0?2:1;ctx.stroke();
-    }
-    // Labels 0% and 100%
-    ctx.font='10px DM Sans,sans-serif';ctx.fillStyle='#666';ctx.textAlign='center';
-    ctx.fillText('0',cx-r+8,cy+14);ctx.fillText('100%',cx+r-10,cy+14);
-  },80);
-}
-
-// SCATTER
-function renderScatterWidget(container, rows, w, canvasId, isPreview) {
-  const xCol=w.axisX||w.scatterX; const yCol=w.axisY||w.scatterY;
-  if(!xCol||!yCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columnas X e Y</div>';return;}
-  const lim=w.limit||200;
-  const pts=rows.slice(0,lim).map(r=>({x:parseFloat(r[xCol])||0,y:parseFloat(r[yCol])||0,label:w.scatterLabel?r[w.scatterLabel]:null})).filter(p=>!isNaN(p.x)&&!isNaN(p.y));
-  const color=w.color||'#c8a84b';
-  container.innerHTML=`<div class="widget-chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
-  const ctx=document.getElementById(canvasId).getContext('2d');
-  const inst=new Chart(ctx,{
-    type:'scatter',
-    data:{datasets:[{label:`${xCol} vs ${yCol}`,data:pts,backgroundColor:color+'99',borderColor:color,borderWidth:1,pointRadius:5,pointHoverRadius:7}]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans'}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:color,bodyColor:'#e8e4d8',callbacks:{label:ctx=>{const p=ctx.raw;return `${p.label?p.label+': ':''}(${formatNum(p.x)}, ${formatNum(p.y)})`;}}}},
-      scales:{x:{ticks:{color:'#888'},grid:{color:'#2a2a2a'},title:{display:true,text:xCol,color:'#888'}},y:{ticks:{color:'#888',callback:v=>formatNum(v)},grid:{color:'#2a2a2a'},title:{display:true,text:yCol,color:'#888'}}}}
-  });
-  if(isPreview)state.chartInstances[canvasId]=inst;else state.dvChartInstances[canvasId]=inst;
-}
-
-// COMPARE (grouped bar)
-function renderCompareWidget(container, rows, w, canvasId, isPreview) {
-  const xCol=w.axisX; const yCol=w.axisY; const y2Col=w.axisY2;
-  const aggFunc=w.aggFunc||'SUM'; const lim=w.limit||20;
-  if(!xCol||!yCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columnas</div>';return;}
-  const e1=aggregateData(rows,xCol,yCol,aggFunc,lim,w.sortOrder);
-  const labels=e1.map(e=>e[0]);
-  const d1=e1.map(e=>e[1]);
-  let d2=[];
-  if(y2Col){
-    const map2={}; aggregateData(rows,xCol,y2Col,aggFunc,lim,w.sortOrder).forEach(([k,v])=>map2[k]=v);
-    d2=labels.map(l=>map2[l]||0);
-  }
-  const color=w.color||'#c8a84b';
-  container.innerHTML=`<div class="widget-chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
-  const ctx=document.getElementById(canvasId).getContext('2d');
-  const datasets=[{label:yCol,data:d1,backgroundColor:color+'cc',borderColor:color,borderWidth:1}];
-  if(y2Col)datasets.push({label:y2Col,data:d2,backgroundColor:'#5b9cf699',borderColor:'#5b9cf6',borderWidth:1});
-  const inst=new Chart(ctx,{
-    type:'bar',data:{labels,datasets},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans'}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:color,bodyColor:'#e8e4d8'}},
-      scales:{x:{ticks:{color:'#888',maxRotation:35},grid:{color:'#2a2a2a'}},y:{ticks:{color:'#888',callback:v=>formatNum(v)},grid:{color:'#2a2a2a'}}}}
-  });
-  if(isPreview)state.chartInstances[canvasId]=inst;else state.dvChartInstances[canvasId]=inst;
-}
-
-// MAP
-function renderMapWidget(container, rows, w, mapId, isPreview) {
-  const cityCol=w.axisX; const valueCol=w.axisY; const aggFunc=w.aggFunc||'SUM';
-  if(!cityCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columna de ciudad</div>';return;}
-  const entries=aggregateData(rows,cityCol,valueCol,aggFunc,200,'desc');
-  const maxVal=Math.max(...entries.map(e=>e[1]),1);
-  container.innerHTML=`<div id="${mapId}" class="map-container"></div>`;
-  setTimeout(()=>{
-    const el=document.getElementById(mapId); if(!el)return;
-    // Destroy old instance
-    if(state.mapInstances[mapId]){try{state.mapInstances[mapId].remove();}catch(e){}}
-    const map=L.map(mapId,{zoomControl:true}).setView([24,-102],5);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:18}).addTo(map);
-    let found=0;
-    entries.forEach(([city,value])=>{
-      const coords=findCityCoords(city); if(!coords)return;
-      found++;
-      const radius=12+(value/maxVal)*30;
-      const color=w.color||'#c8a84b';
-      L.circleMarker(coords,{radius,fillColor:color,color:color,weight:2,opacity:.9,fillOpacity:.55})
-       .addTo(map)
-       .bindPopup(`<b style="color:#c8a84b;">${city}</b><br><span style="font-size:12px;">${aggFunc}: <b>${formatNum(value)}</b></span>`);
-    });
-    if(!found){
-      el.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#888;font-size:12px;flex-direction:column;gap:8px;"><div>🗺️</div><div>No se encontraron ciudades reconocidas</div><div style="font-size:10px;">Revisa que la columna tenga nombres de ciudades de México</div></div>';
-      return;
-    }
-    state.mapInstances[mapId]=map;
-  },150);
-}
-
-function findCityCoords(rawName) {
-  if(!rawName) return null;
-  const name=String(rawName).toUpperCase().trim();
-  if(MX_CITIES[name]) return MX_CITIES[name];
-  // Partial match
-  for(const [city,coords] of Object.entries(MX_CITIES)){
-    if(name.includes(city)||city.includes(name)) return coords;
-  }
-  return null;
-}
-
-// CHART (bar, horizontalBar, line, pie, doughnut)
-function renderChartWidget(container, rows, w, canvasId, isPreview) {
-  const xCol=w.axisX; const yCol=w.axisY; const aggFunc=w.aggFunc||'SUM'; const lim=w.limit||20;
-  if(!xCol){container.innerHTML='<div style="color:var(--text-muted);padding:20px;font-size:12px;">Selecciona columnas X e Y</div>';return;}
-  const entries=aggregateData(rows,xCol,aggFunc==='COUNT'?xCol:yCol,aggFunc,lim,w.sortOrder);
-  const labels=entries.map(e=>e[0]); const values=entries.map(e=>e[1]);
-  const isHBar=w.chartType==='horizontalBar';
-  const chartType=isHBar?'bar':w.chartType;
-  const isPie=chartType==='pie'||chartType==='doughnut';
-  const color=w.color||'#c8a84b';
-  const palette=[color,'#e2c46e','#a08030','#f0d88a','#7a6020','#dab85e','#b89038','#eed070','#907028','#6a5018'];
-  container.innerHTML=`<div class="widget-chart-wrap"><canvas id="${canvasId}"></canvas></div>`;
-  const ctx=document.getElementById(canvasId).getContext('2d');
-  const inst=new Chart(ctx,{
-    type:chartType,
-    data:{labels,datasets:[{label:aggFunc==='COUNT'?`COUNT de ${xCol}`:`${aggFunc} de ${yCol||xCol}`,data:values,backgroundColor:isPie?palette.slice(0,labels.length):color+'cc',borderColor:isPie?palette.slice(0,labels.length):color,borderWidth:1,tension:.3}]},
-    options:{indexAxis:isHBar?'y':'x',responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans',size:11}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:color,bodyColor:'#e8e4d8',callbacks:{label:ctx=>`  ${formatNum(isHBar?ctx.parsed.x:ctx.parsed.y??ctx.parsed)}`}}},
-      scales:isPie?{}:{x:{ticks:{color:'#888',maxRotation:isHBar?0:35,font:{size:10}},grid:{color:'#2a2a2a'}},y:{ticks:{color:'#888',font:{size:10},callback:v=>isHBar?v:formatNum(v)},grid:{color:'#2a2a2a'}}}}
-  });
-  if(isPreview)state.chartInstances[canvasId]=inst;else state.dvChartInstances[canvasId]=inst;
-}
-
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  SAVE DASHBOARD
-// ══════════════════════════════════════════
-function saveCurrentDashboard() {
-  const name=document.getElementById('builder-name').value.trim();
-  if(!name){toast('Ponle un nombre al tablero','error');return;}
-  if(!state.widgets.length){toast('Agrega al menos una gráfica','error');return;}
-  const empty=state.widgets.find(w=>!w.tableName);
-  if(empty){toast(`"${empty.name}" no tiene tabla seleccionada`,'error');return;}
+// ═══════════════════════════════════
+function saveCurrentDashboard(){
+  const name=document.getElementById('b-name').value.trim();
+  if(!name){toast('Ponle un nombre al tablero','err');return;}
+  if(!S.widgets.length){toast('Agrega al menos una gráfica','err');return;}
+  const empty=S.widgets.find(w=>!w.tableName);
+  if(empty){toast(`"${empty.name}" no tiene tabla seleccionada`,'err');return;}
   const now=new Date().toISOString();
-  if(state.editingId){
-    const idx=state.dashboards.findIndex(d=>d.id===state.editingId);
-    if(idx>=0)state.dashboards[idx]={...state.dashboards[idx],name,widgets:JSON.parse(JSON.stringify(state.widgets)),updatedAt:now};
-    state.currentDashId=state.editingId; toast('Tablero actualizado ✓','success');
+  const dashData={name,author:S.userName,widgets:JSON.parse(JSON.stringify(S.widgets)),globalFilters:JSON.parse(JSON.stringify(S.dashGlobalFilters||[]))};
+  if(S.editingId){
+    const idx=S.dashboards.findIndex(d=>d.id===S.editingId);
+    if(idx>=0)S.dashboards[idx]={...S.dashboards[idx],...dashData,updatedAt:now};
+    S.currentDashId=S.editingId;toast('Tablero actualizado ✓','ok');
   }else{
-    const dash={id:`d_${Date.now()}`,name,author:state.userName,createdAt:now,updatedAt:now,widgets:JSON.parse(JSON.stringify(state.widgets))};
-    state.dashboards.unshift(dash); state.currentDashId=dash.id; toast('Tablero guardado ✓','success');
+    const dash={id:`d_${Date.now()}`,createdAt:now,updatedAt:now,...dashData};
+    S.dashboards.unshift(dash);S.currentDashId=dash.id;toast('Tablero guardado ✓','ok');
   }
-  saveDashboardsToStorage(); renderSidebar(); renderHomeGrid();
-  destroyPreviewCharts(); openDashboard(state.currentDashId);
+  saveDashs();renderSL();renderHG();killPCharts();openDash(S.currentDashId);
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  OPEN DASHBOARD
-// ══════════════════════════════════════════
-async function openDashboard(id) {
-  state.currentDashId=id;
-  const dash=state.dashboards.find(d=>d.id===id); if(!dash)return;
-  renderSidebar(); showView('dashboard');
+// ═══════════════════════════════════
+async function openDash(id){
+  S.currentDashId=id;S.globalFilters={};S.crossFilter=null;S.dataCache={};S.colsCache={};
+  const dash=S.dashboards.find(d=>d.id===id);if(!dash)return;
+  renderSL();showView('dashboard');
   document.getElementById('dv-title').textContent=dash.name;
   document.getElementById('dv-meta').textContent=`${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
-  destroyDvCharts();
-  await renderDashboardWidgets(dash);
+  killDvCharts();
+  // Render widgets first (data loads)
+  renderDvWidgets(dash);
+  // Init global filter bar
+  initGFBar(dash);
 }
 
-function destroyDvCharts() {
-  Object.values(state.dvChartInstances).forEach(c=>{try{c.destroy();}catch(e){}});
-  state.dvChartInstances={};
-  Object.entries(state.mapInstances).filter(([k])=>k.startsWith('dv')).forEach(([k,m])=>{try{m.remove();}catch(e){}delete state.mapInstances[k];});
-}
-
-async function renderDashboardWidgets(dash) {
-  const grid=document.getElementById('dv-widgets-grid');
-  grid.innerHTML=(dash.widgets||[]).map((w,i)=>`
-    <div class="widget-card ${w.chartType==='map'?'full-width':''}" id="wcard-${i}">
-      <div class="widget-card-header">
-        <div>
-          <div class="widget-card-title">${CHART_ICONS[w.chartType]||'📊'} ${w.name}</div>
-          <div class="widget-card-meta">${w.tableName}${w.datePreset?` · ${prettyPreset(w.datePreset)}`:w.dateFrom?` · ${w.dateFrom} → ${w.dateTo||'hoy'}`:''}</div>
-        </div>
-        <div class="widget-actions" id="wact-${i}"><span class="spinner"></span></div>
-      </div>
-      <div id="wcnt-${i}"><div class="loading-indicator"><span class="spinner"></span>Cargando...</div></div>
+function initGFBar(dash){
+  const bar=document.getElementById('gfbar');
+  const gfs=dash.globalFilters||[];
+  if(!gfs.length){bar.style.display='none';return;}
+  bar.style.display='flex';
+  bar.innerHTML=`<span class="gfbar-label">Filtros:</span>`+gfs.map(f=>`
+    <div class="gf-drop">
+      <label>${f.label}</label>
+      <select id="gfs_${f.id}" onchange="onGFC('${f.col}',this.value)">
+        <option value="">Todos</option>
+      </select>
     </div>`).join('');
+  // Load unique values for each filter
+  gfs.forEach(async f=>{
+    if(!f.table)return;
+    try{
+      const r=await fetch(`${API}/api/table/${encodeURIComponent(f.table)}?limit=5000`);
+      const d=await r.json();
+      const rows=d.rows||[];
+      const unique=[...new Set(rows.map(r=>String(r[f.col]??'')).filter(v=>v))].sort();
+      const sel=document.getElementById(`gfs_${f.id}`);
+      if(sel)sel.innerHTML='<option value="">Todos</option>'+unique.map(v=>`<option value="${v}">${v}</option>`).join('');
+    }catch{}
+  });
+}
 
-  for(let i=0;i<(dash.widgets||[]).length;i++){
-    loadDashboardWidget(i, dash.widgets[i]);
+function onGFC(col,val){
+  S.globalFilters[col]=val;
+  S.crossFilter=null;
+  reRenderAll();
+}
+
+function setCF(col,value){
+  if(S.crossFilter&&S.crossFilter.col===col&&S.crossFilter.value===value){S.crossFilter=null;}
+  else{S.crossFilter={col,value};}
+  renderCFChip();
+  reRenderAll();
+}
+
+function renderCFChip(){
+  const bar=document.getElementById('gfbar');
+  const existing=bar.querySelector('.cf-chip');
+  if(existing)existing.remove();
+  if(S.crossFilter){
+    const chip=document.createElement('div');
+    chip.className='cf-chip';
+    chip.innerHTML=`<span>🔗 ${S.crossFilter.col}: <b>${S.crossFilter.value}</b></span><button onclick="clearCF()">✕</button>`;
+    bar.appendChild(chip);
+    if(bar.style.display==='none'){bar.style.display='flex';}
   }
 }
 
-async function loadDashboardWidget(i, w) {
-  try {
+function clearCF(){S.crossFilter=null;renderCFChip();reRenderAll();}
+
+function reRenderAll(){
+  const dash=S.dashboards.find(d=>d.id===S.currentDashId);if(!dash)return;
+  (dash.widgets||[]).forEach((w,i)=>{reRenderWidget(i,w);});
+}
+
+function reRenderWidget(i,w){
+  const cached=S.dataCache[w.id];if(!cached)return;
+  S.columns=S.colsCache[w.id]||[];
+  const rows=applyAllFilters(cached,w,S.globalFilters,S.crossFilter);
+  const canvasId=`dvc-${i}`;const mapId=`dvm-${i}`;
+  // Destroy old chart
+  if(S.dvChartInst[canvasId]){try{S.dvChartInst[canvasId].destroy();}catch(e){}delete S.dvChartInst[canvasId];}
+  if(S.mapInst[mapId]){try{S.mapInst[mapId].remove();}catch(e){}delete S.mapInst[mapId];}
+  const cnt=document.getElementById(`wcnt-${i}`);
+  if(!cnt)return;
+  cnt.innerHTML='';
+  renderW(cnt,rows,w,w.chartType==='map'?mapId:canvasId,false,i);
+  // Update count
+  const act=document.getElementById(`wact-${i}`);
+  if(act){const old=act.querySelector('.rcount');if(old)old.textContent=`✓ ${rows.length}`;}
+  // Highlight active cross-filter
+  const card=document.getElementById(`wcard-${i}`);
+  if(card){card.classList.toggle('cf-active',!!S.crossFilter);}
+}
+
+function renderDvWidgets(dash){
+  const grid=document.getElementById('wgrid');
+  grid.innerHTML=(dash.widgets||[]).map((w,i)=>`
+    <div class="wcard w${w.width||'2'}" id="wcard-${i}">
+      <div class="wc-head">
+        <div><div class="wc-title">${CI[w.chartType]||'📊'} ${w.name}</div>
+        <div class="wc-meta">${w.tableName}${w.datePreset?' · '+ppre(w.datePreset):w.dateFrom?' · '+w.dateFrom+' → '+(w.dateTo||'hoy'):''}</div></div>
+        <div class="wc-acts" id="wact-${i}"><span class="sp"></span></div>
+      </div>
+      <div id="wcnt-${i}"><div class="li"><span class="sp"></span>Cargando...</div></div>
+    </div>`).join('');
+  (dash.widgets||[]).forEach((w,i)=>loadDvWidget(i,w));
+}
+
+async function loadDvWidget(i,w){
+  try{
     const lim=w.dataLimit||1000;
     const r=await fetch(`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=${lim}`);
-    const data=await r.json();
-    const allRows=data.rows||[];
-    // Temporarily set state.columns for renderers that need it
-    state.columns=data.columns||Object.keys(allRows[0]||{});
-    const rows=applyFilters(allRows,w);
-    const canvasId=`dvchart-${i}`;
-    const container=document.getElementById(`wcnt-${i}`);
-    container.innerHTML='';
-    renderWidget(container,rows,w,canvasId,false);
+    const d=await r.json();
+    const allRows=d.rows||[];
+    const cols=d.columns||Object.keys(allRows[0]||{});
+    S.dataCache[w.id]=allRows;S.colsCache[w.id]=cols;S.columns=cols;
+    const rows=applyAllFilters(allRows,w,S.globalFilters,S.crossFilter);
+    const canvasId=`dvc-${i}`;const mapId=`dvm-${i}`;
+    const cnt=document.getElementById(`wcnt-${i}`);cnt.innerHTML='';
+    renderW(cnt,rows,w,w.chartType==='map'?mapId:canvasId,false,i);
     // Actions
-    const actDiv=document.getElementById(`wact-${i}`);
-    if(w.chartType==='table'){
-      actDiv.innerHTML=`<button class="icon-btn" onclick="exportTableData(${i})" title="CSV">⬇ CSV</button>`;
-      actDiv.dataset.rows=JSON.stringify(rows); actDiv.dataset.w=JSON.stringify(w);
-    } else if(w.chartType==='gauge'||w.chartType==='kpi'||w.chartType==='map'){
-      actDiv.innerHTML=`<span style="color:var(--success);font-size:10px;">✓ ${rows.length}</span>`;
-    } else {
-      actDiv.innerHTML=`<button class="icon-btn" onclick="exportChart('${canvasId}','${w.name}')" title="PNG">⬇ PNG</button><span style="color:var(--success);font-size:10px;margin-left:4px;">✓ ${rows.length}</span>`;
-    }
-  } catch {
-    document.getElementById(`wcnt-${i}`).innerHTML='<div style="color:var(--danger);padding:14px;font-size:12px;">⚠️ Error al cargar datos.</div>';
+    const act=document.getElementById(`wact-${i}`);
+    if(w.chartType==='table'){act.innerHTML=`<button class="ib" onclick="expCSV(${i})" title="CSV">⬇ CSV</button>`;}
+    else if(['gauge','kpi','map','ranking'].includes(w.chartType)){act.innerHTML=`<span class="rcount" style="color:var(--success);font-size:9px;">✓ ${rows.length}</span>`;}
+    else{act.innerHTML=`<button class="ib" onclick="expPNG('${canvasId}','${w.name}')" title="PNG">⬇ PNG</button><span class="rcount" style="color:var(--success);font-size:9px;margin-left:3px;">✓ ${rows.length}</span>`;}
+  }catch{
+    document.getElementById(`wcnt-${i}`).innerHTML='<div style="color:var(--danger);padding:12px;font-size:11px;">⚠️ Error al cargar datos.</div>';
     document.getElementById(`wact-${i}`).innerHTML='';
   }
 }
 
-function prettyPreset(p){
-  const map={today:'Hoy',thisWeek:'Esta semana',thisMonth:'Este mes',lastMonth:'Mes anterior',thisYear:'Este año',lastYear:'Año anterior',q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',custom:'Rango personalizado'};
-  return map[p]||p;
+function killDvCharts(){
+  Object.values(S.dvChartInst).forEach(c=>{try{c.destroy();}catch(e){}});S.dvChartInst={};
+  Object.values(S.mapInst).forEach(m=>{try{m.remove();}catch(e){}});S.mapInst={};
 }
 
-async function refreshDashboard() {
-  const dash=state.dashboards.find(d=>d.id===state.currentDashId); if(!dash)return;
-  destroyDvCharts();
-  await renderDashboardWidgets(dash);
-  toast('Datos actualizados ✓','success');
+async function refreshDash(){
+  S.dataCache={};S.colsCache={};S.crossFilter=null;S.globalFilters={};
+  const dash=S.dashboards.find(d=>d.id===S.currentDashId);if(!dash)return;
+  killDvCharts();renderDvWidgets(dash);initGFBar(dash);toast('Datos actualizados ✓','ok');
 }
 
-// ══════════════════════════════════════════
-//  EDIT DASHBOARD
-// ══════════════════════════════════════════
-function editCurrentDashboard() {
-  const dash=state.dashboards.find(d=>d.id===state.currentDashId); if(!dash)return;
-  state.editingId=dash.id;
-  state.widgets=JSON.parse(JSON.stringify(dash.widgets||[]));
-  state.activeWidgetIdx=null;
-  document.getElementById('builder-name').value=dash.name;
-  destroyPreviewCharts(); renderWidgetList(); resetConfigPanel(); showView('builder'); renderSidebar();
+// ═══════════════════════════════════
+//  WIDGET RENDERER
+// ═══════════════════════════════════
+function renderW(cnt,rows,w,cid,isPrev,widgetIdx){
+  switch(w.chartType){
+    case'table':return rTable(cnt,rows,w);
+    case'kpi':return rKPI(cnt,rows,w);
+    case'gauge':return rGauge(cnt,rows,w,cid,isPrev);
+    case'scatter':return rScatter(cnt,rows,w,cid,isPrev);
+    case'compare':return rCompare(cnt,rows,w,cid,isPrev);
+    case'map':return rMap(cnt,rows,w,cid,isPrev);
+    case'ranking':return rRanking(cnt,rows,w);
+    default:return rChart(cnt,rows,w,cid,isPrev,widgetIdx);
+  }
 }
 
-// ══════════════════════════════════════════
-//  DELETE
-// ══════════════════════════════════════════
-function confirmDelete(){document.getElementById('delete-modal').classList.add('show');}
-function closeModal(){document.getElementById('delete-modal').classList.remove('show');}
-function deleteDashboard(){
-  state.dashboards=state.dashboards.filter(d=>d.id!==state.currentDashId);
-  saveDashboardsToStorage(); closeModal(); state.currentDashId=null;
-  renderSidebar(); renderHomeGrid(); showView('home'); toast('Tablero eliminado','error');
+function rTable(cnt,rows,w){
+  const cols=w.tableCols?.length?w.tableCols:S.columns.slice(0,7);
+  const lim=w.limit<99999?w.limit:50;const shown=rows.slice(0,lim);
+  cnt.innerHTML=`<div style="overflow-x:auto;"><table class="tp"><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${shown.map(r=>`<tr>${cols.map(c=>`<td>${r[c]??'—'}</td>`).join('')}</tr>`).join('')}</tbody></table>${rows.length>lim?`<div style="padding:5px 8px;font-size:9px;color:var(--muted);">Mostrando ${lim} de ${rows.length}</div>`:''}</div>`;
 }
 
-// ══════════════════════════════════════════
+function rKPI(cnt,rows,w){
+  const fn=w.aggFunc||'SUM';
+  let kpis=[];
+  if(w.axisX){
+    const e=agg(rows,w.axisX,w.axisY,fn,8,w.sortOrder);
+    kpis=e.map(([k,v])=>({label:k,value:v,count:rows.filter(r=>String(r[w.axisX]??'')===k).length}));
+  }else{
+    let val=0;
+    if(fn==='SUM')val=rows.reduce((s,r)=>s+(parseFloat(r[w.axisY])||0),0);
+    else if(fn==='COUNT')val=rows.length;
+    else if(fn==='AVG')val=rows.reduce((s,r)=>s+(parseFloat(r[w.axisY])||0),0)/(rows.length||1);
+    else if(fn==='MAX')val=Math.max(...rows.map(r=>parseFloat(r[w.axisY])||0));
+    else if(fn==='MIN')val=Math.min(...rows.map(r=>parseFloat(r[w.axisY])||0));
+    kpis=[{label:`${fn} · ${w.axisY||'—'}`,value:val,count:rows.length}];
+  }
+  cnt.innerHTML=`<div class="kg">${kpis.map(k=>`<div class="kc"><div class="kl">${k.label}</div><div class="kv" style="color:${w.color||'var(--gold)'};">${fmt(k.value)}</div><div class="ks">${k.count} reg.</div></div>`).join('')}</div>`;
+}
+
+function rRanking(cnt,rows,w){
+  if(!w.axisX){cnt.innerHTML='<div style="color:var(--muted);padding:16px;font-size:11px;">Selecciona columnas</div>';return;}
+  const fn=w.aggFunc||'SUM';const lim=w.limit||10;
+  const entries=agg(rows,w.axisX,w.axisY,fn,lim,w.sortOrder);
+  const maxVal=Math.max(...entries.map(e=>e[1]),1);
+  const color=w.color||'#c8a84b';
+  cnt.innerHTML=`<div class="rank-list">${entries.map(([name,val],i)=>{
+    const pct=(val/maxVal)*100;
+    const cls=i===0?'r1':i===1?'r2':i===2?'r3':'';
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    return`<div class="rank-item ${cls}">
+      <div class="rank-bar" style="width:${pct}%;background:${color}18;"></div>
+      <div class="rank-pos">${medal||`#${i+1}`}</div>
+      <div class="rank-name" title="${name}">${name}</div>
+      <div class="rank-val" style="color:${color};">${fmt(val)}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function rGauge(cnt,rows,w,cid,isPrev){
+  const fn=w.aggFunc||'SUM';let value=0;
+  if(fn==='SUM')value=rows.reduce((s,r)=>s+(parseFloat(r[w.axisY])||0),0);
+  else if(fn==='COUNT')value=rows.length;
+  else if(fn==='AVG')value=rows.reduce((s,r)=>s+(parseFloat(r[w.axisY])||0),0)/(rows.length||1);
+  else if(fn==='MAX')value=Math.max(...rows.map(r=>parseFloat(r[w.axisY])||0));
+  else if(fn==='MIN')value=Math.min(...rows.map(r=>parseFloat(r[w.axisY])||0));
+  const target=parseFloat(w.gaugeTarget)||100;const pct=Math.min(Math.max(value/target,0),1);const u=w.gaugeUnit||'';const c=w.color||'#c8a84b';
+  cnt.innerHTML=`<div class="wc-gauge"><canvas id="${cid}" width="260" height="155"></canvas><div style="font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:${c};margin-top:-18px;">${fmt(value)}${u}</div><div style="font-size:10px;color:var(--muted);margin-top:3px;">Meta: ${fmt(target)}${u} · ${Math.round(pct*100)}%</div></div>`;
+  setTimeout(()=>{
+    const canvas=document.getElementById(cid);if(!canvas)return;
+    const ctx=canvas.getContext('2d');const W=canvas.width,H=canvas.height;const cx=W/2,cy=H*.83,r=Math.min(W,H)*.6;
+    ctx.clearRect(0,0,W,H);
+    ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,0);ctx.strokeStyle='#2a2a2a';ctx.lineWidth=20;ctx.lineCap='round';ctx.stroke();
+    [[0,.5,'#4caf7d'],[.5,.8,'#e2a84b'],[.8,1,'#e05555']].forEach(([s,e,zc])=>{ctx.beginPath();ctx.arc(cx,cy,r,Math.PI+(s*Math.PI),Math.PI+(e*Math.PI));ctx.strokeStyle=zc+'22';ctx.lineWidth=20;ctx.lineCap='butt';ctx.stroke();});
+    if(pct>0){const g=ctx.createLinearGradient(cx-r,cy,cx+r,cy);g.addColorStop(0,'#a08030');g.addColorStop(1,c);ctx.beginPath();ctx.arc(cx,cy,r,Math.PI,Math.PI+(pct*Math.PI));ctx.strokeStyle=g;ctx.lineWidth=20;ctx.lineCap='round';ctx.stroke();}
+    const na=Math.PI+(pct*Math.PI);ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+(r-4)*Math.cos(na),cy+(r-4)*Math.sin(na));ctx.strokeStyle=c;ctx.lineWidth=3;ctx.lineCap='round';ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,7,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();
+    for(let i=0;i<=10;i++){const a=Math.PI+(i/10)*Math.PI;ctx.beginPath();ctx.moveTo(cx+(r-24)*Math.cos(a),cy+(r-24)*Math.sin(a));ctx.lineTo(cx+(r-13)*Math.cos(a),cy+(r-13)*Math.sin(a));ctx.strokeStyle=i%5===0?'#555':'#2a2a2a';ctx.lineWidth=i%5===0?2:1;ctx.stroke();}
+  },80);
+}
+
+function rScatter(cnt,rows,w,cid,isPrev){
+  if(!w.axisX||!w.axisY){cnt.innerHTML='<div style="color:var(--muted);padding:14px;font-size:11px;">Selecciona X e Y</div>';return;}
+  const pts=rows.slice(0,w.limit||200).map(r=>({x:parseFloat(r[w.axisX])||0,y:parseFloat(r[w.axisY])||0,label:w.scatterLabel?r[w.scatterLabel]:null})).filter(p=>!isNaN(p.x)&&!isNaN(p.y));
+  const c=w.color||'#c8a84b';
+  cnt.innerHTML=`<div class="wc-chart"><canvas id="${cid}"></canvas></div>`;
+  const ctx=document.getElementById(cid)?.getContext('2d');if(!ctx)return;
+  const inst=new Chart(ctx,{type:'scatter',data:{datasets:[{label:`${w.axisX} vs ${w.axisY}`,data:pts,backgroundColor:c+'99',borderColor:c,borderWidth:1,pointRadius:4,pointHoverRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans',size:10}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:c,bodyColor:'#e8e4d8',callbacks:{label:cx=>{const p=cx.raw;return `${p.label?p.label+': ':''}(${fmt(p.x)}, ${fmt(p.y)})`;}}}},scales:{x:{ticks:{color:'#888',font:{size:9}},grid:{color:'#2a2a2a'}},y:{ticks:{color:'#888',font:{size:9},callback:v=>fmt(v)},grid:{color:'#2a2a2a'}}}}});
+  if(isPrev)S.chartInst[cid]=inst;else S.dvChartInst[cid]=inst;
+}
+
+function rCompare(cnt,rows,w,cid,isPrev){
+  if(!w.axisX||!w.axisY){cnt.innerHTML='<div style="color:var(--muted);padding:14px;font-size:11px;">Selecciona columnas</div>';return;}
+  const fn=w.aggFunc||'SUM';const lim=w.limit||20;
+  const e1=agg(rows,w.axisX,w.axisY,fn,lim,w.sortOrder);
+  const labels=e1.map(e=>e[0]);const d1=e1.map(e=>e[1]);
+  let d2=[];
+  if(w.axisY2){const m2={};agg(rows,w.axisX,w.axisY2,fn,lim,w.sortOrder).forEach(([k,v])=>m2[k]=v);d2=labels.map(l=>m2[l]||0);}
+  const c=w.color||'#c8a84b';
+  cnt.innerHTML=`<div class="wc-chart"><canvas id="${cid}"></canvas></div>`;
+  const ctx=document.getElementById(cid)?.getContext('2d');if(!ctx)return;
+  const ds=[{label:w.axisY,data:d1,backgroundColor:c+'cc',borderColor:c,borderWidth:1}];
+  if(w.axisY2)ds.push({label:w.axisY2,data:d2,backgroundColor:'#5b9cf699',borderColor:'#5b9cf6',borderWidth:1});
+  const inst=new Chart(ctx,{type:'bar',data:{labels,datasets:ds},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans',size:10}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:c,bodyColor:'#e8e4d8'}},scales:{x:{ticks:{color:'#888',maxRotation:30,font:{size:9}},grid:{color:'#2a2a2a'}},y:{ticks:{color:'#888',font:{size:9},callback:v=>fmt(v)},grid:{color:'#2a2a2a'}}}}});
+  if(isPrev)S.chartInst[cid]=inst;else S.dvChartInst[cid]=inst;
+}
+
+function rMap(cnt,rows,w,mapId,isPrev){
+  if(!w.axisX){cnt.innerHTML='<div style="color:var(--muted);padding:14px;font-size:11px;">Selecciona columna de ciudad</div>';return;}
+  const fn=w.aggFunc||'SUM';
+  const entries=agg(rows,w.axisX,w.axisY,fn,200,'desc');
+  const maxVal=Math.max(...entries.map(e=>e[1]),1);const c=w.color||'#c8a84b';
+  cnt.innerHTML=`<div id="${mapId}" class="wc-map"></div>`;
+  setTimeout(()=>{
+    const el=document.getElementById(mapId);if(!el)return;
+    if(S.mapInst[mapId]){try{S.mapInst[mapId].remove();}catch(e){}}
+    const map=L.map(mapId,{zoomControl:true}).setView([24,-102],5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OSM',maxZoom:18}).addTo(map);
+    let found=0;
+    entries.forEach(([city,value])=>{
+      const coords=findCC(city);if(!coords)return;found++;
+      const radius=12+(value/maxVal)*28;
+      L.circleMarker(coords,{radius,fillColor:c,color:c,weight:2,opacity:.9,fillOpacity:.55})
+       .addTo(map).bindPopup(`<b style="color:#c8a84b;">${city}</b><br>${fn}: <b>${fmt(value)}</b>`);
+    });
+    if(!found){cnt.innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:260px;color:var(--muted);font-size:11px;flex-direction:column;gap:6px;"><div>🗺️</div><div>No se encontraron ciudades reconocidas en los datos</div></div>';return;}
+    S.mapInst[mapId]=map;
+  },150);
+}
+
+function findCC(raw){
+  if(!raw)return null;const n=String(raw).toUpperCase().trim();
+  if(MXC[n])return MXC[n];
+  for(const[city,coords]of Object.entries(MXC)){if(n.includes(city)||city.includes(n))return coords;}
+  return null;
+}
+
+function rChart(cnt,rows,w,cid,isPrev,widgetIdx){
+  if(!w.axisX){cnt.innerHTML='<div style="color:var(--muted);padding:14px;font-size:11px;">Selecciona columnas X e Y</div>';return;}
+  const fn=w.aggFunc||'SUM';const lim=w.limit||20;
+  const entries=agg(rows,w.axisX,fn==='COUNT'?w.axisX:w.axisY,fn,lim,w.sortOrder);
+  const labels=entries.map(e=>e[0]);const values=entries.map(e=>e[1]);
+  const isHB=w.chartType==='horizontalBar';const ct=isHB?'bar':w.chartType;const isPie=ct==='pie'||ct==='doughnut';
+  const c=w.color||'#c8a84b';const pal=GP.map((p,i)=>i===0?c:p);
+  cnt.innerHTML=`<div class="wc-chart"><canvas id="${cid}"></canvas></div>`;
+  const ctx=document.getElementById(cid)?.getContext('2d');if(!ctx)return;
+  const inst=new Chart(ctx,{
+    type:ct,
+    data:{labels,datasets:[{label:fn==='COUNT'?`COUNT de ${w.axisX}`:`${fn} de ${w.axisY||w.axisX}`,data:values,backgroundColor:isPie?pal.slice(0,labels.length):c+'cc',borderColor:isPie?pal.slice(0,labels.length):c,borderWidth:1,tension:.3}]},
+    options:{
+      indexAxis:isHB?'y':'x',responsive:true,maintainAspectRatio:false,
+      onClick:(event,els)=>{if(els.length>0&&widgetIdx!==undefined){const idx=els[0].index;const lab=inst.data.labels[idx];setCF(w.axisX,lab);}},
+      plugins:{legend:{labels:{color:'#e8e4d8',font:{family:'DM Sans',size:10}}},tooltip:{backgroundColor:'#1f1f1f',titleColor:c,bodyColor:'#e8e4d8',callbacks:{label:cx=>`  ${fmt(isHB?cx.parsed.x:cx.parsed.y??cx.parsed)}`}}},
+      scales:isPie?{}:{x:{ticks:{color:'#888',maxRotation:isHB?0:30,font:{size:9}},grid:{color:'#2a2a2a'}},y:{ticks:{color:'#888',font:{size:9},callback:v=>isHB?v:fmt(v)},grid:{color:'#2a2a2a'}}}
+    }
+  });
+  if(isPrev)S.chartInst[cid]=inst;else S.dvChartInst[cid]=inst;
+}
+
+// ═══════════════════════════════════
+//  EDIT / DELETE
+// ═══════════════════════════════════
+function editDash(){
+  const dash=S.dashboards.find(d=>d.id===S.currentDashId);if(!dash)return;
+  S.editingId=dash.id;S.widgets=JSON.parse(JSON.stringify(dash.widgets||[]));
+  S.dashGlobalFilters=JSON.parse(JSON.stringify(dash.globalFilters||[]));
+  S.activeWIdx=null;document.getElementById('b-name').value=dash.name;
+  killPCharts();renderWL();resetCP();renderGFBuilder();showView('builder');renderSL();
+}
+function confirmDel(){document.getElementById('del-modal').classList.add('show');}
+function closeMo(id){document.getElementById(id).classList.remove('show');}
+function deleteDash(){
+  S.dashboards=S.dashboards.filter(d=>d.id!==S.currentDashId);saveDashs();closeMo('del-modal');
+  S.currentDashId=null;renderSL();renderHG();showView('home');toast('Tablero eliminado','err');
+}
+
+// ═══════════════════════════════════
 //  EXPORT
-// ══════════════════════════════════════════
-function exportChart(canvasId,name){
-  const canvas=document.getElementById(canvasId); if(!canvas)return;
-  const a=document.createElement('a');a.download=`${name||'grafica'}.png`;a.href=canvas.toDataURL('image/png');a.click();
-  toast('PNG exportado ✓','success');
-}
-function exportTableData(i){
-  const actDiv=document.getElementById(`wact-${i}`);
-  const rows=JSON.parse(actDiv.dataset.rows||'[]');
-  const w=JSON.parse(actDiv.dataset.w||'{}');
-  const cols=w.tableCols&&w.tableCols.length?w.tableCols:Object.keys(rows[0]||{});
-  const csv=[cols.join(','),...rows.map(r=>cols.map(c=>`"${String(r[c]??'').replace(/"/g,'""')}"`).join(','))].join('\n');
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});
-  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`tabla.csv`;a.click();URL.revokeObjectURL(url);
-  toast('CSV exportado ✓','success');
+// ═══════════════════════════════════
+function expPNG(cid,name){const c=document.getElementById(cid);if(!c)return;const a=document.createElement('a');a.download=`${name||'grafica'}.png`;a.href=c.toDataURL('image/png');a.click();toast('PNG exportado ✓','ok');}
+function expCSV(i){
+  const w=S.dashboards.find(d=>d.id===S.currentDashId)?.widgets[i];const rows=S.dataCache[w?.id]||[];
+  const filtered=applyAllFilters(rows,w,S.globalFilters,S.crossFilter);
+  const cols=w?.tableCols?.length?w.tableCols:Object.keys(filtered[0]||{});
+  const csv=[cols.join(','),...filtered.map(r=>cols.map(c=>`"${String(r[c]??'').replace(/"/g,'""')}"`).join(','))].join('\n');
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'});const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='tabla.csv';a.click();URL.revokeObjectURL(url);toast('CSV exportado ✓','ok');
 }
 
-// ══════════════════════════════════════════
+// ═══════════════════════════════════
 //  HELPERS
-// ══════════════════════════════════════════
-function formatNum(n){
-  if(n===null||n===undefined||isNaN(n))return'—';
-  if(Math.abs(n)>=1000000)return(n/1000000).toFixed(1)+'M';
-  if(Math.abs(n)>=1000)return(n/1000).toFixed(1)+'K';
-  return Number(n).toLocaleString('es-MX',{maximumFractionDigits:2});
-}
-function toast(msg,type=''){
-  const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;
-  document.getElementById('toast-container').appendChild(el);setTimeout(()=>el.remove(),3500);
-}
+// ═══════════════════════════════════
+function fmt(n){if(n===null||n===undefined||isNaN(n))return'—';if(Math.abs(n)>=1000000)return(n/1000000).toFixed(1)+'M';if(Math.abs(n)>=1000)return(n/1000).toFixed(1)+'K';return Number(n).toLocaleString('es-MX',{maximumFractionDigits:2});}
+function ppre(p){return{today:'Hoy',thisWeek:'Semana',thisMonth:'Este mes',lastMonth:'Mes ant.',thisYear:'Este año',lastYear:'Año ant.',q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',custom:'Rango'}[p]||p;}
+function toast(msg,type=''){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;document.getElementById('tc').appendChild(el);setTimeout(()=>el.remove(),3500);}
 </script>
 </body>
 </html>

@@ -7,11 +7,27 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 :root{--bg:#0d0d0d;--surface:#161616;--surface2:#1f1f1f;--border:#2a2a2a;--gold:#c8a84b;--gold-light:#e2c46e;--gold-dim:rgba(200,168,75,.12);--text:#e8e4d8;--muted:#888;--danger:#e05555;--success:#4caf7d;}
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+
+/* ── FILE DROP ZONE ── */
+.src-tabs{display:flex;gap:0;margin-bottom:8px;}
+.src-tab{flex:1;padding:6px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:10px;cursor:pointer;text-align:center;transition:all .15s;}
+.src-tab:hover{color:var(--text);}
+.src-tab.active{background:var(--gold-dim);border-color:var(--gold);color:var(--gold);}
+.drop-zone{border:1px dashed #333;padding:14px 10px;text-align:center;cursor:pointer;transition:all .2s;background:var(--surface2);}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--gold);background:var(--gold-dim);}
+.drop-zone-icon{font-size:22px;margin-bottom:5px;}
+.drop-zone-text{font-size:10px;color:var(--muted);}
+.drop-zone.loaded{border-color:var(--success);background:rgba(76,175,125,.08);}
+.drop-zone.loaded .drop-zone-text{color:var(--success);}
+.sheet-select{display:none;width:100%;padding:6px 9px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;outline:none;margin-top:6px;cursor:pointer;}
+.sheet-select:focus{border-color:var(--gold);}
+
 ::-webkit-scrollbar{width:5px;height:5px;}::-webkit-scrollbar-track{background:var(--bg);}::-webkit-scrollbar-thumb{background:#333;border-radius:3px;}
 
 /* ── LOGIN ── */
@@ -353,12 +369,30 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
                 </div>
               </div>
               <div class="cs"><div class="ct">🗄️ Fuente de Datos</div>
-                <div class="cl">Tabla</div>
-                <div id="tl" class="li"><span class="sp"></span>Cargando...</div>
-                <select id="tsel" style="display:none" onchange="loadCols()"></select>
-                <div class="cl">Filas a cargar</div>
-                <select id="dlim"><option value="500">500</option><option value="1000" selected>1,000</option><option value="2000">2,000</option><option value="5000">5,000</option><option value="99999">Todas</option></select>
-                <div id="cl" style="display:none;" class="li"><span class="sp"></span>Cargando columnas...</div>
+                <!-- Source tabs -->
+                <div class="src-tabs">
+                  <div class="src-tab active" id="src-tab-server" onclick="switchSrc('server')">🌐 Servidor</div>
+                  <div class="src-tab" id="src-tab-file" onclick="switchSrc('file')">📂 Archivo</div>
+                </div>
+                <!-- Server source -->
+                <div id="src-server">
+                  <div class="cl">Tabla</div>
+                  <div id="tl" class="li"><span class="sp"></span>Cargando...</div>
+                  <select id="tsel" style="display:none" onchange="loadCols()"></select>
+                  <div class="cl">Filas a cargar</div>
+                  <select id="dlim"><option value="500">500</option><option value="1000" selected>1,000</option><option value="2000">2,000</option><option value="5000">5,000</option><option value="99999">Todas</option></select>
+                  <div id="cl" style="display:none;" class="li"><span class="sp"></span>Cargando columnas...</div>
+                </div>
+                <!-- File source -->
+                <div id="src-file" style="display:none;">
+                  <div class="drop-zone" id="drop-zone" onclick="document.getElementById('file-input').click()" ondragover="onDragOver(event)" ondragleave="onDragLeave(event)" ondrop="onFileDrop(event)">
+                    <div class="drop-zone-icon">📂</div>
+                    <div class="drop-zone-text">Haz clic o arrastra un archivo Excel o CSV</div>
+                  </div>
+                  <input type="file" id="file-input" accept=".xlsx,.xls,.csv" style="display:none" onchange="onFileSelect(event)">
+                  <select class="sheet-select" id="sheet-select" onchange="onSheetChange()"></select>
+                  <div id="cl-file" style="display:none;" class="li"><span class="sp"></span>Leyendo archivo...</div>
+                </div>
               </div>
               <div class="cs" id="ds" style="display:none;"><div class="ct">📅 Filtro de Fecha</div>
                 <div class="cl">Columna de fecha</div>
@@ -1033,11 +1067,19 @@ function renderDvWidgets(dash){
 
 async function loadDvWidget(i,w){
   try{
-    const lim=w.dataLimit||1000;
-    const r=await fetch(`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=${lim}`);
-    const d=await r.json();
-    const allRows=d.rows||[];
-    const cols=d.columns||Object.keys(allRows[0]||{});
+    let allRows=[],cols=[];
+    if(w.dataSource==='file'){
+      const fd=localFileData[w.id];
+      if(!fd){document.getElementById(`wcnt-${i}`).innerHTML='<div style="color:var(--muted);padding:12px;font-size:11px;">📂 Archivo local no disponible en esta sesión. Edita el tablero para volver a cargarlo.</div>';document.getElementById(`wact-${i}`).innerHTML='';return;}
+      allRows=fd.sheets[fd.activeSheet]||[];
+      cols=allRows.length?Object.keys(allRows[0]):[];
+    }else{
+      const lim=w.dataLimit||1000;
+      const r=await fetch(`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=${lim}`);
+      const d=await r.json();
+      allRows=d.rows||[];
+      cols=d.columns||Object.keys(allRows[0]||{});
+    }
     S.dataCache[w.id]=allRows;S.colsCache[w.id]=cols;S.columns=cols;
     const rows=applyAllFilters(allRows,w,S.globalFilters,S.crossFilter);
     const canvasId=`dvc-${i}`;const mapId=`dvm-${i}`;
@@ -1245,6 +1287,24 @@ function deleteDash(){
 //  EXPORT
 // ═══════════════════════════════════
 function expPNG(cid,name){const c=document.getElementById(cid);if(!c)return;const a=document.createElement('a');a.download=`${name||'grafica'}.png`;a.href=c.toDataURL('image/png');a.click();toast('PNG exportado ✓','ok');}
+
+function expXLSX(i){
+  const w=S.dashboards.find(d=>d.id===S.currentDashId)?.widgets[i];
+  const rows=S.dataCache[w?.id]||[];
+  const filtered=applyAllFilters(rows,w,S.globalFilters,S.crossFilter);
+  if(!filtered.length){toast('Sin datos para exportar','err');return;}
+  const cols=w?.tableCols?.length?w.tableCols:Object.keys(filtered[0]||{});
+  const wsData=[cols,...filtered.map(r=>cols.map(c=>r[c]??''))];
+  const wb=XLSX.utils.book_new();
+  const ws=XLSX.utils.aoa_to_sheet(wsData);
+  // Auto column width
+  const colWidths=cols.map(c=>({wch:Math.max(c.length,12)}));
+  ws['!cols']=colWidths;
+  XLSX.utils.book_append_sheet(wb,ws,w?.name||'Datos');
+  XLSX.writeFile(wb,`${w?.name||'datos'}.xlsx`);
+  toast('Excel exportado ✓','ok');
+}
+
 function expCSV(i){
   const w=S.dashboards.find(d=>d.id===S.currentDashId)?.widgets[i];const rows=S.dataCache[w?.id]||[];
   const filtered=applyAllFilters(rows,w,S.globalFilters,S.crossFilter);
@@ -1254,6 +1314,108 @@ function expCSV(i){
   const a=document.createElement('a');a.href=url;a.download='tabla.csv';a.click();URL.revokeObjectURL(url);toast('CSV exportado ✓','ok');
 }
 
+
+// ═══════════════════════════════════
+//  ARCHIVO LOCAL (Excel/CSV)
+// ═══════════════════════════════════
+let localFileData = {}; // {widgetId: {sheets:{name:rows[]}, activeSheet, columns}}
+
+function switchSrc(src){
+  if(S.activeWIdx===null)return;
+  const w=S.widgets[S.activeWIdx];
+  w.dataSource=src;
+  document.getElementById('src-tab-server').classList.toggle('active',src==='server');
+  document.getElementById('src-tab-file').classList.toggle('active',src==='file');
+  document.getElementById('src-server').style.display=src==='server'?'block':'none';
+  document.getElementById('src-file').style.display=src==='file'?'block':'none';
+  if(src==='server'){
+    // Restore server data
+    if(w.tableName) fetchTD(w.tableName,w.dataLimit||1000).then(()=>{popDateSel(w);renderAC(w);renderFC(w);document.getElementById('ds').style.display='block';document.getElementById('vis-s').style.display='block';renderPrev();});
+  } else {
+    // Restore file data if exists
+    const fd=localFileData[w.id];
+    if(fd){restoreFileUI(w,fd);}
+    document.getElementById('ds').style.display='none';
+    document.getElementById('as').style.display='none';
+    document.getElementById('fs').style.display='none';
+    document.getElementById('vis-s').style.display='none';
+  }
+}
+
+function onDragOver(e){e.preventDefault();document.getElementById('drop-zone').classList.add('drag');}
+function onDragLeave(e){document.getElementById('drop-zone').classList.remove('drag');}
+function onFileDrop(e){e.preventDefault();document.getElementById('drop-zone').classList.remove('drag');const f=e.dataTransfer.files[0];if(f)processFile(f);}
+function onFileSelect(e){const f=e.target.files[0];if(f)processFile(f);e.target.value='';}
+
+function processFile(file){
+  if(S.activeWIdx===null)return;
+  document.getElementById('cl-file').style.display='block';
+  const w=S.widgets[S.activeWIdx];
+  const reader=new FileReader();
+  reader.onload=(e)=>{
+    try{
+      let sheets={};
+      const name=file.name.toLowerCase();
+      if(name.endsWith('.csv')){
+        const text=e.target.result;
+        const wb=XLSX.read(text,{type:'string'});
+        wb.SheetNames.forEach(sn=>{
+          sheets[sn]=XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''});
+        });
+      }else{
+        const wb=XLSX.read(e.target.result,{type:'array'});
+        wb.SheetNames.forEach(sn=>{
+          sheets[sn]=XLSX.utils.sheet_to_json(wb.Sheets[sn],{defval:''});
+        });
+      }
+      const firstSheet=Object.keys(sheets)[0];
+      localFileData[w.id]={sheets,activeSheet:firstSheet,fileName:file.name};
+      w.dataSource='file';w.localFileId=w.id;w.tableName='';
+      restoreFileUI(w,localFileData[w.id]);
+      document.getElementById('cl-file').style.display='none';
+      toast(`Archivo cargado: ${file.name} ✓`,'ok');
+    }catch(err){
+      document.getElementById('cl-file').style.display='none';
+      toast('Error al leer el archivo','err');
+      console.error(err);
+    }
+  };
+  if(file.name.toLowerCase().endsWith('.csv'))reader.readAsText(file);
+  else reader.readAsArrayBuffer(file);
+}
+
+function restoreFileUI(w,fd){
+  const sheetNames=Object.keys(fd.sheets);
+  const dropZone=document.getElementById('drop-zone');
+  dropZone.classList.add('loaded');
+  dropZone.querySelector('.drop-zone-text').textContent=`✓ ${fd.fileName}`;
+  const sheetSel=document.getElementById('sheet-select');
+  sheetSel.innerHTML=sheetNames.map(s=>`<option value="${s}" ${s===fd.activeSheet?'selected':''}>${s}</option>`).join('');
+  sheetSel.style.display=sheetNames.length>1?'block':'none';
+  // Load data into state
+  const rows=fd.sheets[fd.activeSheet]||[];
+  S.rawData=rows;
+  S.columns=rows.length?Object.keys(rows[0]):[];
+  renderAC(w);renderFC(w);
+  document.getElementById('as').style.display='block';
+  document.getElementById('fs').style.display='block';
+  document.getElementById('vis-s').style.display='block';
+  document.getElementById('ds').style.display='none';
+  renderPrev();
+}
+
+function onSheetChange(){
+  if(S.activeWIdx===null)return;
+  const w=S.widgets[S.activeWIdx];
+  const fd=localFileData[w.id];if(!fd)return;
+  fd.activeSheet=document.getElementById('sheet-select').value;
+  const rows=fd.sheets[fd.activeSheet]||[];
+  S.rawData=rows;S.columns=rows.length?Object.keys(rows[0]):[];
+  renderAC(w);renderFC(w);renderPrev();
+}
+
+// Override loadWConf to handle file source
+const _origLoadWConf=loadWConf;
 // ═══════════════════════════════════
 //  HELPERS
 // ═══════════════════════════════════

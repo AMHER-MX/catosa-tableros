@@ -603,11 +603,35 @@ async function checkSrv(){
 // ═══════════════════════════════════
 //  DASHBOARDS
 // ═══════════════════════════════════
-function loadDashs(){
-  S.dashboards=JSON.parse(localStorage.getItem(`cd_${S.area.id}`)||'[]');
+async function loadDashs(){
+  try{
+    const r=await fetch(`${API}/api/tableros/${S.area.id}`);
+    if(r.ok){const d=await r.json();S.dashboards=d.dashboards||[];}
+    else{// fallback localStorage
+      S.dashboards=JSON.parse(localStorage.getItem(`cd_${S.area.id}`)||'[]');
+    }
+  }catch{
+    // Sin conexión: usar localStorage
+    S.dashboards=JSON.parse(localStorage.getItem(`cd_${S.area.id}`)||'[]');
+    toast('Sin conexión al servidor · usando datos locales','err');
+  }
   renderSL();renderHG();
 }
-function saveDashs(){localStorage.setItem(`cd_${S.area.id}`,JSON.stringify(S.dashboards));}
+
+async function saveDashs(){
+  // Guardar en servidor
+  try{
+    const r=await fetch(`${API}/api/tableros/${S.area.id}`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({dashboards:S.dashboards})
+    });
+    if(!r.ok)throw new Error('Server error');
+  }catch{
+    // Fallback localStorage si no hay conexión
+    localStorage.setItem(`cd_${S.area.id}`,JSON.stringify(S.dashboards));
+  }
+}
 function renderSL(){
   const l=document.getElementById('slist');
   if(!S.dashboards.length){l.innerHTML='<div class="si" style="cursor:default;opacity:.4;font-size:10px;">Sin tableros aún</div>';return;}
@@ -937,7 +961,7 @@ function killPCharts(){Object.values(S.chartInst).forEach(c=>{try{c.destroy();}c
 // ═══════════════════════════════════
 //  SAVE DASHBOARD
 // ═══════════════════════════════════
-function saveCurrentDashboard(){
+async function saveCurrentDashboard(){
   const name=document.getElementById('b-name').value.trim();
   if(!name){toast('Ponle un nombre al tablero','err');return;}
   if(!S.widgets.length){toast('Agrega al menos una gráfica','err');return;}
@@ -953,7 +977,7 @@ function saveCurrentDashboard(){
     const dash={id:`d_${Date.now()}`,createdAt:now,updatedAt:now,...dashData};
     S.dashboards.unshift(dash);S.currentDashId=dash.id;toast('Tablero guardado ✓','ok');
   }
-  saveDashs();renderSL();renderHG();killPCharts();openDash(S.currentDashId);
+  await saveDashs();renderSL();renderHG();killPCharts();openDash(S.currentDashId);
 }
 
 // ═══════════════════════════════════
@@ -1278,8 +1302,8 @@ function editDash(){
 }
 function confirmDel(){document.getElementById('del-modal').classList.add('show');}
 function closeMo(id){document.getElementById(id).classList.remove('show');}
-function deleteDash(){
-  S.dashboards=S.dashboards.filter(d=>d.id!==S.currentDashId);saveDashs();closeMo('del-modal');
+async function deleteDash(){
+  S.dashboards=S.dashboards.filter(d=>d.id!==S.currentDashId);await saveDashs();closeMo('del-modal');
   S.currentDashId=null;renderSL();renderHG();showView('home');toast('Tablero eliminado','err');
 }
 

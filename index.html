@@ -265,6 +265,21 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .leaflet-container{background:#1a1a1a;}
 .leaflet-popup-content-wrapper{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
 .leaflet-popup-tip{background:var(--surface2);}
+
+/* ── CHIP FILTER BAR ── */
+.gfbar{padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:12px;flex-wrap:wrap;flex-shrink:0;}
+.gf-group{display:flex;flex-direction:column;gap:5px;}
+.gf-group-label{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;font-weight:600;}
+.gf-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.gf-chip-val{padding:4px 10px;background:var(--surface2);border:1px solid var(--border);color:var(--muted);font-size:10px;cursor:pointer;transition:all .15s;font-family:'DM Sans',sans-serif;user-select:none;}
+.gf-chip-val:hover{border-color:var(--gold);color:var(--text);}
+.gf-chip-val.selected{background:var(--gold);border-color:var(--gold);color:#000;font-weight:700;}
+.gf-chip-val.all-chip{border-style:dashed;}
+.gf-chip-val.all-chip.selected{background:var(--gold-dim);color:var(--gold);border-style:solid;}
+.gf-sep{width:1px;background:var(--border);margin:0 4px;align-self:stretch;}
+.cf-active-bar{display:flex;align-items:center;gap:6px;padding:5px 16px;background:rgba(200,168,75,.06);border-bottom:1px solid var(--border);font-size:10px;color:var(--gold);flex-shrink:0;}
+.cf-active-bar button{background:none;border:none;color:var(--gold);cursor:pointer;font-size:13px;padding:0 4px;}
+.gf-loading{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px;}
 .no-wm{display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;color:var(--muted);font-size:12px;gap:7px;}
 </style>
 </head>
@@ -464,7 +479,11 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
             <button class="btn red" onclick="confirmDel()">🗑️ Eliminar</button>
           </div>
         </div>
-        <div class="gfbar" id="gfbar" style="display:none;"></div>
+        <div id="gfbar" style="display:none;"></div>
+        <div id="cf-active-bar" style="display:none;" class="cf-active-bar">
+          🔗 Filtro cruzado activo: <span id="cf-label"></span>
+          <button onclick="clearCF()">✕ Quitar</button>
+        </div>
         <div class="wgrid" id="wgrid"></div>
       </div>
 
@@ -739,8 +758,12 @@ function applyAllFilters(rows,w,gfVals,cf){
     const cell=String(row[f.col]??'');const fnum=parseFloat(f.val);const num=parseFloat(cell);
     switch(f.op){case'contains':return cell.toLowerCase().includes(f.val.toLowerCase());case'equals':return cell.toLowerCase()===f.val.toLowerCase();case'gt':return!isNaN(num)&&num>fnum;case'lt':return!isNaN(num)&&num<fnum;case'gte':return!isNaN(num)&&num>=fnum;case'lte':return!isNaN(num)&&num<=fnum;case'notempty':return cell.trim()!=='';default:return true;}
   }));
-  // Global filters
-  if(gfVals){Object.entries(gfVals).forEach(([col,val])=>{if(val&&r[0]&&col in r[0])r=r.filter(row=>String(row[col]??'')===val);});}
+  // Global filters (multi-select arrays)
+  if(gfVals){Object.entries(gfVals).forEach(([col,arr])=>{
+    if(arr&&arr.length>0&&r.length&&col in r[0]){
+      r=r.filter(row=>arr.includes(String(row[col]??'')));
+    }
+  });}
   // Cross filter
   if(cf&&r[0]&&cf.col in r[0])r=r.filter(row=>String(row[cf.col]??'')===cf.value);
   return r;
@@ -996,6 +1019,7 @@ async function saveCurrentDashboard(){
 // ═══════════════════════════════════
 async function openDash(id){
   S.currentDashId=id;S.globalFilters={};S.crossFilter=null;S.dataCache={};S.colsCache={};
+  document.getElementById('cf-active-bar').style.display='none';
   const dash=S.dashboards.find(d=>d.id===id);if(!dash)return;
   renderSL();showView('dashboard');
   document.getElementById('dv-title').textContent=dash.name;
@@ -1007,34 +1031,65 @@ async function openDash(id){
   initGFBar(dash);
 }
 
-function initGFBar(dash){
+async function initGFBar(dash){
   const bar=document.getElementById('gfbar');
   const gfs=dash.globalFilters||[];
   if(!gfs.length){bar.style.display='none';return;}
   bar.style.display='flex';
-  bar.innerHTML=`<span class="gfbar-label">Filtros:</span>`+gfs.map(f=>`
-    <div class="gf-drop">
-      <label>${f.label}</label>
-      <select id="gfs_${f.id}" onchange="onGFC('${f.col}',this.value)">
-        <option value="">Todos</option>
-      </select>
-    </div>`).join('');
+  // Build chip groups - show loading first
+  bar.innerHTML=gfs.map(f=>`
+    <div class="gf-group" id="gfg_${f.id}">
+      <div class="gf-group-label">${f.label}</div>
+      <div class="gf-chips" id="gfc_${f.id}"><div class="gf-loading"><span class="sp"></span>Cargando...</div></div>
+    </div>
+    <div class="gf-sep"></div>`).join('');
   // Load unique values for each filter
-  gfs.forEach(async f=>{
-    if(!f.table)return;
+  for(const f of gfs){
+    if(!f.table)continue;
     try{
-      const r=await fetch(`${API}/api/table/${encodeURIComponent(f.table)}?limit=5000`);
+      const r=await fetch(`${API}/api/table/${encodeURIComponent(f.table)}?limit=9999`);
       const d=await r.json();
       const rows=d.rows||[];
       const unique=[...new Set(rows.map(r=>String(r[f.col]??'')).filter(v=>v))].sort();
-      const sel=document.getElementById(`gfs_${f.id}`);
-      if(sel)sel.innerHTML='<option value="">Todos</option>'+unique.map(v=>`<option value="${v}">${v}</option>`).join('');
-    }catch{}
-  });
+      const chipsDiv=document.getElementById(`gfc_${f.id}`);
+      if(!chipsDiv)continue;
+      // Multi-select chips — store selected in S.globalFilters as array
+      if(!S.globalFilters[f.col]) S.globalFilters[f.col]=[];
+      chipsDiv.innerHTML=`<div class="gf-chip-val all-chip selected" id="gfall_${f.id}" onclick="toggleAllChip('${f.id}','${f.col}')">Todos</div>`+
+        unique.map(v=>`<div class="gf-chip-val" id="gfchip_${f.id}_${btoa(encodeURIComponent(v)).replace(/=/g,'')}" onclick="toggleChip('${f.id}','${f.col}','${v.replace(/'/g,"\'")}',this)">${v}</div>`).join('');
+    }catch(e){
+      const chipsDiv=document.getElementById(`gfc_${f.id}`);
+      if(chipsDiv)chipsDiv.innerHTML='<span style="color:var(--danger);font-size:10px;">Error</span>';
+    }
+  }
+}
+
+function toggleAllChip(fid,col){
+  // Deselect all specific values, select "Todos"
+  S.globalFilters[col]=[];
+  // Update UI
+  document.querySelectorAll(`[id^="gfchip_${fid}_"]`).forEach(c=>c.classList.remove('selected'));
+  document.getElementById(`gfall_${fid}`)?.classList.add('selected');
+  S.crossFilter=null;updateCFBar();
+  reRenderAll();
+}
+
+function toggleChip(fid,col,val,el){
+  if(!S.globalFilters[col]) S.globalFilters[col]=[];
+  const arr=S.globalFilters[col];
+  const idx=arr.indexOf(val);
+  if(idx>=0){arr.splice(idx,1);}else{arr.push(val);}
+  // Update UI
+  el.classList.toggle('selected',arr.includes(val));
+  // If nothing selected, activate "Todos"
+  const allChip=document.getElementById(`gfall_${fid}`);
+  if(allChip) allChip.classList.toggle('selected',arr.length===0);
+  S.crossFilter=null;updateCFBar();
+  reRenderAll();
 }
 
 function onGFC(col,val){
-  S.globalFilters[col]=val;
+  S.globalFilters[col]=val?[val]:[];
   S.crossFilter=null;
   reRenderAll();
 }
@@ -1042,24 +1097,23 @@ function onGFC(col,val){
 function setCF(col,value){
   if(S.crossFilter&&S.crossFilter.col===col&&S.crossFilter.value===value){S.crossFilter=null;}
   else{S.crossFilter={col,value};}
-  renderCFChip();
+  updateCFBar();
   reRenderAll();
 }
 
-function renderCFChip(){
-  const bar=document.getElementById('gfbar');
-  const existing=bar.querySelector('.cf-chip');
-  if(existing)existing.remove();
-  if(S.crossFilter){
-    const chip=document.createElement('div');
-    chip.className='cf-chip';
-    chip.innerHTML=`<span>🔗 ${S.crossFilter.col}: <b>${S.crossFilter.value}</b></span><button onclick="clearCF()">✕</button>`;
-    bar.appendChild(chip);
-    if(bar.style.display==='none'){bar.style.display='flex';}
+function updateCFBar(){
+  const bar=document.getElementById('cf-active-bar');
+  const lbl=document.getElementById('cf-label');
+  if(S.crossFilter&&bar&&lbl){
+    bar.style.display='flex';
+    lbl.textContent=`${S.crossFilter.col}: ${S.crossFilter.value}`;
+  }else if(bar){
+    bar.style.display='none';
   }
 }
 
-function clearCF(){S.crossFilter=null;renderCFChip();reRenderAll();}
+function renderCFChip(){updateCFBar();}
+function clearCF(){S.crossFilter=null;updateCFBar();reRenderAll();}
 
 function reRenderAll(){
   const dash=S.dashboards.find(d=>d.id===S.currentDashId);if(!dash)return;

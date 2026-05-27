@@ -808,7 +808,7 @@ async function loadWConf(idx){
   document.getElementById('so').value=w.sortOrder||'desc';
   document.querySelectorAll('.wb').forEach(b=>b.classList.toggle('active',b.dataset.w===(w.width||'2')));
   if(S.tables.length){document.getElementById('tsel').style.display='block';document.getElementById('tl').style.display='none';document.getElementById('tsel').value=w.tableName||'';document.getElementById('dlim').value=w.dataLimit||1000;}
-  if(w.tableName){await fetchTD(w.tableName,w.dataLimit||1000);popDateSel(w);renderAC(w);renderFC(w);document.getElementById('ds').style.display='block';document.getElementById('vis-s').style.display='block';renderPrev();}
+  if(w.tableName){await fetchTD(w.tableName,w.dataLimit||1000,w);popDateSel(w);renderAC(w);renderFC(w);document.getElementById('ds').style.display='block';document.getElementById('vis-s').style.display='block';renderPrev();}
   else{document.getElementById('as').style.display='none';document.getElementById('fs').style.display='none';document.getElementById('ds').style.display='none';document.getElementById('vis-s').style.display='none';document.getElementById('prev-area').innerHTML=`<div class="ph" style="height:100%;border:none;"><div style="font-size:28px;">📊</div><div>Selecciona una tabla para comenzar</div></div>`;}
 }
 function syncWN(){if(S.activeWIdx===null)return;S.widgets[S.activeWIdx].name=document.getElementById('wni').value;renderWL();}
@@ -827,18 +827,29 @@ async function loadCols(){
   renderWL();
   if(!tbl){document.getElementById('as').style.display='none';document.getElementById('fs').style.display='none';document.getElementById('ds').style.display='none';document.getElementById('vis-s').style.display='none';S.columns=[];S.rawData=null;return;}
   document.getElementById('cl').style.display='block';document.getElementById('as').style.display='none';document.getElementById('fs').style.display='none';
-  await fetchTD(tbl,dl);
+  await fetchTD(tbl,dl,w);
   popDateSel(w);renderAC(w);renderFC(w);
   document.getElementById('ds').style.display='block';document.getElementById('vis-s').style.display='block';
   renderPrev();
 }
-async function fetchTD(tbl,lim){
+async function fetchTD(tbl,lim,w){
   document.getElementById('cl').style.display='block';
   try{
-    const r=await fetch(`${API}/api/table/${encodeURIComponent(tbl)}?limit=${lim||1000}`);
+    // Build URL with server-side date filter if available
+    let url=`${API}/api/table/${encodeURIComponent(tbl)}?limit=${lim||1000}`;
+    if(w && w.dateCol && w.datePreset){
+      url+=`&dateCol=${encodeURIComponent(w.dateCol)}&preset=${w.datePreset}`;
+      if(w.datePreset==='custom'){
+        if(w.dateFrom) url+=`&dateFrom=${w.dateFrom}`;
+        if(w.dateTo)   url+=`&dateTo=${w.dateTo}`;
+      }
+    }
+    const r=await fetch(url);
     const d=await r.json();
     S.rawData=d.rows||[];S.columns=d.columns||(S.rawData.length?Object.keys(S.rawData[0]):[]);
     document.getElementById('cl').style.display='none';
+    // Show filtered indicator
+    if(d.filtered){document.getElementById('cl').style.display='block';document.getElementById('cl').innerHTML=`<span style="color:var(--success);font-size:10px;">✓ ${S.rawData.length} registros (filtrado en servidor)</span>`;}
   }catch{document.getElementById('cl').innerHTML='<span style="color:var(--danger);font-size:10px;">Error</span>';S.rawData=null;S.columns=[];}
 }
 
@@ -851,10 +862,10 @@ function popDateSel(w){
   document.getElementById('dopts').style.display=w.dateCol?'block':'none';
   if(w.dateCol)restoreDP(w);
 }
-function onDCC(){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.dateCol=document.getElementById('dcol').value;w.datePreset='';w.dateFrom='';w.dateTo='';document.getElementById('dopts').style.display=w.dateCol?'block':'none';if(w.dateCol)restoreDP(w);renderPrev();}
+async function onDCC(){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.dateCol=document.getElementById('dcol').value;w.datePreset='';w.dateFrom='';w.dateTo='';document.getElementById('dopts').style.display=w.dateCol?'block':'none';if(w.dateCol)restoreDP(w);renderPrev();}
 function restoreDP(w){document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===(w.datePreset||'')));document.getElementById('cdr').style.display=w.datePreset==='custom'?'grid':'none';if(w.dateFrom)document.getElementById('dfrom').value=w.dateFrom;if(w.dateTo)document.getElementById('dto').value=w.dateTo;}
-function selP(btn,p){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.datePreset=p;w.dateFrom='';w.dateTo='';document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('cdr').style.display=p==='custom'?'grid':'none';renderPrev();}
-function onDRC(){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.dateFrom=document.getElementById('dfrom').value;w.dateTo=document.getElementById('dto').value;renderPrev();}
+async function selP(btn,p){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.datePreset=p;w.dateFrom='';w.dateTo='';document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('cdr').style.display=p==='custom'?'grid':'none';if(w.tableName&&w.dateCol&&p){await fetchTD(w.tableName,w.dataLimit||1000,w);}renderPrev();}
+async function onDRC(){if(S.activeWIdx===null)return;const w=S.widgets[S.activeWIdx];w.dateFrom=document.getElementById('dfrom').value;w.dateTo=document.getElementById('dto').value;if(w.tableName&&w.dateCol&&w.dateFrom&&w.dateTo){await fetchTD(w.tableName,w.dataLimit||1000,w);}renderPrev();}
 
 // ═══════════════════════════════════
 //  AXES CONFIG
@@ -1099,7 +1110,12 @@ async function loadDvWidget(i,w){
       cols=allRows.length?Object.keys(allRows[0]):[];
     }else{
       const lim=w.dataLimit||1000;
-      const r=await fetch(`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=${lim}`);
+      let dvUrl=`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=${lim}`;
+      if(w.dateCol&&w.datePreset){
+        dvUrl+=`&dateCol=${encodeURIComponent(w.dateCol)}&preset=${w.datePreset}`;
+        if(w.datePreset==='custom'){if(w.dateFrom)dvUrl+=`&dateFrom=${w.dateFrom}`;if(w.dateTo)dvUrl+=`&dateTo=${w.dateTo}`;}
+      }
+      const r=await fetch(dvUrl);
       const d=await r.json();
       allRows=d.rows||[];
       cols=d.columns||Object.keys(allRows[0]||{});

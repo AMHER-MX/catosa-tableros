@@ -345,6 +345,10 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
       <div id="vb">
         <div class="btbar">
           <input type="text" class="bni" id="b-name" value="Mi Tablero" placeholder="Nombre del tablero...">
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;white-space:nowrap;margin-left:12px;">
+            <input type="checkbox" id="chk-private" style="accent-color:var(--gold);width:14px;height:14px;">
+            🔒 Privado
+          </label>
           <div style="margin-left:auto;display:flex;gap:7px;">
             <button class="btn out" onclick="cancelBuilder()">Cancelar</button>
             <button class="btn" onclick="saveCurrentDashboard()">Guardar Tablero</button>
@@ -475,8 +479,8 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
           </div>
           <div class="dv-acts">
             <button class="btn out" onclick="refreshDash()">↺ Actualizar</button>
-            <button class="btn out" onclick="editDash()">✏️ Editar</button>
-            <button class="btn red" onclick="confirmDel()">🗑️ Eliminar</button>
+            <button class="btn out" id="btn-edit" onclick="editDash()">✏️ Editar</button>
+            <button class="btn red" id="btn-del" onclick="confirmDel()">🗑️ Eliminar</button>
           </div>
         </div>
         <div id="gfbar" style="display:none;"></div>
@@ -655,9 +659,9 @@ function renderSL(){
   const l=document.getElementById('slist');
   if(!S.dashboards.length){l.innerHTML='<div class="si" style="cursor:default;opacity:.4;font-size:10px;">Sin tableros aún</div>';return;}
   l.innerHTML=S.dashboards.map(d=>`
-    <div class="si ${d.id===S.currentDashId?'active':''}" onclick="openDash('${d.id}')">
+    <div class="si ${d.id===S.currentDashId?'active':''}" onclick="openDash('${d.id}')" style="${d.isPrivate&&d.author!==S.userName?'display:none':''}">
       <span class="ii">${d.widgets?.length?CI[d.widgets[0].chartType]||'📊':'📊'}</span>
-      <div style="flex:1;min-width:0;"><div class="in">${d.name}</div><div class="ia">por ${d.author}</div></div>
+      <div style="flex:1;min-width:0;"><div class="in">${d.isPrivate?'🔒 ':' '}${d.name}</div><div class="ia">por ${d.author}</div></div>
     </div>`).join('');
 }
 function renderHG(){
@@ -791,6 +795,7 @@ function agg(rows,xCol,yCol,fn,lim,so){
 function newDashboard(){
   S.editingId=null;S.widgets=[];S.activeWIdx=null;S.rawData=null;S.columns=[];S.dashGlobalFilters=[];
   document.getElementById('b-name').value='Mi Tablero';
+  const cpn=document.getElementById('chk-private');if(cpn)cpn.checked=false;
   killPCharts();renderWL();resetCP();renderGFBuilder();showView('builder');S.currentDashId=null;renderSL();
 }
 function cancelBuilder(){killPCharts();showView('home');renderHG();}
@@ -862,17 +867,11 @@ async function fetchTD(tbl,lim,w){
     let url=`${API}/api/table/${encodeURIComponent(tbl)}?limit=${lim||1000}`;
     if(w && w.dateCol && w.datePreset){
       url+=`&dateCol=${encodeURIComponent(w.dateCol)}`;
-      // Convert preset to explicit dates for server-side filtering
       let df='', dt='';
-      if(w.datePreset==='custom'){
-        df=w.dateFrom||''; dt=w.dateTo||'';
-      } else {
-        const [from,to]=getDR(w.datePreset);
-        if(from) df=from.toISOString().slice(0,10);
-        if(to)   dt=to.toISOString().slice(0,10);
-      }
-      if(df) url+=`&dateFrom=${df}`;
-      if(dt) url+=`&dateTo=${dt}`;
+      if(w.datePreset==='custom'){df=w.dateFrom||'';dt=w.dateTo||'';}
+      else{const[from,to]=getDR(w.datePreset);if(from)df=from.toISOString().slice(0,10);if(to)dt=to.toISOString().slice(0,10);}
+      if(df)url+=`&dateFrom=${df}`;
+      if(dt)url+=`&dateTo=${dt}`;
     }
     const r=await fetch(url);
     const d=await r.json();
@@ -1009,7 +1008,8 @@ async function saveCurrentDashboard(){
   const empty=S.widgets.find(w=>!w.tableName);
   if(empty){toast(`"${empty.name}" no tiene tabla seleccionada`,'err');return;}
   const now=new Date().toISOString();
-  const dashData={name,author:S.userName,widgets:JSON.parse(JSON.stringify(S.widgets)),globalFilters:JSON.parse(JSON.stringify(S.dashGlobalFilters||[]))};
+  const isPrivate=document.getElementById('chk-private')?.checked||false;
+  const dashData={name,author:S.userName,isPrivate,widgets:JSON.parse(JSON.stringify(S.widgets)),globalFilters:JSON.parse(JSON.stringify(S.dashGlobalFilters||[]))};
   if(S.editingId){
     const idx=S.dashboards.findIndex(d=>d.id===S.editingId);
     if(idx>=0)S.dashboards[idx]={...S.dashboards[idx],...dashData,updatedAt:now};
@@ -1030,7 +1030,10 @@ async function openDash(id){
   const dash=S.dashboards.find(d=>d.id===id);if(!dash)return;
   renderSL();showView('dashboard');
   document.getElementById('dv-title').textContent=dash.name;
-  document.getElementById('dv-meta').textContent=`${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+  document.getElementById('dv-meta').textContent=`${dash.isPrivate?'🔒 Privado · ':'🌐 Público · '}${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+  const isOwner=dash.author===S.userName;
+  document.getElementById('btn-edit').style.display=isOwner?'':'none';
+  document.getElementById('btn-del').style.display=isOwner?'':'none';
   killDvCharts();
   // Render widgets first (data loads)
   renderDvWidgets(dash);
@@ -1379,6 +1382,7 @@ function editDash(){
   S.editingId=dash.id;S.widgets=JSON.parse(JSON.stringify(dash.widgets||[]));
   S.dashGlobalFilters=JSON.parse(JSON.stringify(dash.globalFilters||[]));
   S.activeWIdx=null;document.getElementById('b-name').value=dash.name;
+  const cp=document.getElementById('chk-private');if(cp)cp.checked=!!dash.isPrivate;
   killPCharts();renderWL();resetCP();renderGFBuilder();showView('builder');renderSL();
 }
 function confirmDel(){document.getElementById('del-modal').classList.add('show');}

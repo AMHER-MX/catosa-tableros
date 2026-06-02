@@ -385,6 +385,12 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
                   <button class="ctb" data-t="map" onclick="selCT('map',this)"><span class="ci">🗺️</span>Mapa</button>
                   <button class="ctb" data-t="table" onclick="selCT('table',this)"><span class="ci">🗃️</span>Tabla</button>
                   <button class="ctb" data-t="kpi" onclick="selCT('kpi',this)"><span class="ci">🎯</span>KPI</button>
+                  <button class="ctb" data-t="heatmap" onclick="selCT('heatmap',this)"><span class="ci">🌡️</span>Heatmap</button>
+                  <button class="ctb" data-t="funnel" onclick="selCT('funnel',this)"><span class="ci">🔽</span>Funnel</button>
+                  <button class="ctb" data-t="treemap" onclick="selCT('treemap',this)"><span class="ci">⬛</span>Treemap</button>
+                  <button class="ctb" data-t="heatmap" onclick="selCT('heatmap',this)"><span class="ci">🌡️</span>Heatmap</button>
+                  <button class="ctb" data-t="funnel" onclick="selCT('funnel',this)"><span class="ci">🔽</span>Funnel</button>
+                  <button class="ctb" data-t="treemap" onclick="selCT('treemap',this)"><span class="ci">⬛</span>Treemap</button>
                 </div>
               </div>
               <div class="cs"><div class="ct">🗄️ Fuente de Datos</div>
@@ -542,7 +548,7 @@ const AREAS=[
   {id:'finanzas',name:'Finanzas',icon:'💰',dept:'Área',pass:'fin2024'},
   {id:'marketing',name:'Marketing',icon:'📣',dept:'Área',pass:'mkt2024'},
 ];
-const CI={bar:'📊',horizontalBar:'📉',line:'📈',pie:'🥧',doughnut:'🍩',ranking:'🏆',scatter:'🔵',gauge:'🎯',compare:'📋',map:'🗺️',table:'🗃️',kpi:'🎯'};
+const CI={bar:'📊',horizontalBar:'📉',line:'📈',pie:'🥧',doughnut:'🍩',ranking:'🏆',scatter:'🔵',gauge:'🎯',compare:'📋',map:'🗺️',table:'🗃️',kpi:'🎯',heatmap:'🌡️',funnel:'🔽',treemap:'⬛'};
 const GP=['#c8a84b','#e2c46e','#a08030','#f0d88a','#7a6020','#dab85e','#b89038','#eed070','#907028','#6a5018'];
 
 const MXC={'AGUASCALIENTES':[21.88,-102.29],'MEXICALI':[32.62,-115.45],'TIJUANA':[32.50,-117.00],'ENSENADA':[31.87,-116.60],'LA PAZ':[24.14,-110.31],'CAMPECHE':[19.83,-90.53],'SALTILLO':[25.42,-101.00],'TORREON':[25.54,-103.41],'TORREÓN':[25.54,-103.41],'MONCLOVA':[26.91,-101.42],'PIEDRAS NEGRAS':[28.70,-100.52],'ACUNA':[29.32,-100.93],'ACUÑA':[29.32,-100.93],'COLIMA':[19.25,-103.72],'TUXTLA GUTIERREZ':[16.75,-93.12],'CHIHUAHUA':[28.63,-106.07],'CIUDAD JUAREZ':[31.69,-106.42],'JUAREZ':[31.69,-106.42],'CUAUHTEMOC':[28.41,-106.87],'PARRAL':[26.93,-105.67],'DELICIAS':[28.19,-105.47],'MEXICO':[19.43,-99.13],'CIUDAD DE MEXICO':[19.43,-99.13],'CDMX':[19.43,-99.13],'DF':[19.43,-99.13],'DURANGO':[24.03,-104.65],'GOMEZ PALACIO':[25.57,-103.50],'LERDO':[25.54,-103.53],'GUANAJUATO':[21.02,-101.26],'LEON':[21.12,-101.68],'IRAPUATO':[20.68,-101.36],'CELAYA':[20.52,-100.81],'SALAMANCA':[20.57,-101.20],'GUADALAJARA':[20.66,-103.35],'ZAPOPAN':[20.72,-103.39],'PUERTO VALLARTA':[20.65,-105.23],'TOLUCA':[19.28,-99.66],'ECATEPEC':[19.60,-99.06],'NAUCALPAN':[19.48,-99.23],'MORELIA':[19.71,-101.20],'ZAMORA':[19.98,-102.28],'CUERNAVACA':[18.92,-99.22],'MONTERREY':[25.69,-100.32],'GUADALUPE':[25.68,-100.26],'SAN PEDRO GARZA GARCIA':[25.66,-100.40],'APODACA':[25.78,-100.19],'GARCIA':[25.81,-100.59],'SANTA CATARINA':[25.67,-100.46],'LINARES':[24.86,-99.56],'OAXACA':[17.06,-96.72],'PUEBLA':[19.04,-98.21],'QUERETARO':[20.59,-100.39],'CANCUN':[21.16,-86.85],'CHETUMAL':[18.50,-88.30],'SAN LUIS POTOSI':[22.15,-100.98],'CULIACAN':[24.80,-107.39],'MAZATLAN':[23.25,-106.41],'LOS MOCHIS':[25.80,-108.99],'HERMOSILLO':[29.07,-110.96],'CIUDAD OBREGON':[27.49,-109.94],'OBREGON':[27.49,-109.94],'NAVOJOA':[27.07,-109.44],'NOGALES':[31.30,-110.94],'VILLAHERMOSA':[17.99,-92.93],'TAMPICO':[22.23,-97.86],'MATAMOROS':[25.87,-97.50],'NUEVO LAREDO':[27.48,-99.52],'REYNOSA':[26.09,-98.27],'TLAXCALA':[19.31,-98.24],'VERACRUZ':[19.17,-96.13],'XALAPA':[19.54,-96.91],'COATZACOALCOS':[18.15,-94.43],'MERIDA':[20.97,-89.62],'ZACATECAS':[22.77,-102.58],'FRESNILLO':[23.18,-102.88],'ACAPULCO':[16.85,-99.82],'TEPIC':[21.50,-104.90],'PACHUCA':[20.10,-98.76],'CHILPANCINGO':[17.55,-99.50],'ANA':[25.54,-103.41],'GOMEZ':[25.57,-103.50],'RAMOS ARIZPE':[25.54,-100.95],'ARTEAGA':[25.46,-100.81],'FRONTERA':[25.94,-101.68],'SABINAS':[27.85,-101.12],'SAN PEDRO':[25.75,-102.99],'MATAMOROS':[25.87,-97.50]};
@@ -906,6 +912,10 @@ function renderAC(w){
   const coe=`<option value="">— Sin agrupar —</option>`+co;
   const ag=['SUM','COUNT','AVG','MAX','MIN'].map(a=>`<option value="${a}" ${w.aggFunc===a?'selected':''}>${a}</option>`).join('');
   const li=[10,20,50,100,200].map(n=>`<option value="${n}" ${w.limit==n?'selected':''}>${n}</option>`).join('')+`<option value="99999" ${w.limit==99999?'selected':''}>Todos</option>`;
+  if(w.chartType==='heatmap'){
+    document.getElementById('ay2-row').style.display='';
+    document.getElementById('ay2-lbl').textContent='Valor (numérico)';
+  }
   if(w.chartType==='table'){
     cfg.innerHTML=`<div class="cl">Columnas a mostrar</div><div class="ckg">${cols.map((c,i)=>`<label class="cki"><input type="checkbox" value="${c}" ${(w.tableCols.includes(c)||(w.tableCols.length===0&&i<6))?'checked':''} onchange="onAC()">${c}</label>`).join('')}</div><div class="cl" style="margin-top:6px;">Máx. filas</div><select id="al" onchange="onAC()">${li}</select>`;
   }else if(w.chartType==='kpi'){
@@ -1195,7 +1205,11 @@ async function loadDvWidget(i,w){
     renderW(cnt,rows,w,w.chartType==='map'?mapId:canvasId,false,i);
     // Actions
     const act=document.getElementById(`wact-${i}`);
-    if(w.chartType==='table'){act.innerHTML=`<button class="ib" onclick="expCSV(${i})" title="CSV">⬇ CSV</button>`;}
+    if(w.chartType==='heatmap'){
+    document.getElementById('ay2-row').style.display='';
+    document.getElementById('ay2-lbl').textContent='Valor (numérico)';
+  }
+  if(w.chartType==='table'){act.innerHTML=`<button class="ib" onclick="expCSV(${i})" title="CSV">⬇ CSV</button>`;}
     else if(['gauge','kpi','map','ranking'].includes(w.chartType)){act.innerHTML=`<span class="rcount" style="color:var(--success);font-size:9px;">✓ ${rows.length}</span>`;}
     else{act.innerHTML=`<button class="ib" onclick="expPNG('${canvasId}','${w.name}')" title="PNG">⬇ PNG</button><span class="rcount" style="color:var(--success);font-size:9px;margin-left:3px;">✓ ${rows.length}</span>`;}
   }catch{
@@ -1227,6 +1241,9 @@ function renderW(cnt,rows,w,cid,isPrev,widgetIdx){
     case'compare':return rCompare(cnt,rows,w,cid,isPrev);
     case'map':return rMap(cnt,rows,w,cid,isPrev);
     case'ranking':return rRanking(cnt,rows,w);
+    case'heatmap':return rHeatmap(cnt,rows,w);
+    case'funnel':return rFunnel(cnt,rows,w);
+    case'treemap':return rTreemap(cnt,rows,w);
     default:return rChart(cnt,rows,w,cid,isPrev,widgetIdx);
   }
 }
@@ -1350,6 +1367,116 @@ function findCC(raw){
   if(MXC[n])return MXC[n];
   for(const[city,coords]of Object.entries(MXC)){if(n.includes(city)||city.includes(n))return coords;}
   return null;
+}
+
+
+// ═══════════════════════════════════
+//  HEATMAP (eje X = columna cat, eje Y = otra cat, valor = numérico)
+// ═══════════════════════════════════
+function rHeatmap(cnt,rows,w){
+  if(!w.axisX||!w.axisY||!w.axisY2){cnt.innerHTML='<div class="werr">Configura Eje X, Eje Y y Valor</div>';return;}
+  const xVals=[...new Set(rows.map(r=>String(r[w.axisX]??'')))].filter(Boolean).slice(0,20);
+  const yVals=[...new Set(rows.map(r=>String(r[w.axisY]??'')))].filter(Boolean).slice(0,15);
+  const grid={};
+  rows.forEach(r=>{
+    const x=String(r[w.axisX]??'');const y=String(r[w.axisY]??'');
+    const v=parseFloat(r[w.axisY2])||0;
+    if(!grid[y])grid[y]={};
+    grid[y][x]=(grid[y][x]||0)+v;
+  });
+  const allVals=yVals.flatMap(y=>xVals.map(x=>grid[y]?.[x]||0));
+  const maxV=Math.max(...allVals,1);
+  const cell=Math.max(32,Math.floor((cnt.offsetWidth||400)/(xVals.length+1))-2);
+  let html=`<div style="overflow:auto;"><table style="border-collapse:collapse;font-size:10px;">`;
+  html+=`<tr><th style="padding:3px 6px;"></th>${xVals.map(x=>`<th style="padding:3px 4px;color:var(--muted);white-space:nowrap;max-width:${cell}px;overflow:hidden;text-overflow:ellipsis;" title="${x}">${x.substring(0,10)}</th>`).join('')}</tr>`;
+  yVals.forEach(y=>{
+    html+=`<tr><td style="padding:3px 6px;color:var(--muted);white-space:nowrap;">${y.substring(0,14)}</td>`;
+    xVals.forEach(x=>{
+      const v=grid[y]?.[x]||0;const pct=v/maxV;
+      const alpha=0.1+pct*0.85;
+      const fmt=v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'k':v.toFixed(0);
+      html+=`<td title="${x} / ${y}: ${fmt}" style="width:${cell}px;height:${cell}px;background:rgba(200,168,75,${alpha.toFixed(2)});text-align:center;font-size:9px;color:${pct>0.5?'#000':'var(--text)'};">${pct>0.05?fmt:''}</td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</table></div>`;
+  cnt.innerHTML=html;
+}
+
+// ═══════════════════════════════════
+//  FUNNEL
+// ═══════════════════════════════════
+function rFunnel(cnt,rows,w){
+  if(!w.axisX||!w.axisY){cnt.innerHTML='<div class="werr">Configura Categoría y Valor</div>';return;}
+  const data=agg(rows,w.axisX,w.axisY,w.aggFunc||'SUM',w.limit||10,'desc');
+  if(!data.labels.length){cnt.innerHTML='<div class="werr">Sin datos</div>';return;}
+  const max=data.values[0]||1;
+  const h=Math.max(36,Math.floor((cnt.offsetHeight||300)/data.labels.length)-6);
+  const fmt=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'k':v.toLocaleString('es-MX');
+  let html=`<div style="padding:8px 16px;display:flex;flex-direction:column;gap:5px;height:100%;justify-content:center;">`;
+  data.labels.forEach((lbl,i)=>{
+    const pct=data.values[i]/max;
+    const w2=Math.max(20,pct*100);
+    const opacity=1-i*0.06;
+    html+=`<div style="display:flex;align-items:center;gap:8px;">
+      <div style="width:90px;font-size:10px;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${lbl}">${lbl.substring(0,12)}</div>
+      <div style="flex:1;position:relative;height:${h}px;">
+        <div style="position:absolute;left:50%;transform:translateX(-50%);width:${w2}%;height:100%;background:rgba(200,168,75,${opacity.toFixed(2)});border-radius:3px;transition:width .3s;"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;">${fmt(data.values[i])} <span style="color:var(--muted);margin-left:4px;">(${(pct*100).toFixed(0)}%)</span></div>
+      </div>
+    </div>`;
+  });
+  html+=`</div>`;
+  cnt.innerHTML=html;
+}
+
+// ═══════════════════════════════════
+//  TREEMAP
+// ═══════════════════════════════════
+function rTreemap(cnt,rows,w){
+  if(!w.axisX||!w.axisY){cnt.innerHTML='<div class="werr">Configura Categoría y Valor</div>';return;}
+  const data=agg(rows,w.axisX,w.axisY,w.aggFunc||'SUM',w.limit||20,'desc');
+  if(!data.labels.length){cnt.innerHTML='<div class="werr">Sin datos</div>';return;}
+  const total=data.values.reduce((a,b)=>a+b,0)||1;
+  const W=cnt.offsetWidth||400;const H=cnt.offsetHeight||300;
+  const fmt=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'k':v.toLocaleString('es-MX');
+  // Squarify algorithm
+  const items=data.labels.map((l,i)=>({l,v:data.values[i],area:(data.values[i]/total)*W*H}));
+  const rects=squarify(items,0,0,W,H);
+  const colors=['rgba(200,168,75,0.9)','rgba(200,168,75,0.7)','rgba(200,168,75,0.5)','rgba(180,148,55,0.8)','rgba(160,128,45,0.7)'];
+  let html=`<div style="position:relative;width:${W}px;height:${H}px;overflow:hidden;">`;
+  rects.forEach((r,i)=>{
+    const fs=Math.min(13,Math.max(8,r.w/8));
+    html+=`<div title="${r.l}: ${fmt(r.v)}" style="position:absolute;left:${r.x}px;top:${r.y}px;width:${r.w}px;height:${r.h}px;background:${colors[i%colors.length]};border:1px solid var(--bg);box-sizing:border-box;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:default;">
+      <div style="font-size:${fs}px;font-weight:700;color:#000;text-align:center;padding:2px;overflow:hidden;word-break:break-word;line-height:1.2;">${r.l.substring(0,16)}</div>
+      ${r.h>30?`<div style="font-size:${fs-1}px;color:rgba(0,0,0,0.7);">${fmt(r.v)}</div>`:''}
+    </div>`;
+  });
+  html+=`</div>`;
+  cnt.innerHTML=html;
+}
+
+function squarify(items,x,y,w,h){
+  if(!items.length)return[];
+  if(items.length===1)return[{x,y,w,h,l:items[0].l,v:items[0].v}];
+  const total=items.reduce((a,b)=>a+b.area,0);
+  const half=total/2;let sum=0;let split=0;
+  for(let i=0;i<items.length;i++){sum+=items[i].area;if(sum>=half){split=i+1;break;}}
+  split=Math.max(1,Math.min(split,items.length-1));
+  const left=items.slice(0,split);const right=items.slice(split);
+  const lArea=left.reduce((a,b)=>a+b.area,0);
+  const rArea=right.reduce((a,b)=>a+b.area,0);
+  const rects=[];
+  if(w>=h){
+    const lw=w*(lArea/total);const rw=w-lw;
+    let cy=y;left.forEach(it=>{const ih=(it.area/lArea)*h;rects.push({x,y:cy,w:lw,h:ih,l:it.l,v:it.v});cy+=ih;});
+    cy=y;right.forEach(it=>{const ih=(it.area/rArea)*h;rects.push({x:x+lw,y:cy,w:rw,h:ih,l:it.l,v:it.v});cy+=ih;});
+  }else{
+    const lh=h*(lArea/total);const rh=h-lh;
+    let cx=x;left.forEach(it=>{const iw=(it.area/lArea)*w;rects.push({x:cx,y,w:iw,h:lh,l:it.l,v:it.v});cx+=iw;});
+    cx=x;right.forEach(it=>{const iw=(it.area/rArea)*w;rects.push({x:cx,y:y+lh,w:iw,h:rh,l:it.l,v:it.v});cx+=iw;});
+  }
+  return rects;
 }
 
 function rChart(cnt,rows,w,cid,isPrev,widgetIdx){

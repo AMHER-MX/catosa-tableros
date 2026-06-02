@@ -861,11 +861,18 @@ async function fetchTD(tbl,lim,w){
     // Build URL with server-side date filter if available
     let url=`${API}/api/table/${encodeURIComponent(tbl)}?limit=${lim||1000}`;
     if(w && w.dateCol && w.datePreset){
-      url+=`&dateCol=${encodeURIComponent(w.dateCol)}&preset=${w.datePreset}`;
+      url+=`&dateCol=${encodeURIComponent(w.dateCol)}`;
+      // Convert preset to explicit dates for server-side filtering
+      let df='', dt='';
       if(w.datePreset==='custom'){
-        if(w.dateFrom) url+=`&dateFrom=${w.dateFrom}`;
-        if(w.dateTo)   url+=`&dateTo=${w.dateTo}`;
+        df=w.dateFrom||''; dt=w.dateTo||'';
+      } else {
+        const [from,to]=getDR(w.datePreset);
+        if(from) df=from.toISOString().slice(0,10);
+        if(to)   dt=to.toISOString().slice(0,10);
       }
+      if(df) url+=`&dateFrom=${df}`;
+      if(dt) url+=`&dateTo=${dt}`;
     }
     const r=await fetch(url);
     const d=await r.json();
@@ -1166,8 +1173,12 @@ async function loadDvWidget(i,w){
       const lim=w.dataLimit||1000;
       let dvUrl=`${API}/api/table/${encodeURIComponent(w.tableName)}?limit=${lim}`;
       if(w.dateCol&&w.datePreset){
-        dvUrl+=`&dateCol=${encodeURIComponent(w.dateCol)}&preset=${w.datePreset}`;
-        if(w.datePreset==='custom'){if(w.dateFrom)dvUrl+=`&dateFrom=${w.dateFrom}`;if(w.dateTo)dvUrl+=`&dateTo=${w.dateTo}`;}
+        dvUrl+=`&dateCol=${encodeURIComponent(w.dateCol)}`;
+        let df2='',dt2='';
+        if(w.datePreset==='custom'){df2=w.dateFrom||'';dt2=w.dateTo||'';}
+        else{const[from2,to2]=getDR(w.datePreset);if(from2)df2=from2.toISOString().slice(0,10);if(to2)dt2=to2.toISOString().slice(0,10);}
+        if(df2)dvUrl+=`&dateFrom=${df2}`;
+        if(dt2)dvUrl+=`&dateTo=${dt2}`;
       }
       const r=await fetch(dvUrl);
       const d=await r.json();

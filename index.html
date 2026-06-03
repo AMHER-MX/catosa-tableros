@@ -1371,7 +1371,21 @@ function findCC(raw){
 //  HEATMAP (eje X = columna cat, eje Y = otra cat, valor = numérico)
 // ═══════════════════════════════════
 function rHeatmap(cnt,rows,w){
-  if(!w.axisX||!w.axisY||!w.axisY2){cnt.innerHTML='<div class="werr">Configura Eje X, Eje Y y Valor</div>';return;}
+  // For heatmap: axisX=col1, axisY=col2 (second category), axisY2=value
+  // If axisY2 not set, use axisY as value and axisX as only category (simpler mode)
+  const hmVal=w.axisY2||w.axisY;
+  const hmY=w.axisY2?w.axisY:null;
+  if(!w.axisX||!w.axisY){cnt.innerHTML='<div class="werr">Configura Eje X y Eje Y</div>';return;}
+  if(!hmY){
+    // Simple mode: use agg like other charts
+    const hpairs=agg(rows,w.axisX,hmVal,w.aggFunc||'SUM',20,'desc');
+    if(!hpairs.length){cnt.innerHTML='<div class="werr">Sin datos</div>';return;}
+    const hmax=hpairs[0][1]||1;
+    const hfmt=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'k':v.toFixed(0);
+    let hhtml=`<div style="overflow:auto;padding:8px;"><table style="border-collapse:collapse;font-size:10px;width:100%;">`;
+    hpairs.forEach(([lbl,val])=>{const p=val/hmax;const a=0.1+p*0.85;hhtml+=`<tr><td style="padding:3px 8px;color:var(--muted);white-space:nowrap;">${lbl.substring(0,18)}</td><td style="width:100%;"><div style="height:20px;width:${Math.max(2,p*100)}%;background:rgba(200,168,75,${a.toFixed(2)});border-radius:2px;"></div></td><td style="padding:3px 8px;font-size:9px;">${hfmt(val)}</td></tr>`;});
+    hhtml+=`</table></div>`;cnt.innerHTML=hhtml;return;
+  }
   const xVals=[...new Set(rows.map(r=>String(r[w.axisX]??'')))].filter(Boolean).slice(0,20);
   const yVals=[...new Set(rows.map(r=>String(r[w.axisY]??'')))].filter(Boolean).slice(0,15);
   const grid={};
@@ -1405,21 +1419,21 @@ function rHeatmap(cnt,rows,w){
 // ═══════════════════════════════════
 function rFunnel(cnt,rows,w){
   if(!w.axisX||!w.axisY){cnt.innerHTML='<div class="werr">Configura Categoría y Valor</div>';return;}
-  const data=agg(rows,w.axisX,w.axisY,w.aggFunc||'SUM',w.limit||10,'desc');
-  if(!data.labels.length){cnt.innerHTML='<div class="werr">Sin datos</div>';return;}
-  const max=data.values[0]||1;
-  const h=Math.max(36,Math.floor((cnt.offsetHeight||300)/data.labels.length)-6);
+  const pairs=agg(rows,w.axisX,w.axisY,w.aggFunc||'SUM',w.limit||10,'desc');
+  if(!pairs.length){cnt.innerHTML='<div class="werr">Sin datos</div>';return;}
+  const max=pairs[0][1]||1;
+  const h=Math.max(36,Math.floor(280/pairs.length)-6);
   const fmt=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'k':v.toLocaleString('es-MX');
-  let html=`<div style="padding:8px 16px;display:flex;flex-direction:column;gap:5px;height:100%;justify-content:center;">`;
-  data.labels.forEach((lbl,i)=>{
-    const pct=data.values[i]/max;
+  let html=`<div style="padding:8px 16px;display:flex;flex-direction:column;gap:5px;justify-content:center;">`;
+  pairs.forEach(([lbl,val],i)=>{
+    const pct=val/max;
     const w2=Math.max(20,pct*100);
     const opacity=1-i*0.06;
     html+=`<div style="display:flex;align-items:center;gap:8px;">
       <div style="width:90px;font-size:10px;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${lbl}">${lbl.substring(0,12)}</div>
       <div style="flex:1;position:relative;height:${h}px;">
         <div style="position:absolute;left:50%;transform:translateX(-50%);width:${w2}%;height:100%;background:rgba(200,168,75,${opacity.toFixed(2)});border-radius:3px;transition:width .3s;"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;">${fmt(data.values[i])} <span style="color:var(--muted);margin-left:4px;">(${(pct*100).toFixed(0)}%)</span></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;">${fmt(val)} <span style="color:var(--muted);margin-left:4px;">(${(pct*100).toFixed(0)}%)</span></div>
       </div>
     </div>`;
   });
@@ -1432,13 +1446,14 @@ function rFunnel(cnt,rows,w){
 // ═══════════════════════════════════
 function rTreemap(cnt,rows,w){
   if(!w.axisX||!w.axisY){cnt.innerHTML='<div class="werr">Configura Categoría y Valor</div>';return;}
-  const data=agg(rows,w.axisX,w.axisY,w.aggFunc||'SUM',w.limit||20,'desc');
-  if(!data.labels.length){cnt.innerHTML='<div class="werr">Sin datos</div>';return;}
-  const total=data.values.reduce((a,b)=>a+b,0)||1;
-  const W=cnt.offsetWidth||400;const H=cnt.offsetHeight||300;
+  const pairs2=agg(rows,w.axisX,w.axisY,w.aggFunc||'SUM',w.limit||20,'desc');
+  if(!pairs2.length){cnt.innerHTML='<div class="werr">Sin datos</div>';return;}
+  const total=pairs2.reduce((a,b)=>a+b[1],0)||1;
+  const W=Math.max(cnt.offsetWidth||0,cnt.parentElement?.offsetWidth||0,400);
+  const H=Math.max(cnt.offsetHeight||0,200);
   const fmt=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?(v/1000).toFixed(1)+'k':v.toLocaleString('es-MX');
   // Squarify algorithm
-  const items=data.labels.map((l,i)=>({l,v:data.values[i],area:(data.values[i]/total)*W*H}));
+  const items=pairs2.map(([l,v])=>({l,v,area:(v/total)*W*H}));
   const rects=squarify(items,0,0,W,H);
   const colors=['rgba(200,168,75,0.9)','rgba(200,168,75,0.7)','rgba(200,168,75,0.5)','rgba(180,148,55,0.8)','rgba(160,128,45,0.7)'];
   let html=`<div style="position:relative;width:${W}px;height:${H}px;overflow:hidden;">`;

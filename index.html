@@ -4,10 +4,283 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Catosa · Tableros</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js">
+    // ── SHARE & PUBLIC VIEW ───────────────────────────────────────────────
+    function shareDash() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (!dash) return;
+        // Build shareable URL with area + dashId encoded in hash
+        const payload = btoa(JSON.stringify({ area: S.area.id, dashId: dash.id }));
+        const url = `${location.origin}${location.pathname}#share=${payload}`;
+        navigator.clipboard.writeText(url).then(() => {
+            const t = document.getElementById('share-toast');
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2500);
+        }).catch(() => {
+            prompt('Copia este link:', url);
+        });
+    }
+
+    async function openSharedView(payload) {
+        try {
+            const { area, dashId } = JSON.parse(atob(payload));
+            // Load dashboards for that area
+            const r = await fetch(`${API}/api/tableros/${area}`);
+            const dashes = await r.json();
+            const dash = dashes.find(d => d.id === dashId);
+            if (!dash) { alert('Tablero no encontrado o fue eliminado.'); return; }
+
+            document.getElementById('pub-title').textContent = dash.name;
+            document.getElementById('pub-meta').textContent =
+                `por ${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+
+            const container = document.getElementById('pub-widgets');
+            container.innerHTML = '';
+            document.getElementById('pub-overlay').classList.add('open');
+
+            // Render each widget
+            for (const w of (dash.widgets || [])) {
+                const card = document.createElement('div');
+                card.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;';
+                card.innerHTML = `<div style="font-size:13px;font-weight:700;margin-bottom:10px;">${CI[w.chartType]||'📊'} ${w.name||'Gráfica'}</div>
+                    <div id="pw-${w.id}" style="height:280px;"></div>`;
+                container.appendChild(card);
+
+                // Fetch data and render
+                try {
+                    const rows = await fetchTD(w);
+                    const cnt = document.getElementById(`pw-${w.id}`);
+                    if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+                } catch(e) {
+                    const cnt = document.getElementById(`pw-${w.id}`);
+                    if (cnt) cnt.innerHTML = `<div class="werr">Error: ${e.message}</div>`;
+                }
+            }
+        } catch(e) {
+            alert('Link inválido o expirado.');
+        }
+    }
+
+    function closePubView() {
+        document.getElementById('pub-overlay').classList.remove('open');
+        history.replaceState(null, '', location.pathname);
+    }
+
+    async function exportDashPDF(fromPub = false) {
+        if (!fromPub) {
+            // Open public view first so all charts are rendered in a clean layout
+            const dash = S.dashboards.find(d => d.id === S.currentDashId);
+            if (!dash) return;
+            const payload = btoa(JSON.stringify({ area: S.area.id, dashId: dash.id }));
+            await openSharedView(payload);
+            await new Promise(r => setTimeout(r, 1500));
+        }
+        window.print();
+    }
+
+    // ── Check on load if URL has a share hash ─────────────────────────────
+    (function checkShareHash() {
+        const hash = location.hash;
+        if (hash.startsWith('#share=')) {
+            const payload = hash.replace('#share=', '');
+            // Wait for API to be defined then open
+            const tryOpen = () => {
+                if (typeof API !== 'undefined' && typeof fetchTD !== 'undefined') {
+                    openSharedView(payload);
+                } else {
+                    setTimeout(tryOpen, 200);
+                }
+            };
+            tryOpen();
+        }
+    })();
+
+    </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js">
+    // ── SHARE & PUBLIC VIEW ───────────────────────────────────────────────
+    function shareDash() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (!dash) return;
+        // Build shareable URL with area + dashId encoded in hash
+        const payload = btoa(JSON.stringify({ area: S.area.id, dashId: dash.id }));
+        const url = `${location.origin}${location.pathname}#share=${payload}`;
+        navigator.clipboard.writeText(url).then(() => {
+            const t = document.getElementById('share-toast');
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2500);
+        }).catch(() => {
+            prompt('Copia este link:', url);
+        });
+    }
+
+    async function openSharedView(payload) {
+        try {
+            const { area, dashId } = JSON.parse(atob(payload));
+            // Load dashboards for that area
+            const r = await fetch(`${API}/api/tableros/${area}`);
+            const dashes = await r.json();
+            const dash = dashes.find(d => d.id === dashId);
+            if (!dash) { alert('Tablero no encontrado o fue eliminado.'); return; }
+
+            document.getElementById('pub-title').textContent = dash.name;
+            document.getElementById('pub-meta').textContent =
+                `por ${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+
+            const container = document.getElementById('pub-widgets');
+            container.innerHTML = '';
+            document.getElementById('pub-overlay').classList.add('open');
+
+            // Render each widget
+            for (const w of (dash.widgets || [])) {
+                const card = document.createElement('div');
+                card.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;';
+                card.innerHTML = `<div style="font-size:13px;font-weight:700;margin-bottom:10px;">${CI[w.chartType]||'📊'} ${w.name||'Gráfica'}</div>
+                    <div id="pw-${w.id}" style="height:280px;"></div>`;
+                container.appendChild(card);
+
+                // Fetch data and render
+                try {
+                    const rows = await fetchTD(w);
+                    const cnt = document.getElementById(`pw-${w.id}`);
+                    if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+                } catch(e) {
+                    const cnt = document.getElementById(`pw-${w.id}`);
+                    if (cnt) cnt.innerHTML = `<div class="werr">Error: ${e.message}</div>`;
+                }
+            }
+        } catch(e) {
+            alert('Link inválido o expirado.');
+        }
+    }
+
+    function closePubView() {
+        document.getElementById('pub-overlay').classList.remove('open');
+        history.replaceState(null, '', location.pathname);
+    }
+
+    async function exportDashPDF(fromPub = false) {
+        if (!fromPub) {
+            // Open public view first so all charts are rendered in a clean layout
+            const dash = S.dashboards.find(d => d.id === S.currentDashId);
+            if (!dash) return;
+            const payload = btoa(JSON.stringify({ area: S.area.id, dashId: dash.id }));
+            await openSharedView(payload);
+            await new Promise(r => setTimeout(r, 1500));
+        }
+        window.print();
+    }
+
+    // ── Check on load if URL has a share hash ─────────────────────────────
+    (function checkShareHash() {
+        const hash = location.hash;
+        if (hash.startsWith('#share=')) {
+            const payload = hash.replace('#share=', '');
+            // Wait for API to be defined then open
+            const tryOpen = () => {
+                if (typeof API !== 'undefined' && typeof fetchTD !== 'undefined') {
+                    openSharedView(payload);
+                } else {
+                    setTimeout(tryOpen, 200);
+                }
+            };
+            tryOpen();
+        }
+    })();
+
+    </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
+    // ── SHARE & PUBLIC VIEW ───────────────────────────────────────────────
+    function shareDash() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (!dash) return;
+        // Build shareable URL with area + dashId encoded in hash
+        const payload = btoa(JSON.stringify({ area: S.area.id, dashId: dash.id }));
+        const url = `${location.origin}${location.pathname}#share=${payload}`;
+        navigator.clipboard.writeText(url).then(() => {
+            const t = document.getElementById('share-toast');
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2500);
+        }).catch(() => {
+            prompt('Copia este link:', url);
+        });
+    }
+
+    async function openSharedView(payload) {
+        try {
+            const { area, dashId } = JSON.parse(atob(payload));
+            // Load dashboards for that area
+            const r = await fetch(`${API}/api/tableros/${area}`);
+            const dashes = await r.json();
+            const dash = dashes.find(d => d.id === dashId);
+            if (!dash) { alert('Tablero no encontrado o fue eliminado.'); return; }
+
+            document.getElementById('pub-title').textContent = dash.name;
+            document.getElementById('pub-meta').textContent =
+                `por ${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+
+            const container = document.getElementById('pub-widgets');
+            container.innerHTML = '';
+            document.getElementById('pub-overlay').classList.add('open');
+
+            // Render each widget
+            for (const w of (dash.widgets || [])) {
+                const card = document.createElement('div');
+                card.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;';
+                card.innerHTML = `<div style="font-size:13px;font-weight:700;margin-bottom:10px;">${CI[w.chartType]||'📊'} ${w.name||'Gráfica'}</div>
+                    <div id="pw-${w.id}" style="height:280px;"></div>`;
+                container.appendChild(card);
+
+                // Fetch data and render
+                try {
+                    const rows = await fetchTD(w);
+                    const cnt = document.getElementById(`pw-${w.id}`);
+                    if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+                } catch(e) {
+                    const cnt = document.getElementById(`pw-${w.id}`);
+                    if (cnt) cnt.innerHTML = `<div class="werr">Error: ${e.message}</div>`;
+                }
+            }
+        } catch(e) {
+            alert('Link inválido o expirado.');
+        }
+    }
+
+    function closePubView() {
+        document.getElementById('pub-overlay').classList.remove('open');
+        history.replaceState(null, '', location.pathname);
+    }
+
+    async function exportDashPDF(fromPub = false) {
+        if (!fromPub) {
+            // Open public view first so all charts are rendered in a clean layout
+            const dash = S.dashboards.find(d => d.id === S.currentDashId);
+            if (!dash) return;
+            const payload = btoa(JSON.stringify({ area: S.area.id, dashId: dash.id }));
+            await openSharedView(payload);
+            await new Promise(r => setTimeout(r, 1500));
+        }
+        window.print();
+    }
+
+    // ── Check on load if URL has a share hash ─────────────────────────────
+    (function checkShareHash() {
+        const hash = location.hash;
+        if (hash.startsWith('#share=')) {
+            const payload = hash.replace('#share=', '');
+            // Wait for API to be defined then open
+            const tryOpen = () => {
+                if (typeof API !== 'undefined' && typeof fetchTD !== 'undefined') {
+                    openSharedView(payload);
+                } else {
+                    setTimeout(tryOpen, 200);
+                }
+            };
+            tryOpen();
+        }
+    })();
+
+    </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
 :root{--bg:#0d0d0d;--surface:#161616;--surface2:#1f1f1f;--border:#2a2a2a;--gold:#c8a84b;--gold-light:#e2c46e;--gold-dim:rgba(200,168,75,.12);--text:#e8e4d8;--muted:#888;--danger:#e05555;--success:#4caf7d;}
@@ -281,7 +554,19 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .cf-active-bar button{background:none;border:none;color:var(--gold);cursor:pointer;font-size:13px;padding:0 4px;}
 .gf-loading{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:4px;}
 .no-wm{display:flex;flex-direction:column;align-items:center;justify-content:center;height:180px;color:var(--muted);font-size:12px;gap:7px;}
-</style>
+
+        /* ── SHARE & PUBLIC VIEW ─────────────────────────── */
+        #pub-overlay { display:none; position:fixed; inset:0; z-index:99999; background:var(--bg); overflow-y:auto; }
+        #pub-overlay.open { display:block; }
+        .pub-header { display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid var(--border); background:var(--surface); }
+        .pub-header h1 { font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--gold); margin:0; }
+        .pub-header p { font-size:11px; color:var(--muted); margin:4px 0 0; }
+        .pub-close { background:none; border:1px solid var(--border); color:var(--muted); padding:6px 14px; border-radius:8px; cursor:pointer; font-size:12px; }
+        .pub-body { padding:16px; }
+        #share-toast { display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#1a1a1a; border:1px solid var(--gold); color:var(--gold); padding:10px 20px; border-radius:12px; font-size:13px; z-index:99999; white-space:nowrap; }
+        @media print { #pub-overlay { display:block !important; } #pub-overlay .pub-header button { display:none; } body > *:not(#pub-overlay) { display:none !important; } }
+
+        </style>
 </head>
 <body>
 
@@ -482,6 +767,8 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
           </div>
           <div class="dv-acts">
             <button class="btn out" onclick="refreshDash()">↺ Actualizar</button>
+            <button class="btn out" onclick="shareDash()">🔗 Compartir</button>
+            <button class="btn out" onclick="exportDashPDF()">📄 PDF</button>
             <button class="btn out" id="btn-edit" onclick="editDash()">✏️ Editar</button>
             <button class="btn red" id="btn-del" onclick="confirmDel()">🗑️ Eliminar</button>
           </div>
@@ -1670,6 +1957,114 @@ const _origLoadWConf=loadWConf;
 function fmt(n){if(n===null||n===undefined||isNaN(n))return'—';if(Math.abs(n)>=1000000)return(n/1000000).toFixed(1)+'M';if(Math.abs(n)>=1000)return(n/1000).toFixed(1)+'K';return Number(n).toLocaleString('es-MX',{maximumFractionDigits:2});}
 function ppre(p){return{today:'Hoy',thisWeek:'Semana',thisMonth:'Este mes',lastMonth:'Mes ant.',thisYear:'Este año',lastYear:'Año ant.',q1:'Q1',q2:'Q2',q3:'Q3',q4:'Q4',custom:'Rango'}[p]||p;}
 function toast(msg,type=''){const el=document.createElement('div');el.className=`toast ${type}`;el.textContent=msg;document.getElementById('tc').appendChild(el);setTimeout(()=>el.remove(),3500);}
-</script>
+
+    // ── SHARE & PUBLIC VIEW ───────────────────────────────────────────────
+    function shareDash() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (!dash) return;
+        // Build shareable URL with area + dashId encoded in hash
+        const payload = btoa(JSON.stringify({ area: S.area.id, dashId: dash.id }));
+        const url = `${location.origin}${location.pathname}#share=${payload}`;
+        navigator.clipboard.writeText(url).then(() => {
+            const t = document.getElementById('share-toast');
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2500);
+        }).catch(() => {
+            prompt('Copia este link:', url);
+        });
+    }
+
+    async function openSharedView(payload) {
+        try {
+            const { area, dashId } = JSON.parse(atob(payload));
+            // Load dashboards for that area
+            const r = await fetch(`${API}/api/tableros/${area}`);
+            const dashes = await r.json();
+            const dash = dashes.find(d => d.id === dashId);
+            if (!dash) { alert('Tablero no encontrado o fue eliminado.'); return; }
+
+            document.getElementById('pub-title').textContent = dash.name;
+            document.getElementById('pub-meta').textContent =
+                `por ${dash.author} · ${new Date(dash.createdAt).toLocaleDateString('es-MX')} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+
+            const container = document.getElementById('pub-widgets');
+            container.innerHTML = '';
+            document.getElementById('pub-overlay').classList.add('open');
+
+            // Render each widget
+            for (const w of (dash.widgets || [])) {
+                const card = document.createElement('div');
+                card.style.cssText = 'background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:14px;';
+                card.innerHTML = `<div style="font-size:13px;font-weight:700;margin-bottom:10px;">${CI[w.chartType]||'📊'} ${w.name||'Gráfica'}</div>
+                    <div id="pw-${w.id}" style="height:280px;"></div>`;
+                container.appendChild(card);
+
+                // Fetch data and render
+                try {
+                    const rows = await fetchTD(w);
+                    const cnt = document.getElementById(`pw-${w.id}`);
+                    if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+                } catch(e) {
+                    const cnt = document.getElementById(`pw-${w.id}`);
+                    if (cnt) cnt.innerHTML = `<div class="werr">Error: ${e.message}</div>`;
+                }
+            }
+        } catch(e) {
+            alert('Link inválido o expirado.');
+        }
+    }
+
+    function closePubView() {
+        document.getElementById('pub-overlay').classList.remove('open');
+        history.replaceState(null, '', location.pathname);
+    }
+
+    async function exportDashPDF(fromPub = false) {
+        if (!fromPub) {
+            // Open public view first so all charts are rendered in a clean layout
+            const dash = S.dashboards.find(d => d.id === S.currentDashId);
+            if (!dash) return;
+            const payload = btoa(JSON.stringify({ area: S.area.id, dashId: dash.id }));
+            await openSharedView(payload);
+            await new Promise(r => setTimeout(r, 1500));
+        }
+        window.print();
+    }
+
+    // ── Check on load if URL has a share hash ─────────────────────────────
+    (function checkShareHash() {
+        const hash = location.hash;
+        if (hash.startsWith('#share=')) {
+            const payload = hash.replace('#share=', '');
+            // Wait for API to be defined then open
+            const tryOpen = () => {
+                if (typeof API !== 'undefined' && typeof fetchTD !== 'undefined') {
+                    openSharedView(payload);
+                } else {
+                    setTimeout(tryOpen, 200);
+                }
+            };
+            tryOpen();
+        }
+    })();
+
+    </script>
+
+    <!-- ── PUBLIC VIEW OVERLAY ──────────────────────────── -->
+    <div id="pub-overlay">
+        <div class="pub-header">
+            <div>
+                <h1 id="pub-title">—</h1>
+                <p id="pub-meta">—</p>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <button class="pub-close" onclick="exportDashPDF(true)">📄 PDF</button>
+                <button class="pub-close" onclick="closePubView()">✕ Cerrar</button>
+            </div>
+        </div>
+        <div class="pub-body" id="pub-widgets"></div>
+    </div>
+    <div id="share-toast">✅ Link copiado al portapapeles</div>
+
 </body>
 </html>

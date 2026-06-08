@@ -997,18 +997,18 @@ async function loadTables(){
   try{
     const r=await fetch(`${API}/api/tables`);
     const d=await r.json();
-    const allTables=d.tables||[];
-    // Filter by area
-    const allowed=AREA_TABLES[S.area.id]||[];
-    S.tables=allTables.filter(t=>allowed.includes(t));
-    // If no tables match (area has no specific tables), show all
+    const rawTables=d.tables||[];
+    // Support both old (strings) and new ({name,label}) format
+    const allTables=rawTables.map(t=>typeof t==='string'?{name:t,label:t}:t);
+    const allowed=AREA_TABLES[S.area?.id]||[];
+    S.tables=allTables.filter(t=>!allowed.length||allowed.includes(t.name));
     if(!S.tables.length) S.tables=allTables;
     document.getElementById('stbl').textContent=`${S.tables.length} tablas`;
-    const o='<option value="">— Selecciona tabla —</option>'+S.tables.map(t=>`<option value="${t}">${t}</option>`).join('');
+    const o='<option value="">— Selecciona tabla —</option>'+S.tables.map(t=>`<option value="${t.name}">${t.label}</option>`).join('');
     document.getElementById('tsel').innerHTML=o;
     document.getElementById('tl').style.display='none';
     document.getElementById('tsel').style.display='block';
-    document.getElementById('gf-tbl-inp').innerHTML='<option value="">— Selecciona tabla —</option>'+S.tables.map(t=>`<option value="${t}">${t}</option>`).join('');
+    document.getElementById('gf-tbl-inp').innerHTML='<option value="">— Selecciona tabla —</option>'+S.tables.map(t=>`<option value="${t.name}">${t.label}</option>`).join('');
   }catch{document.getElementById('tl').innerHTML='<span style="color:var(--danger);font-size:10px;">⚠️ Sin conexión</span>';}
 }
 

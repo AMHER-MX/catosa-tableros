@@ -132,10 +132,22 @@
             grid.appendChild(card);
 
             try {
-                await fetchTD(w.table, w.limit||1000, w);
-                const rows = S.rawData || [];
+                // Fetch directly without going through S.rawData to avoid race conditions
+                let pRows = [];
+                let pUrl = `${API}/api/table/${encodeURIComponent(w.table)}?limit=${w.limit||1000}`;
+                if(w.dateCol && w.datePreset){
+                    pUrl+=`&dateCol=${encodeURIComponent(w.dateCol)}`;
+                    let df='',dt='';
+                    if(w.datePreset==='custom'){df=w.dateFrom||'';dt=w.dateTo||'';}
+                    else{const[from,to]=getDR(w.datePreset);if(from)df=from.toISOString().slice(0,10);if(to)dt=to.toISOString().slice(0,10);}
+                    if(df)pUrl+=`&dateFrom=${df}`;
+                    if(dt)pUrl+=`&dateTo=${dt}`;
+                }
+                const pResp = await fetch(pUrl);
+                const pData = await pResp.json();
+                pRows = pData.rows || [];
                 const cnt  = document.getElementById(`pw-${w.id}`);
-                if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+                if (cnt) renderW(cnt, pRows, w, `pwc-${w.id}`, false, -1);
             } catch(e) {
                 const cnt = document.getElementById(`pw-${w.id}`);
                 if (cnt) cnt.innerHTML = `<div style="color:#f44;font-size:12px;padding:20px;">${e.message}</div>`;
@@ -332,10 +344,22 @@
             grid.appendChild(card);
 
             try {
-                await fetchTD(w.table, w.limit||1000, w);
-                const rows = S.rawData || [];
+                // Fetch directly without going through S.rawData to avoid race conditions
+                let pRows = [];
+                let pUrl = `${API}/api/table/${encodeURIComponent(w.table)}?limit=${w.limit||1000}`;
+                if(w.dateCol && w.datePreset){
+                    pUrl+=`&dateCol=${encodeURIComponent(w.dateCol)}`;
+                    let df='',dt='';
+                    if(w.datePreset==='custom'){df=w.dateFrom||'';dt=w.dateTo||'';}
+                    else{const[from,to]=getDR(w.datePreset);if(from)df=from.toISOString().slice(0,10);if(to)dt=to.toISOString().slice(0,10);}
+                    if(df)pUrl+=`&dateFrom=${df}`;
+                    if(dt)pUrl+=`&dateTo=${dt}`;
+                }
+                const pResp = await fetch(pUrl);
+                const pData = await pResp.json();
+                pRows = pData.rows || [];
                 const cnt  = document.getElementById(`pw-${w.id}`);
-                if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+                if (cnt) renderW(cnt, pRows, w, `pwc-${w.id}`, false, -1);
             } catch(e) {
                 const cnt = document.getElementById(`pw-${w.id}`);
                 if (cnt) cnt.innerHTML = `<div style="color:#f44;font-size:12px;padding:20px;">${e.message}</div>`;
@@ -531,10 +555,22 @@
             grid.appendChild(card);
 
             try {
-                await fetchTD(w.table, w.limit||1000, w);
-                const rows = S.rawData || [];
+                // Fetch directly without going through S.rawData to avoid race conditions
+                let pRows = [];
+                let pUrl = `${API}/api/table/${encodeURIComponent(w.table)}?limit=${w.limit||1000}`;
+                if(w.dateCol && w.datePreset){
+                    pUrl+=`&dateCol=${encodeURIComponent(w.dateCol)}`;
+                    let df='',dt='';
+                    if(w.datePreset==='custom'){df=w.dateFrom||'';dt=w.dateTo||'';}
+                    else{const[from,to]=getDR(w.datePreset);if(from)df=from.toISOString().slice(0,10);if(to)dt=to.toISOString().slice(0,10);}
+                    if(df)pUrl+=`&dateFrom=${df}`;
+                    if(dt)pUrl+=`&dateTo=${dt}`;
+                }
+                const pResp = await fetch(pUrl);
+                const pData = await pResp.json();
+                pRows = pData.rows || [];
                 const cnt  = document.getElementById(`pw-${w.id}`);
-                if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+                if (cnt) renderW(cnt, pRows, w, `pwc-${w.id}`, false, -1);
             } catch(e) {
                 const cnt = document.getElementById(`pw-${w.id}`);
                 if (cnt) cnt.innerHTML = `<div style="color:#f44;font-size:12px;padding:20px;">${e.message}</div>`;
@@ -2431,10 +2467,22 @@ function toast(msg,type=''){const el=document.createElement('div');el.className=
             grid.appendChild(card);
 
             try {
-                await fetchTD(w.table, w.limit||1000, w);
-                const rows = S.rawData || [];
+                // Fetch directly without going through S.rawData to avoid race conditions
+                let pRows = [];
+                let pUrl = `${API}/api/table/${encodeURIComponent(w.table)}?limit=${w.limit||1000}`;
+                if(w.dateCol && w.datePreset){
+                    pUrl+=`&dateCol=${encodeURIComponent(w.dateCol)}`;
+                    let df='',dt='';
+                    if(w.datePreset==='custom'){df=w.dateFrom||'';dt=w.dateTo||'';}
+                    else{const[from,to]=getDR(w.datePreset);if(from)df=from.toISOString().slice(0,10);if(to)dt=to.toISOString().slice(0,10);}
+                    if(df)pUrl+=`&dateFrom=${df}`;
+                    if(dt)pUrl+=`&dateTo=${dt}`;
+                }
+                const pResp = await fetch(pUrl);
+                const pData = await pResp.json();
+                pRows = pData.rows || [];
                 const cnt  = document.getElementById(`pw-${w.id}`);
-                if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+                if (cnt) renderW(cnt, pRows, w, `pwc-${w.id}`, false, -1);
             } catch(e) {
                 const cnt = document.getElementById(`pw-${w.id}`);
                 if (cnt) cnt.innerHTML = `<div style="color:#f44;font-size:12px;padding:20px;">${e.message}</div>`;

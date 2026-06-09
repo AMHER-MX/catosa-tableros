@@ -132,7 +132,8 @@
             grid.appendChild(card);
 
             try {
-                const rows = await fetchTD(w);
+                await fetchTD(w.table, w.limit||1000, w);
+                const rows = S.rawData || [];
                 const cnt  = document.getElementById(`pw-${w.id}`);
                 if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
             } catch(e) {
@@ -331,7 +332,8 @@
             grid.appendChild(card);
 
             try {
-                const rows = await fetchTD(w);
+                await fetchTD(w.table, w.limit||1000, w);
+                const rows = S.rawData || [];
                 const cnt  = document.getElementById(`pw-${w.id}`);
                 if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
             } catch(e) {
@@ -529,7 +531,8 @@
             grid.appendChild(card);
 
             try {
-                const rows = await fetchTD(w);
+                await fetchTD(w.table, w.limit||1000, w);
+                const rows = S.rawData || [];
                 const cnt  = document.getElementById(`pw-${w.id}`);
                 if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
             } catch(e) {
@@ -2428,7 +2431,8 @@ function toast(msg,type=''){const el=document.createElement('div');el.className=
             grid.appendChild(card);
 
             try {
-                const rows = await fetchTD(w);
+                await fetchTD(w.table, w.limit||1000, w);
+                const rows = S.rawData || [];
                 const cnt  = document.getElementById(`pw-${w.id}`);
                 if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
             } catch(e) {

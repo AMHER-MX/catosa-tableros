@@ -95,6 +95,112 @@
         }
     })();
 
+    
+    // ── MODO PRESENTACIÓN ─────────────────────────────────────────────────
+    let presentTimer  = null;
+    let presentSecs   = 300;
+    let presentTick   = null;
+
+    async function startPresentation() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (!dash) return;
+
+        document.getElementById('present-title').textContent = dash.name;
+        document.getElementById('present-meta').textContent =
+            `por ${dash.author} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+        document.getElementById('present-area').textContent = S.area?.name || '';
+        document.getElementById('present-overlay').classList.add('open');
+
+        await renderPresentWidgets(dash);
+        startPresentTimer();
+    }
+
+    async function renderPresentWidgets(dash) {
+        const grid = document.getElementById('present-grid');
+        grid.innerHTML = '';
+        document.getElementById('present-updated').textContent =
+            '⟳ Actualizado: ' + new Date().toLocaleTimeString('es-MX');
+
+        for (const w of (dash.widgets || [])) {
+            const card = document.createElement('div');
+            card.className = 'present-widget';
+            card.innerHTML = `
+                <div class="present-widget-title">${CI[w.chartType]||'📊'} ${w.name||'Gráfica'}</div>
+                <div class="present-widget-body" id="pw-${w.id}">
+                    <div style="color:var(--muted);font-size:12px;padding:20px;text-align:center;">Cargando...</div>
+                </div>`;
+            grid.appendChild(card);
+
+            try {
+                const rows = await fetchTD(w);
+                const cnt  = document.getElementById(`pw-${w.id}`);
+                if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+            } catch(e) {
+                const cnt = document.getElementById(`pw-${w.id}`);
+                if (cnt) cnt.innerHTML = `<div style="color:#f44;font-size:12px;padding:20px;">${e.message}</div>`;
+            }
+        }
+    }
+
+    function startPresentTimer() {
+        const sel = document.getElementById('present-refresh');
+        presentSecs = parseInt(sel.value) || 0;
+        clearInterval(presentTimer);
+        clearInterval(presentTick);
+        if (!presentSecs) { document.getElementById('present-countdown').textContent = ''; return; }
+
+        let remaining = presentSecs;
+        document.getElementById('present-countdown').textContent = `↻ en ${fmtSecs(remaining)}`;
+        presentTick = setInterval(() => {
+            remaining--;
+            document.getElementById('present-countdown').textContent = `↻ en ${fmtSecs(remaining)}`;
+            if (remaining <= 0) { remaining = presentSecs; refreshPresentation(); }
+        }, 1000);
+    }
+
+    function fmtSecs(s) {
+        if (s >= 60) return `${Math.floor(s/60)}m ${s%60}s`;
+        return `${s}s`;
+    }
+
+    async function refreshPresentation() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (dash) await renderPresentWidgets(dash);
+    }
+
+    function setPresentRefresh(val) {
+        presentSecs = parseInt(val) || 0;
+        startPresentTimer();
+    }
+
+    function setPresentCols(val) {
+        const grid = document.getElementById('present-grid');
+        grid.className = `present-grid cols-${val}`;
+    }
+
+    function stopPresentation() {
+        clearInterval(presentTimer);
+        clearInterval(presentTick);
+        document.getElementById('present-overlay').classList.remove('open');
+        if (document.fullscreenElement) document.exitFullscreen();
+    }
+
+    async function toggleFullscreen() {
+        const el = document.getElementById('present-overlay');
+        if (!document.fullscreenElement) {
+            await el.requestFullscreen().catch(()=>{});
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    // ESC closes presentation
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.getElementById('present-overlay').classList.contains('open')) {
+            if (!document.fullscreenElement) stopPresentation();
+        }
+    });
+
     </script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js">
@@ -188,6 +294,112 @@
         }
     })();
 
+    
+    // ── MODO PRESENTACIÓN ─────────────────────────────────────────────────
+    let presentTimer  = null;
+    let presentSecs   = 300;
+    let presentTick   = null;
+
+    async function startPresentation() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (!dash) return;
+
+        document.getElementById('present-title').textContent = dash.name;
+        document.getElementById('present-meta').textContent =
+            `por ${dash.author} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+        document.getElementById('present-area').textContent = S.area?.name || '';
+        document.getElementById('present-overlay').classList.add('open');
+
+        await renderPresentWidgets(dash);
+        startPresentTimer();
+    }
+
+    async function renderPresentWidgets(dash) {
+        const grid = document.getElementById('present-grid');
+        grid.innerHTML = '';
+        document.getElementById('present-updated').textContent =
+            '⟳ Actualizado: ' + new Date().toLocaleTimeString('es-MX');
+
+        for (const w of (dash.widgets || [])) {
+            const card = document.createElement('div');
+            card.className = 'present-widget';
+            card.innerHTML = `
+                <div class="present-widget-title">${CI[w.chartType]||'📊'} ${w.name||'Gráfica'}</div>
+                <div class="present-widget-body" id="pw-${w.id}">
+                    <div style="color:var(--muted);font-size:12px;padding:20px;text-align:center;">Cargando...</div>
+                </div>`;
+            grid.appendChild(card);
+
+            try {
+                const rows = await fetchTD(w);
+                const cnt  = document.getElementById(`pw-${w.id}`);
+                if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+            } catch(e) {
+                const cnt = document.getElementById(`pw-${w.id}`);
+                if (cnt) cnt.innerHTML = `<div style="color:#f44;font-size:12px;padding:20px;">${e.message}</div>`;
+            }
+        }
+    }
+
+    function startPresentTimer() {
+        const sel = document.getElementById('present-refresh');
+        presentSecs = parseInt(sel.value) || 0;
+        clearInterval(presentTimer);
+        clearInterval(presentTick);
+        if (!presentSecs) { document.getElementById('present-countdown').textContent = ''; return; }
+
+        let remaining = presentSecs;
+        document.getElementById('present-countdown').textContent = `↻ en ${fmtSecs(remaining)}`;
+        presentTick = setInterval(() => {
+            remaining--;
+            document.getElementById('present-countdown').textContent = `↻ en ${fmtSecs(remaining)}`;
+            if (remaining <= 0) { remaining = presentSecs; refreshPresentation(); }
+        }, 1000);
+    }
+
+    function fmtSecs(s) {
+        if (s >= 60) return `${Math.floor(s/60)}m ${s%60}s`;
+        return `${s}s`;
+    }
+
+    async function refreshPresentation() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (dash) await renderPresentWidgets(dash);
+    }
+
+    function setPresentRefresh(val) {
+        presentSecs = parseInt(val) || 0;
+        startPresentTimer();
+    }
+
+    function setPresentCols(val) {
+        const grid = document.getElementById('present-grid');
+        grid.className = `present-grid cols-${val}`;
+    }
+
+    function stopPresentation() {
+        clearInterval(presentTimer);
+        clearInterval(presentTick);
+        document.getElementById('present-overlay').classList.remove('open');
+        if (document.fullscreenElement) document.exitFullscreen();
+    }
+
+    async function toggleFullscreen() {
+        const el = document.getElementById('present-overlay');
+        if (!document.fullscreenElement) {
+            await el.requestFullscreen().catch(()=>{});
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    // ESC closes presentation
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.getElementById('present-overlay').classList.contains('open')) {
+            if (!document.fullscreenElement) stopPresentation();
+        }
+    });
+
     </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js">
     // ── SHARE & PUBLIC VIEW ───────────────────────────────────────────────
@@ -279,6 +491,112 @@
             tryOpen();
         }
     })();
+
+    
+    // ── MODO PRESENTACIÓN ─────────────────────────────────────────────────
+    let presentTimer  = null;
+    let presentSecs   = 300;
+    let presentTick   = null;
+
+    async function startPresentation() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (!dash) return;
+
+        document.getElementById('present-title').textContent = dash.name;
+        document.getElementById('present-meta').textContent =
+            `por ${dash.author} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+        document.getElementById('present-area').textContent = S.area?.name || '';
+        document.getElementById('present-overlay').classList.add('open');
+
+        await renderPresentWidgets(dash);
+        startPresentTimer();
+    }
+
+    async function renderPresentWidgets(dash) {
+        const grid = document.getElementById('present-grid');
+        grid.innerHTML = '';
+        document.getElementById('present-updated').textContent =
+            '⟳ Actualizado: ' + new Date().toLocaleTimeString('es-MX');
+
+        for (const w of (dash.widgets || [])) {
+            const card = document.createElement('div');
+            card.className = 'present-widget';
+            card.innerHTML = `
+                <div class="present-widget-title">${CI[w.chartType]||'📊'} ${w.name||'Gráfica'}</div>
+                <div class="present-widget-body" id="pw-${w.id}">
+                    <div style="color:var(--muted);font-size:12px;padding:20px;text-align:center;">Cargando...</div>
+                </div>`;
+            grid.appendChild(card);
+
+            try {
+                const rows = await fetchTD(w);
+                const cnt  = document.getElementById(`pw-${w.id}`);
+                if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+            } catch(e) {
+                const cnt = document.getElementById(`pw-${w.id}`);
+                if (cnt) cnt.innerHTML = `<div style="color:#f44;font-size:12px;padding:20px;">${e.message}</div>`;
+            }
+        }
+    }
+
+    function startPresentTimer() {
+        const sel = document.getElementById('present-refresh');
+        presentSecs = parseInt(sel.value) || 0;
+        clearInterval(presentTimer);
+        clearInterval(presentTick);
+        if (!presentSecs) { document.getElementById('present-countdown').textContent = ''; return; }
+
+        let remaining = presentSecs;
+        document.getElementById('present-countdown').textContent = `↻ en ${fmtSecs(remaining)}`;
+        presentTick = setInterval(() => {
+            remaining--;
+            document.getElementById('present-countdown').textContent = `↻ en ${fmtSecs(remaining)}`;
+            if (remaining <= 0) { remaining = presentSecs; refreshPresentation(); }
+        }, 1000);
+    }
+
+    function fmtSecs(s) {
+        if (s >= 60) return `${Math.floor(s/60)}m ${s%60}s`;
+        return `${s}s`;
+    }
+
+    async function refreshPresentation() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (dash) await renderPresentWidgets(dash);
+    }
+
+    function setPresentRefresh(val) {
+        presentSecs = parseInt(val) || 0;
+        startPresentTimer();
+    }
+
+    function setPresentCols(val) {
+        const grid = document.getElementById('present-grid');
+        grid.className = `present-grid cols-${val}`;
+    }
+
+    function stopPresentation() {
+        clearInterval(presentTimer);
+        clearInterval(presentTick);
+        document.getElementById('present-overlay').classList.remove('open');
+        if (document.fullscreenElement) document.exitFullscreen();
+    }
+
+    async function toggleFullscreen() {
+        const el = document.getElementById('present-overlay');
+        if (!document.fullscreenElement) {
+            await el.requestFullscreen().catch(()=>{});
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    // ESC closes presentation
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.getElementById('present-overlay').classList.contains('open')) {
+            if (!document.fullscreenElement) stopPresentation();
+        }
+    });
 
     </script>
 <style>
@@ -566,6 +884,30 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
         #share-toast { display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:#1a1a1a; border:1px solid var(--gold); color:var(--gold); padding:10px 20px; border-radius:12px; font-size:13px; z-index:99999; white-space:nowrap; }
         @media print { #pub-overlay { display:block !important; } #pub-overlay .pub-header button { display:none; } body > *:not(#pub-overlay) { display:none !important; } }
 
+        
+        /* ── MODO PRESENTACIÓN ───────────────────────────── */
+        #present-overlay { display:none; position:fixed; inset:0; z-index:99999; background:var(--bg); overflow:hidden; flex-direction:column; }
+        #present-overlay.open { display:flex; }
+        .present-header { display:flex; align-items:center; justify-content:space-between; padding:12px 20px; background:var(--surface); border-bottom:1px solid var(--border); flex-shrink:0; }
+        .present-header h1 { font-family:'Syne',sans-serif; font-size:20px; font-weight:800; color:var(--gold); margin:0; }
+        .present-meta { font-size:11px; color:var(--muted); margin-top:2px; }
+        .present-controls { display:flex; align-items:center; gap:10px; }
+        .present-controls select { background:#1a1a1a; border:1px solid var(--border); color:var(--muted); border-radius:8px; padding:5px 10px; font-size:12px; cursor:pointer; }
+        .present-controls button { background:none; border:1px solid var(--border); color:var(--muted); padding:6px 14px; border-radius:8px; cursor:pointer; font-size:12px; }
+        .present-controls button:hover { border-color:var(--gold); color:var(--gold); }
+        .present-body { flex:1; overflow-y:auto; padding:16px; }
+        .present-grid { display:grid; gap:14px; }
+        .present-grid.cols-1 { grid-template-columns:1fr; }
+        .present-grid.cols-2 { grid-template-columns:1fr 1fr; }
+        .present-grid.cols-3 { grid-template-columns:1fr 1fr 1fr; }
+        .present-widget { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:16px; display:flex; flex-direction:column; }
+        .present-widget-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:10px; flex-shrink:0; }
+        .present-widget-body { flex:1; min-height:220px; }
+        .present-footer { display:flex; align-items:center; justify-content:space-between; padding:8px 20px; background:var(--surface); border-top:1px solid var(--border); font-size:11px; color:var(--muted); flex-shrink:0; }
+        #present-countdown { color:var(--gold); font-weight:700; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .refreshing { animation:spin 1s linear infinite; display:inline-block; }
+
         </style>
 </head>
 <body>
@@ -767,6 +1109,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
           </div>
           <div class="dv-acts">
             <button class="btn out" onclick="refreshDash()">↺ Actualizar</button>
+            <button class="btn out" onclick="startPresentation()">📺 Presentar</button>
             <button class="btn out" onclick="shareDash()">🔗 Compartir</button>
             <button class="btn out" onclick="exportDashPDF()">📄 PDF</button>
             <button class="btn out" id="btn-edit" onclick="editDash()">✏️ Editar</button>
@@ -2048,6 +2391,112 @@ function toast(msg,type=''){const el=document.createElement('div');el.className=
         }
     })();
 
+    
+    // ── MODO PRESENTACIÓN ─────────────────────────────────────────────────
+    let presentTimer  = null;
+    let presentSecs   = 300;
+    let presentTick   = null;
+
+    async function startPresentation() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (!dash) return;
+
+        document.getElementById('present-title').textContent = dash.name;
+        document.getElementById('present-meta').textContent =
+            `por ${dash.author} · ${dash.widgets?.length||0} gráfica${dash.widgets?.length!==1?'s':''}`;
+        document.getElementById('present-area').textContent = S.area?.name || '';
+        document.getElementById('present-overlay').classList.add('open');
+
+        await renderPresentWidgets(dash);
+        startPresentTimer();
+    }
+
+    async function renderPresentWidgets(dash) {
+        const grid = document.getElementById('present-grid');
+        grid.innerHTML = '';
+        document.getElementById('present-updated').textContent =
+            '⟳ Actualizado: ' + new Date().toLocaleTimeString('es-MX');
+
+        for (const w of (dash.widgets || [])) {
+            const card = document.createElement('div');
+            card.className = 'present-widget';
+            card.innerHTML = `
+                <div class="present-widget-title">${CI[w.chartType]||'📊'} ${w.name||'Gráfica'}</div>
+                <div class="present-widget-body" id="pw-${w.id}">
+                    <div style="color:var(--muted);font-size:12px;padding:20px;text-align:center;">Cargando...</div>
+                </div>`;
+            grid.appendChild(card);
+
+            try {
+                const rows = await fetchTD(w);
+                const cnt  = document.getElementById(`pw-${w.id}`);
+                if (cnt) renderW(cnt, rows, w, `pwc-${w.id}`, false, -1);
+            } catch(e) {
+                const cnt = document.getElementById(`pw-${w.id}`);
+                if (cnt) cnt.innerHTML = `<div style="color:#f44;font-size:12px;padding:20px;">${e.message}</div>`;
+            }
+        }
+    }
+
+    function startPresentTimer() {
+        const sel = document.getElementById('present-refresh');
+        presentSecs = parseInt(sel.value) || 0;
+        clearInterval(presentTimer);
+        clearInterval(presentTick);
+        if (!presentSecs) { document.getElementById('present-countdown').textContent = ''; return; }
+
+        let remaining = presentSecs;
+        document.getElementById('present-countdown').textContent = `↻ en ${fmtSecs(remaining)}`;
+        presentTick = setInterval(() => {
+            remaining--;
+            document.getElementById('present-countdown').textContent = `↻ en ${fmtSecs(remaining)}`;
+            if (remaining <= 0) { remaining = presentSecs; refreshPresentation(); }
+        }, 1000);
+    }
+
+    function fmtSecs(s) {
+        if (s >= 60) return `${Math.floor(s/60)}m ${s%60}s`;
+        return `${s}s`;
+    }
+
+    async function refreshPresentation() {
+        const dash = S.dashboards.find(d => d.id === S.currentDashId);
+        if (dash) await renderPresentWidgets(dash);
+    }
+
+    function setPresentRefresh(val) {
+        presentSecs = parseInt(val) || 0;
+        startPresentTimer();
+    }
+
+    function setPresentCols(val) {
+        const grid = document.getElementById('present-grid');
+        grid.className = `present-grid cols-${val}`;
+    }
+
+    function stopPresentation() {
+        clearInterval(presentTimer);
+        clearInterval(presentTick);
+        document.getElementById('present-overlay').classList.remove('open');
+        if (document.fullscreenElement) document.exitFullscreen();
+    }
+
+    async function toggleFullscreen() {
+        const el = document.getElementById('present-overlay');
+        if (!document.fullscreenElement) {
+            await el.requestFullscreen().catch(()=>{});
+        } else {
+            document.exitFullscreen();
+        }
+    }
+
+    // ESC closes presentation
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && document.getElementById('present-overlay').classList.contains('open')) {
+            if (!document.fullscreenElement) stopPresentation();
+        }
+    });
+
     </script>
 
     <!-- ── PUBLIC VIEW OVERLAY ──────────────────────────── -->
@@ -2065,6 +2514,42 @@ function toast(msg,type=''){const el=document.createElement('div');el.className=
         <div class="pub-body" id="pub-widgets"></div>
     </div>
     <div id="share-toast">✅ Link copiado al portapapeles</div>
+
+
+    <!-- ── MODO PRESENTACIÓN ──────────────────────────────── -->
+    <div id="present-overlay">
+        <div class="present-header">
+            <div>
+                <h1 id="present-title">—</h1>
+                <div class="present-meta" id="present-meta">—</div>
+            </div>
+            <div class="present-controls">
+                <select id="present-cols" onchange="setPresentCols(this.value)" title="Columnas">
+                    <option value="1">1 columna</option>
+                    <option value="2" selected>2 columnas</option>
+                    <option value="3">3 columnas</option>
+                </select>
+                <select id="present-refresh" onchange="setPresentRefresh(this.value)" title="Auto-refresh">
+                    <option value="0">Sin refresh</option>
+                    <option value="60">Cada 1 min</option>
+                    <option value="300" selected>Cada 5 min</option>
+                    <option value="600">Cada 10 min</option>
+                    <option value="1800">Cada 30 min</option>
+                </select>
+                <button onclick="refreshPresentation()">↺ Actualizar</button>
+                <button onclick="toggleFullscreen()">⛶ Pantalla completa</button>
+                <button onclick="stopPresentation()">✕ Salir</button>
+            </div>
+        </div>
+        <div class="present-body">
+            <div class="present-grid cols-2" id="present-grid"></div>
+        </div>
+        <div class="present-footer">
+            <span id="present-updated">—</span>
+            <span id="present-countdown"></span>
+            <span id="present-area">—</span>
+        </div>
+    </div>
 
 </body>
 </html>
